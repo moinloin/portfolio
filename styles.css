@@ -1,0 +1,73 @@
+body {
+    background-color: #E0E0E0;
+    color: black;
+    font-family: 'Oswald', sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    position: relative;
+}
+
+.container {
+    width: 90%;
+    margin: auto;
+    position: relative;
+    padding: 0 5%;
+}
+
+header {
+    width: 100%;
+    display: flex;
+    margin-top: 1px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.header-left {
+    font-size: 2.5em;
+    font-size: 3.00rem;
+	font-weight: 700;
+	color: rgba(0, 0, 0, 0.85);
+	font-style: normal;
+	line-height: 0.5;
+	letter-spacing: 0.000em;
+	margin: 0;
+	display: block;
+}
+
+.header-right {
+    text-align: right;
+    font-size: 3.00rem;
+	font-weight: 700;
+	color: rgba(0, 0, 0, 0.85);
+	font-style: normal;
+	line-height: 0.5;
+	letter-spacing: 0.000em;
+	margin: 0;
+	display: block;
+}
+
+.intro {
+	font-size: 2.20rem;
+	font-weight: 700;
+	color: #000000;
+	font-style: normal;
+	line-height: 0.5;
+	letter-spacing: 0;
+	display: block;
+}
+
+.magazine-image {
+    display: block;
+    margin: 40px auto;
+    width: 80%;
+    height: auto;
+    z-index: 2;
+}
+
+.copyright {
+    text-align: right;
+    padding: 50px;
+    font-size: 1.5em;
+}
