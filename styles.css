@@ -5,6 +5,19 @@ body {
     margin: 0;
     overflow-x: hidden;
     position: relative;
+    cursor: none;
+}
+
+.cursor {
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.95);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    transition: transform 0.05s linear;
+    z-index: 9999;
 }
 
 .container {
@@ -12,6 +25,7 @@ body {
     margin: auto;
     position: relative;
     padding: 0 5%;
+    z-index: 1;
 }
 
 header {
@@ -19,22 +33,10 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 40px 0 10px 0; 
+    padding: 40px 0 10px 0;
 }
 
-.header-left {
-    font-size: 2.2rem;
-    font-weight: 700;
-    color: rgba(0, 0, 0, 0.85);
-    font-family: loos-extrawide;
-    font-style: normal;
-    line-height: 0.5;
-    letter-spacing: 0.000em;
-    margin: 0;
-    display: block;
-}
-
-.header-right {
+.header-left, .header-right {
     font-size: 2.2rem;
     font-weight: 700;
     color: rgba(0, 0, 0, 0.85);
@@ -61,6 +63,26 @@ header {
     display: block;
     margin: 1px auto;
     width: 100%;
+    height: auto;
+}
+
+.floating-image {
+    position: fixed;
+    width: 180px;
+    height: auto;
+    transition: transform 0.2s linear;
+}
+
+.floating-image.left {
+    left: -50px;
+    top: 40%;
+}
+
+.floating-image.right {
+    right: -90px;
+    top: 60%;
+    transform: rotate(-10deg);
+    width: 250px;
     height: auto;
 }
 
