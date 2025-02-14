@@ -23,6 +23,6 @@ COPY --from=builder /app /app
 COPY --from=caddy /usr/bin/caddy /usr/bin/caddy
 COPY --from=caddy /etc/caddy /etc/caddy
 
-EXPOSE 80 3000
+EXPOSE 80 443 3000
 
 CMD ["sh", "-c", "node server.js & caddy run --config /etc/caddy/Caddyfile"]
