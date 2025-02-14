@@ -1,0 +1,170 @@
+body {
+    background-color: #E0E0E0;
+    color: black;
+    font-family: "loos-wide", sans-serif;
+    font-size: 1.2rem;
+    margin: 0;
+    overflow-x: hidden;
+    position: relative;
+    font-weight: bold;
+    cursor: none;
+}
+
+.container {
+    width: 90%;
+    margin: auto;
+    position: relative;
+    padding: 0 5%;
+    z-index: 1;
+}
+
+header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 40px 0 10px 0;
+}
+
+.header-left, .header-right {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: rgba(0, 0, 0, 0.85);
+    font-family: "loos-extrawide";
+    font-style: normal;
+    line-height: 0.5;
+    letter-spacing: 0.000em;
+    margin: 0;
+    display: block;
+}
+
+.section {
+    margin-top: 30px;
+    padding: 15px 0;
+    border-bottom: 1px solid black;
+}
+
+.section-title {
+    font-family: "loos-extrawide";
+    font-size: 28px;
+}
+
+.intro {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #000000;
+    font-family: "loos-wide";
+    font-style: normal;
+    line-height: 1.1;
+    letter-spacing: 0.02em;
+    display: block;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+table td {
+    width: 33.33%;
+    padding: 10px 0;
+}
+
+table td:last-child {
+    text-align: right;
+}
+
+.separator {
+    width: 100%;
+    height: 1px;
+    background-color: black;
+    margin: 50px 0;
+}
+
+.magazine-image {
+    display: block;
+    margin: 1px auto;
+    width: 100%;
+    height: auto;
+}
+
+.floating-image {
+    position: fixed;
+    width: 180px;
+    height: auto;
+    transition: transform 0.2s linear;
+}
+
+.floating-image.left {
+    left: -50px;
+    top: 40%;
+}
+
+.floating-image.right {
+    right: -90px;
+    top: 60%;
+    transform: rotate(-10deg);
+    width: 250px;
+    height: auto;
+}
+
+footer {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: rgba(0, 0, 0, 0.85);
+    font-family: "loos-extrawide";
+    width: 100%;
+    text-align: right;
+    padding-bottom: 40px;
+}
+
+.footer {
+    margin-top: 40px;
+    text-align: center;
+    padding: 10px 0;
+}
+
+.footer-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.footer-table td {
+    width: 33.33%;
+    text-align: center;
+    padding: 10px 0;
+}
+
+.footer-table a {
+    text-decoration: none;
+    color: black;
+}
+
+.cursor {
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.95);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    transition: transform 0.05s linear;
+    z-index: 9999;
+}
+
+a:link {
+    text-decoration: none;
+}
+
+a:visited {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+a:active {
+    text-decoration: none;
+}

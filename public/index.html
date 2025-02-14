@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>loïs</title>
+    <link rel="stylesheet" href="https://use.typekit.net/jcb5met.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="cursor" id="cursor"></div>
+    <div class="container">
+        <header>
+            <a class="header-left" href="/">loïs kauffungen</a>
+            <a class="header-right" href="/cv">info</a>
+        </header>
+        <section class="intro">
+            <p>Security Analyst based in Switzerland, with a passion about learning new things.
+            Spread interests in design, photography, audio, computer science and climbing.</p>
+        </section>
+        <img src="assets/images/9982292.png" alt="Inserted Image" class="magazine-image">
+        <img id="left-image" src="assets/images/rock.png" alt="Floating Image Left" class="floating-image left">
+        <img id="right-image" src="assets/images/rock2.png" alt="Floating Image Right" class="floating-image right">
+        <footer>
+            <div>© 2025</div>
+        </footer>
+    </div>
+    <script>
+        window.addEventListener("scroll", function() {
+            let scrollPosition = window.scrollY;
+            document.getElementById("left-image").style.transform = 
+                `translateY(${scrollPosition * 0.2}px) rotate(${scrollPosition * 0.05}deg)`;
+            document.getElementById("right-image").style.transform = 
+                `translateY(${scrollPosition * -0.2}px) rotate(${scrollPosition * -0.05 + -10}deg)`;
+        });
+
+        document.addEventListener("mousemove", function(event) {
+            let cursor = document.getElementById("cursor");
+            requestAnimationFrame(() => {
+                cursor.style.transform = `translate(${event.clientX}px, ${event.clientY}px)`;
+            });
+        });
+    </script>
+</body>
+</html>
+
