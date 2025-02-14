@@ -1,0 +1,7 @@
+{
+    auto_https off
+}
+
+:80 {
+    reverse_proxy 0.0.0.0:3000
+}
