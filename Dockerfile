@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:18-alpine AS builder
 
 WORKDIR /app
 
@@ -8,6 +8,21 @@ RUN npm install --only=production
 
 COPY . .
 
-EXPOSE 3000
+FROM caddy:2.6 AS caddy
 
-CMD ["node", "server.js"]
+WORKDIR /etc/caddy
+
+COPY Caddyfile /etc/caddy/Caddyfile
+
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY --from=builder /app /app
+
+COPY --from=caddy /usr/bin/caddy /usr/bin/caddy
+COPY --from=caddy /etc/caddy /etc/caddy
+
+EXPOSE 80 3000
+
+CMD ["sh", "-c", "node server.js & caddy run --config /etc/caddy/Caddyfile"]
