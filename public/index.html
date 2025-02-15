@@ -37,8 +37,13 @@
 
         document.addEventListener("mousemove", function(event) {
             let cursor = document.getElementById("cursor");
+    
+            let x = event.clientX;
+            let y = event.clientY;
+
             requestAnimationFrame(() => {
-                cursor.style.transform = `translate(${event.clientX}px, ${event.clientY}px)`;
+                cursor.style.left = `${x - 20}px`;
+                 cursor.style.top = `${y - 20}px`;
             });
         });
     </script>

@@ -1,3 +1,6 @@
+body, a, button {
+    cursor: none;
+}
 body {
     background-color: #E0E0E0;
     color: black;
@@ -148,9 +151,8 @@ footer {
     border-radius: 50%;
     background-color: rgba(0, 0, 0, 0.95);
     pointer-events: none;
-    transform: translate(-50%, -50%);
-    transition: transform 0.05s linear;
     z-index: 9999;
+    will-change: transform;
 }
 a:link {
     text-decoration: none;
