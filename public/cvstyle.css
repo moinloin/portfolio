@@ -117,11 +117,13 @@ body {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: rgba(0, 0, 0, 0.95);
+    background-color: white;
     pointer-events: none;
     z-index: 9999;
     will-change: transform;
+    mix-blend-mode: difference;
 }
+
 a:link {
     text-decoration: none;
 }
