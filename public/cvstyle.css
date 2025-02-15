@@ -41,6 +41,10 @@ body {
   text-align: left;
   font-size: 1em;
   font-weight: bold;
+  display: inline-block;
+  align-self: start;
+  padding: 5px 10px;
+  color: black;
 }
 .intro {
     grid-column: 2 / span 1;
