@@ -19,7 +19,7 @@ app.get('/cv', (req, res) => {
 
 // 404 für alle anderen Routen
 app.use((req, res) => {
-    res.status(404).send('Seite nicht gefunden');
+    res.status(404).send('not found');
 });
 
 // Server starten
