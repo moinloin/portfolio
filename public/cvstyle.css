@@ -1,0 +1,118 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+    font-family: "loos-wide", sans-serif;
+    background-color: #E0E0E0;
+}
+.container {
+    width: 96%;
+    height: 96%;
+    background-color: white;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, calc((96vw / 4) * 1.1));
+    gap: 15px;
+    background-color: #E0E0E0;
+}
+.grid-cell {
+    box-sizing: border-box;
+}
+.title {
+    grid-column: 1 / span 3;
+    grid-row: 2;
+    text-align: left;
+    font-size: 6.5em;
+    font-weight: bold;
+    font-family: "loos-extrawide", sans-serif;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+}
+.back {
+  grid-column: 1 / span 1;
+  text-align: left;
+  font-size: 1em;
+  font-weight: bold;
+}
+.intro {
+    grid-column: 2 / span 1;
+    text-align: left;
+    font-size: 1em;
+}
+.links {
+    grid-column: 3 / span 1;
+    text-align: left;
+    font-size: 1em;
+}
+.links a {
+    color: black; 
+    text-decoration: none;
+}
+
+.links a:hover {
+    color: gray;
+    text-decoration: underline;
+}
+.info {
+  grid-column: 4 / span 1;
+  text-align: left;
+  font-size: 1em;
+}
+.experience-title {
+    grid-column: 1 / span 1;
+    grid-row: 3;
+    text-align: left;
+    font-size: 2.5em;
+    font-weight: bold;
+    font-family: "loos-extrawide", sans-serif;
+    display: flex;
+    align-items: top;
+    padding-left: 10px;
+}
+.project-title {
+    grid-column: 1 / span 1;
+    grid-row: 4;
+    text-align: left;
+    font-size: 2.5em;
+    font-weight: bold;
+    font-family: "loos-extrawide", sans-serif;
+    display: top;
+    align-items: center;
+    padding-left: 10px;
+    letter-spacing: 0.02em;
+}
+.experience-topic {
+    grid-column: 2 / span 2;
+    grid-row: 3;
+    text-align: right;
+    font-size: 1.2em;
+    font-weight: bold;
+    line-height: 2;
+}
+.experience-text {
+    grid-column: 4 / span 1;
+    grid-row: 3;
+    text-align: left;
+    font-size: 1.2em;
+    font-weight: bold;
+    line-height: 2;
+}
+.cursor {
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.95);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    transition: transform 0.05s linear;
+    z-index: 9999;
+}

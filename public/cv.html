@@ -3,62 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>loïs</title>
+    <title>loïs - cv</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
     <link rel="stylesheet" href="https://use.typekit.net/jcb5met.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="cvstyle.css">
 </head>
 <body>
     <div class="cursor" id="cursor"></div>
     <div class="container">
-        <header>
-            <a class="header-left" href="/">loïs kauffungen</a>
-            <a class="header-right" href="/cv">info</a>
-        </header>
-        <div style="margin-top: 40px;"></div>
-        <div class="separator"></div>
-        <table>
-            <tr>
-                <td rowspan="3" class="section-title">Experience</td>
-                <td>Graduation</td>
-                <td>July 2020</td>
-            </tr>
-            <tr>
-                <td>Apprenticeship Computer Sience</td>
-                <td>2020-2024</td>
-            </tr>
-            <tr>
-                <td>Junior Cybersecurity Analyst</td>
-                <td>2025-today</td>
-            </tr>
-        </table>
-        <div class="separator"></div>
-        <table>
-            <tr>
-                <td rowspan="3" class="section-title">Projects</td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-            </tr>
-        </table>
-        <div class="separator"></div>
-        <table class="footer-table">
-            <tr>
-                <td><a href="https://github.com/moinloin" target="_blank">github</a></td>
-                <td><a href="https://rateyourmusic.com/~zeppoloin" target="_blank">rym</a></td>
-                <td><a href="mailto:lois@kauffungen.ch">email</a></td>
-            </tr>
-        </table>
+        <div class="back" href="/">back</div>
+        <div class="intro">A collection of projects, experiences, and learnings that reflect my professional and personal growth.</div>
+        <div class="links"><a href="https://github.com/moinloin" target="_blank">github</a><br><a href="https://rateyourmusic.com/~zeppoloin" target="_blank">rym</a><br><a href="mailto:lois@kauffungen.ch">email</a></div>
+        <div class="info">I work as a Security Analyst at a Swiss company, where I apply critical thinking and technology to tackle security challenges. The dynamic landscape keeps the work engaging, requiring problem-solving and adaptability. Beyond cybersecurity, I have a passion for music and design, where creativity and structure come together in a similar way. What drives me most is the intellectual challenge and the constant need to stay ahead. </div>
+        <div class="title">loïs<br>kauffungen</div>
+        <div class="grid-cell"></div>
+        <div class="experience-title">Experience</div>
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+        <div class="experience-topic">Graduation<br>Apprenticeship Computer Sience	<br>Junior Cybersecurity Analyst	</div>
+        <div class="experience-text">2020<br>2020 - 2024<br>2024 - today</div>
+        <div class="project-title">Projects</div>
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
     </div>
     <script>
         document.addEventListener("mousemove", function(event) {
-          let cursor = document.getElementById("cursor");
+            let cursor = document.getElementById("cursor");
             requestAnimationFrame(() => {
                 cursor.style.transform = `translate(${event.clientX}px, ${event.clientY}px)`;
             });
@@ -66,3 +38,4 @@
     </script>
 </body>
 </html>
+
