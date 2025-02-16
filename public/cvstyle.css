@@ -154,6 +154,19 @@ body {
     text-align: left;
     font-size: 1em;
 }
+.project-topic3 {
+    grid-column: 2 / span 2;
+    grid-row: 6;
+    text-align: right;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+.project-text3 {
+    grid-column: 4 / span 1;
+    grid-row: 6;
+    text-align: left;
+    font-size: 1em;
+}
 .cursor {
     position: fixed;
     width: 40px;
@@ -180,15 +193,10 @@ body {
     grid-row: 3;
     height: 400px;
 }
-.spacer4 {
+.spacerend {
     grid-column: 1 / 1;
-    grid-row: 4;
-    height: 400px;
-}
-.spacer5 {
-    grid-column: 1 / 1;
-    grid-row: 5;
-    height: 400px;
+    grid-row: 7;
+    height: 10px;
 }
 a:link {
     text-decoration: none;
@@ -208,4 +216,3 @@ a:hover {
 a:active {
     text-decoration: none;
 }
-  
