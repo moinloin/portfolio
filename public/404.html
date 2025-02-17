@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+    <link rel="stylesheet" href="https://use.typekit.net/jcb5met.css">
+    <link rel="stylesheet" href="cvstyle.css">
+</head>
+<body>
+    <div class="cursor" id="cursor"></div>
+    <div class="container">
+        </div>
+        <div class="spacer1"></div>
+        <div class="title" style="text-align: left;">404</div>
+        <div class="spacer2"></div>
+        <div class="spacer3"></div>
+        <div class="spacerend"></div>
+    </div>
+    <script>
+        document.addEventListener("mousemove", function(event) {
+            let cursor = document.getElementById("cursor");
+    
+            let x = event.clientX;
+            let y = event.clientY;
+
+            requestAnimationFrame(() => {
+                cursor.style.left = `${x - 20}px`;
+                 cursor.style.top = `${y - 20}px`;
+            });
+        });
+    </script>
+</body>
+</html>
+

@@ -15,7 +15,7 @@ app.get('/cv', (req, res) => {
 });
 
 app.use((req, res) => {
-    res.status(404).send('not found');
+    res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
 });
 
 app.listen(PORT, () => {
