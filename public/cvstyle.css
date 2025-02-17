@@ -161,7 +161,7 @@ body {
     font-size: 1.2em;
     font-weight: bold;
 }
-.project-text2 {
+.project-text3 {
     grid-column: 4 / span 1;
     grid-row: 6;
     text-align: left;
