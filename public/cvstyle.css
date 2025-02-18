@@ -62,9 +62,10 @@ body {
 .intro {
     grid-column: 4 / span 1;
     text-align: left;
-    font-size: 1.7em;
+    font-size: 1.5em;
     grid-row: 1;
     line-height: 1;
+    font-weight: bold;
 }
 .links {
     grid-column: 3 / span 1;
