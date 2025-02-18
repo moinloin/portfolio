@@ -62,15 +62,15 @@ body {
 .intro {
     grid-column: 4 / span 1;
     text-align: left;
-    font-size: 1em;
+    font-size: 1.7em;
     grid-row: 1;
-    line-height: 1.5;
+    line-height: 1;
 }
 .links {
     grid-column: 3 / span 1;
     text-align: right;
-    font-size: 1em;
-    line-height: 1.5;
+    font-size: 1.2em;
+    line-height: 1.2;
     grid-row: 1;
 }
 .links a {
@@ -85,7 +85,7 @@ body {
 .info {
   grid-column: 4 / span 1;
   text-align: left;
-  font-size: 1em;
+  font-size: 1.1em;
   grid-row: 2;
   line-height: 1.5;
 }
@@ -116,7 +116,7 @@ body {
     grid-column: 2 / span 2;
     grid-row: 3;
     text-align: right;
-    font-size: 1.2em;
+    font-size: 1.4em;
     font-weight: bold;
     line-height: 2;
 }
@@ -124,7 +124,7 @@ body {
     grid-column: 4 / span 1;
     grid-row: 3;
     text-align: left;
-    font-size: 1.2em;
+    font-size: 1.4em;
     font-weight: bold;
     line-height: 2;
 }
