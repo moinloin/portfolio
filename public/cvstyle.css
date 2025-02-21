@@ -256,3 +256,63 @@ a:hover {
 a:active {
     text-decoration: none;
 }
+
+@media (max-width: 768px) {
+    body {
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px;
+        font-family: "loos-wide", sans-serif;
+    }
+    .container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: auto;
+        gap: 15px;
+    }
+    .back {
+        font-size: 1.2em;
+        text-align: left;
+    }
+    .links {
+        font-size: 1em;
+        text-align: left;
+    }
+    .title {
+        font-size: 3.5em;
+        font-weight: bold;
+        font-family: "loos-extrawide", sans-serif;
+    }
+    .intro {
+        text-align: left;
+        font-size: 1.2em;
+    }
+    .info, .experience-title, .project-title {
+        text-align: left;
+        font-size: 1.2em;
+    }
+    .experience-title, .project-title {
+        font-size: 2em;
+        font-weight: bold;
+    }
+    .experience-entry {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+    .experience-topic {
+        text-align: left;
+    }
+    .experience-text {
+        text-align: right;
+    }
+    .spacer1, .spacer2, .spacer3, .spacerend {
+        display: none;
+    }
+}
+
