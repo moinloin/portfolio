@@ -148,18 +148,19 @@ a:link, a:visited, a:hover, a:active {
         height: auto;
         position: absolute;
     }
-    .floating-image.left {
-        left: -10%; /* Weiter nach außen */
-        top: 50%;
+    .floating-image {
+        display: none;
     }
-    .floating-image.right {
-        right: -10%; /* Weiter nach außen */
-        top: 60%;
-        width: 150px;
     }
     footer {
         text-align: left;
         font-size: 1em;
         width: 100%;
+    }
+    * {
+        cursor: auto !important;
+    
+    .cursor {
+        display: none; 
     }
 }

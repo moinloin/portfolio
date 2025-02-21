@@ -314,5 +314,11 @@ a:active {
     .spacer1, .spacer2, .spacer3, .spacerend {
         display: none;
     }
+    * {
+        cursor: auto !important;
+    
+    .cursor {
+        display: none; 
+    }
+    }
 }
-
