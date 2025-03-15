@@ -207,6 +207,19 @@ body {
     text-align: left;
     font-size: 1em;
 }
+.project-topic7 {
+    grid-column: 2 / span 2;
+    grid-row: 10;
+    text-align: right;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+.project-text7 {
+    grid-column: 4 / span 1;
+    grid-row: 10;
+    text-align: left;
+    font-size: 1em;
+}
 .cursor {
     position: fixed;
     width: 40px;
