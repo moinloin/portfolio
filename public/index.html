@@ -30,13 +30,32 @@
         </footer>
     </div>
     <script>
+        let lastScrollTop = 0;
+
         window.addEventListener("scroll", function() {
             let scrollPosition = window.scrollY;
-            document.getElementById("left-image").style.transform = 
-                `translateY(${scrollPosition * 0.2}px) rotate(${scrollPosition * 0.05}deg)`;
-            document.getElementById("right-image").style.transform = 
-                `translateY(${scrollPosition * -0.2}px) rotate(${scrollPosition * -0.05 + -10}deg)`;
+            let secondImage = document.querySelectorAll(".image")[1];
+            let secondImageOffset = secondImage.offsetTop;
+            let triggerHeight = secondImageOffset - window.innerHeight / 2;
+
+            let leftImage = document.getElementById("left-image");
+            let rightImage = document.getElementById("right-image");
+
+            if (scrollPosition > triggerHeight) {
+                leftImage.style.opacity = "1";
+                leftImage.style.transform = `translateY(${scrollPosition * 0.2}px) rotate(${scrollPosition * 0.05}deg) translateX(100px)`;
+
+                rightImage.style.opacity = "1";
+                rightImage.style.transform = `translateY(${scrollPosition * -0.2}px) rotate(${scrollPosition * -0.05 + -10}deg) translateX(-100px)`;
+            } else {
+                leftImage.style.transform = `translateY(${scrollPosition * 0.2}px) rotate(${scrollPosition * 0.05}deg) translateX(-200px)`;
+
+                rightImage.style.transform = `translateY(${scrollPosition * -0.2}px) rotate(${scrollPosition * -0.05}deg) translateX(200px)`;
+            }
+
+            lastScrollTop = scrollPosition;
         });
+
 
         document.addEventListener("mousemove", function(event) {
             let cursor = document.getElementById("cursor");

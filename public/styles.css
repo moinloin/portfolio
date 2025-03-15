@@ -60,6 +60,7 @@ header {
     width: 180px;
     height: auto;
     transition: transform 0.2s linear;
+    opacity: 0;
 }
 
 .floating-image.left {
