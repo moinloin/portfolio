@@ -1,0 +1,45 @@
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+body {
+  font-family: "loos-wide", sans-serif;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: #e0e0e0;
+}
+
+h1, h2, h3, h4, h5, h6, header a {
+  font-family: "loos-extrawide", sans-serif;
+}
+
+.project-link {
+  position: relative;
+  display: inline-block;
+  letter-spacing: 0.02em;
+  color: #000;
+  opacity: 0.5;
+  font-weight: 300;
+  font-family: "loos-wide", sans-serif;
+  transition: all 0.3s ease;
+}
+
+.project-link:hover, .project-link.active {
+  opacity: 1;
+  letter-spacing: 0.04em;
+  transform: translateX(5px);
+}
+
+::-webkit-scrollbar { display: none; }
+
+html {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  height: 100%;
+}
+
+.scroll-container {
+  min-height: 150vh;
+}
