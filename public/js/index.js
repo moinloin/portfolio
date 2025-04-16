@@ -38,7 +38,8 @@ closeModalBtn.addEventListener("mouseleave", () => handleCursorActivate(false));
 
 const projects = [
   { id: 1, name: "lookbook", image: "../images/lookbook.png" },
-  { id: 2, name: "fontainebleau", image: "./images/fontainebleau.jpg" }
+  { id: 2, name: "fontainebleau", image: "./images/fontainebleau.jpg" },
+  { id: 3, name: "bloom", image: "./images/bloom.jpg" }
 ];
 
 projects.forEach(project => {
