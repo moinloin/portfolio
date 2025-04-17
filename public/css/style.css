@@ -3,15 +3,51 @@
   to { opacity: 1; }
 }
 
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideOutDown {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
 body {
   font-family: "loos-wide", sans-serif;
   height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;
+  cursor: none;
+  background-color: #e0e0e0;
 }
 
 h1, h2, h3, h4, h5, h6, header a {
   font-family: "loos-extrawide", sans-serif;
+}
+
+.grid-background {
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
 }
 
 .project-link {
@@ -23,6 +59,7 @@ h1, h2, h3, h4, h5, h6, header a {
   font-weight: 300;
   font-family: "loos-wide", sans-serif;
   transition: all 0.3s ease;
+  cursor: none;
 }
 
 .project-link:hover, .project-link.active {
@@ -41,4 +78,135 @@ html {
 
 .scroll-container {
   min-height: 150vh;
+}
+
+.header-link {
+  cursor: none;
+  font-size: 1.875rem;
+  font-weight: bold;
+  letter-spacing: -0.05em;
+  transition-property: color;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+  text-transform: lowercase;
+}
+
+.header-link:hover {
+  color: #ef4444;
+}
+
+#custom-cursor {
+  position: fixed;
+  border-radius: 9999px;
+  background-color: white;
+  pointer-events: none;
+  z-index: 50;
+  mix-blend-mode: difference;
+  width: 40px;
+  height: 40px;
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translate3d(-50%, -50%, 0);
+  transition: width 0.3s ease, height 0.3s ease;
+}
+
+#bio-text {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  will-change: opacity, transform;
+}
+
+#bio-text p {
+  font-size: 1.5rem;
+  font-weight: 400;
+  font-family: 'loos-wide', sans-serif;
+  letter-spacing: 0.01em;
+  line-height: 1.375;
+}
+
+#project-image-container {
+  position: fixed;
+  inset-y: 0;
+  right: 0;
+  width: 75%;
+  z-index: 20;
+  height: 100vh;
+}
+
+#project-image-container img {
+  height: 100vh;
+  width: auto;
+  object-fit: contain;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  will-change: opacity, transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+#modal {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(229, 231, 235, 0.95);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+  transition-property: opacity;
+  transition-duration: 500ms;
+  opacity: 0;
+  visibility: hidden;
+}
+
+#modal.visible {
+  visibility: visible;
+}
+
+#modal.opacity-100 {
+  opacity: 1;
+}
+
+#close-modal-btn {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: transparent;
+  border: none;
+  cursor: none;
+}
+
+#close-modal-btn div {
+  position: absolute;
+  width: 100%;
+  height: 0.125rem;
+  background-color: black;
+  top: 50%;
+  left: 0;
+}
+
+#close-modal-btn div:first-child {
+  transform: rotate(45deg);
+}
+
+#close-modal-btn div:last-child {
+  transform: rotate(-45deg);
+}
+
+#modal-image {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.project-container {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  cursor: none;
 }
