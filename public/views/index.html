@@ -10,22 +10,15 @@
   <script defer src="https://umami.loiskauffungen.com/script.js" data-website-id="eef02b1a-d5e1-4dbf-bb3a-9124e0a0db0a"></script>
   <link rel="stylesheet" href="/css/style.css">
 </head>
-<body class="bg-gray-100" style="cursor: none;">
+<body>
   <div class="scroll-container">
-    <div class="fixed top-0 left-0 w-full h-full z-0"
-      style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px); background-size: 50px 50px; background-color: #e0e0e0;"></div>
+    <div class="grid-background"></div>
 
-    <div id="custom-cursor"
-      class="fixed rounded-full bg-white pointer-events-none z-50 transform -translate-x-1/2 -translate-y-1/2"
-      style="mix-blend-mode: difference; width: 40px; height: 40px; transition: transform 0.15s ease-out, width 0.3s ease, height 0.3s ease, background-color 0.3s ease;">
-    </div>
+    <div id="custom-cursor"></div>
 
-    <header class="fixed top-0 left-0 right-0 flex justify-between items-center px-8 py-12 z-40 text-white"
-      style="mix-blend-mode: difference;">
-      <a href="#" class="text-3xl font-bold tracking-tighter lowercase transition-colors hover:text-red-500"
-        style="cursor: none;" id="logo-link">lois kauffungen</a>
-      <a href="/cv" class="text-3xl font-bold tracking-tighter lowercase transition-colors hover:text-red-500"
-        style="cursor: none;" id="info-link">info</a>
+    <header class="fixed top-0 left-0 right-0 flex justify-between items-center px-8 py-12 z-40 text-white" style="mix-blend-mode: difference;">
+      <a href="#" class="header-link" id="logo-link">lois kauffungen</a>
+      <a href="/cv" class="header-link" id="info-link">info</a>
     </header>
 
     <div class="flex h-screen">
@@ -35,28 +28,25 @@
 
       <div class="w-3/4 h-screen ml-1/4 bg-transparent relative" id="image-display">
         <div class="fixed inset-y-0 right-0 w-3/4 flex items-center justify-center z-10" id="bio-text">
-          <p class="max-w-xl text-black leading-snug" style="transition: opacity 0.3s ease, transform 0.3s ease; font-size: 1.5rem; font-weight: 400; font-family: 'loos-wide', sans-serif; letter-spacing: 0.01em;">
+          <p class="max-w-xl text-black">
             Security Analyst based in Switzerland, with a passion about learning new things.
             Spread interests in design, photography, audio, computer science and climbing.
           </p>
         </div>
-        <div id="project-image-container" class="fixed inset-y-0 right-0 w-3/4 z-20"></div>
+        <div id="project-image-container"></div>
       </div>
     </div>
 
     <div class="h-screen"></div>
   </div>
 
-  <div id="modal"
-    class="fixed inset-0 bg-gray-200 bg-opacity-95 flex justify-center items-center z-50 transition-opacity duration-500 opacity-0 invisible"
-    onclick="toggleModal(false)">
-    <button class="fixed top-8 right-8 w-10 h-10 bg-transparent border-none" onclick="toggleModal(false)"
-      style="cursor: none;" id="close-modal-btn">
-      <div class="absolute w-full h-0.5 bg-black top-1/2 left-0 transform rotate-45"></div>
-      <div class="absolute w-full h-0.5 bg-black top-1/2 left-0 transform -rotate-45"></div>
+  <div id="modal" onclick="toggleModal(false)">
+    <button id="close-modal-btn" onclick="toggleModal(false)">
+      <div></div>
+      <div></div>
     </button>
     <div class="max-w-[90%] max-h-[90vh] relative flex flex-col items-center" onclick="event.stopPropagation()">
-      <img id="modal-image" class="max-w-full max-h-[80vh] object-contain shadow-2xl" />
+      <img id="modal-image" />
     </div>
   </div>
 
