@@ -60,6 +60,7 @@ h1, h2, h3, h4, h5, h6, header a {
   font-family: "loos-wide", sans-serif;
   transition: all 0.3s ease;
   cursor: none;
+  font-size: 1.3rem;
 }
 
 .project-link:hover, .project-link.active {
@@ -82,7 +83,7 @@ html {
 
 .header-link {
   cursor: none;
-  font-size: 1.875rem;
+  font-size: 2.5rem;
   font-weight: bold;
   letter-spacing: -0.05em;
   transition-property: color;
