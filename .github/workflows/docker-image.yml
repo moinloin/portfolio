@@ -134,7 +134,8 @@ jobs:
         run: |
           ssh ${{ secrets.SSH_USER }}@${{ secrets.DROPLET_IP }} "\
             sudo ln -sf ${{ env.CADDY_PATH }}/Caddyfile.${{ steps.config.outputs.target_config }} ${{ env.CADDY_PATH }}/Caddyfile && \
-            sudo docker compose -f /etc/caddy/docker-compose.yml restart"
+            sudo docker compose -f /etc/caddy/docker-compose.yml down && \
+            sudo docker compose -f /etc/caddy/docker-compose.yml up -d"
 
       - name: Rollback deployment
         if: steps.health_check.outputs.health_status == 'failed'
