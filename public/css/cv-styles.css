@@ -50,7 +50,7 @@ html {
   grid-template-rows: min-content;
   position: relative;
   z-index: 1;
-  padding-top: 60px; /* Add padding to accommodate fixed back button */
+  padding-top: 60px;
 }
 
 .grid-cell {
@@ -277,7 +277,6 @@ a {
 .spacer3 { grid-column: 1 / 1; grid-row: 3; height: 400px; }
 .spacerend { grid-column: 1 / 1; grid-row: 11; height: 10px; }
 
-/* Improved mobile responsive design */
 @media (max-width: 768px) {
   body {
     height: auto;
@@ -360,7 +359,6 @@ a {
     margin-bottom: 25px;
   }
 
-  /* Create mobile-specific experience layout */
   .experience-wrapper {
     display: flex;
     flex-direction: column;
@@ -374,7 +372,6 @@ a {
     width: 100%;
   }
 
-  /* Project sections formatting */
   .project-topic1, .project-topic2, .project-topic3,
   .project-topic4, .project-topic5, .project-topic6, .project-topic7 {
     text-align: left;
@@ -390,7 +387,6 @@ a {
     margin-bottom: 25px;
   }
 
-  /* Add spacing between project sections */
   .project-section {
     margin-bottom: 30px;
   }
