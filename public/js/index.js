@@ -10,13 +10,14 @@ const bioText = document.getElementById("bio-text");
 const imageCache = {};
 let currentlyDisplayedProject = null;
 let isMobile = window.innerWidth <= 768;
+let isTablet = window.innerWidth > 768 && window.innerWidth <= 1180;
 
 let cursorX = 0;
 let cursorY = 0;
 let rafPending = false;
 
 function handleCursorActivate(active) {
-  if (cursor && !isMobile) {
+  if (cursor && !isMobile && !isTablet) {
     cursor.style.width = active ? "60px" : "40px";
     cursor.style.height = active ? "60px" : "40px";
   }
@@ -32,11 +33,24 @@ function toggleModal(state, src = "", alt = "") {
     modalImage.src = src;
     modalImage.alt = alt;
   }
+
+  if (state && (isTablet || !isMobile)) {
+    const container = document.getElementById("project-image-container");
+    if (container) {
+      container.style.opacity = "0";
+      container.style.visibility = "hidden";
+    }
+  }
 }
 
-function checkMobile() {
-  isMobile = window.innerWidth <= 768;
-  if (isMobile) {
+function checkDeviceType() {
+  const width = window.innerWidth;
+  isMobile = width <= 768;
+  isTablet = width > 768 && width <= 1180 ||
+             (width === 1180 && window.innerHeight === 820) ||
+             (width === 820 && window.innerHeight === 1180);
+
+  if (isMobile || isTablet) {
     if (cursor) cursor.style.display = 'none';
     document.body.style.cursor = 'auto';
     document.querySelectorAll('a, button').forEach(el => {
@@ -48,10 +62,10 @@ function checkMobile() {
   }
 }
 
-window.addEventListener('resize', checkMobile);
+window.addEventListener('resize', checkDeviceType);
 
 document.addEventListener("mousemove", (e) => {
-  if (isMobile) return;
+  if (isMobile || isTablet) return;
 
   cursorX = e.clientX;
   cursorY = e.clientY;
@@ -83,6 +97,16 @@ if (infoLink) {
 if (closeModalBtn) {
   closeModalBtn.addEventListener("mouseenter", () => handleCursorActivate(true));
   closeModalBtn.addEventListener("mouseleave", () => handleCursorActivate(false));
+
+  closeModalBtn.addEventListener("click", () => {
+    if (!isMobile && !isTablet && currentlyDisplayedProject) {
+      const container = document.getElementById("project-image-container");
+      if (container) {
+        container.style.visibility = "visible";
+        container.style.opacity = "1";
+      }
+    }
+  });
 }
 
 const projects = [
@@ -104,8 +128,7 @@ function initializeProjects() {
     a.className = "project-link";
     a.dataset.id = project.id;
 
-    if (isMobile) {
-      // On mobile, clicking directly opens the modal
+    if (isMobile || isTablet) {
       a.addEventListener("click", (e) => {
         e.preventDefault();
         document.querySelectorAll(".project-link").forEach(link => link.classList.remove("active"));
@@ -113,7 +136,6 @@ function initializeProjects() {
         toggleModal(true, project.image, project.name);
       });
     } else {
-      // On desktop, hovering shows the image in the container
       a.addEventListener("mouseenter", () => {
         handleCursorActivate(true);
         document.querySelectorAll(".project-link").forEach(link => link.classList.remove("active"));
@@ -131,7 +153,6 @@ function initializeProjects() {
         }, 50);
       });
 
-      // On desktop, clicking opens the modal
       a.addEventListener("click", (e) => {
         e.preventDefault();
         toggleModal(true, project.image, project.name);
@@ -144,7 +165,7 @@ function initializeProjects() {
 }
 
 function showProjectImage(project) {
-  if (isMobile) return;
+  if (isMobile || isTablet) return;
 
   if (currentlyDisplayedProject && currentlyDisplayedProject.id === project.id) {
     return;
@@ -173,6 +194,8 @@ function showProjectImage(project) {
 }
 
 function createAndShowProjectImage(container, project) {
+  if (isTablet) return;
+
   container.innerHTML = "";
 
   const div = document.createElement("div");
@@ -235,7 +258,7 @@ function hideProjectImage() {
 }
 
 function initCursorSettings() {
-  if (cursor && !isMobile) {
+  if (cursor && !isMobile && !isTablet) {
     document.body.style.cursor = "none";
 
     document.querySelectorAll("a, button, input, textarea, select, [role='button']").forEach(el => {
@@ -265,7 +288,7 @@ function initCursorSettings() {
 }
 
 function init() {
-  checkMobile();
+  checkDeviceType();
   initializeProjects();
 }
 
