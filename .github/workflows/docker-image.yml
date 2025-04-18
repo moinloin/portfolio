@@ -12,21 +12,69 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up SSH
+      - name: Set up SSH access
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.DROPLET_IP }} >> ~/.ssh/known_hosts
 
-      - name: Deploy via SSH
+      - name: Build Docker image
         run: |
-          ssh root@${{ secrets.DROPLET_IP }} << 'EOF'
-            cd portfolio
-            git pull origin main
-            docker stop website
-            docker rm website
-            docker build -t website .
-            docker run -p 8080:8080 --name website -d website
-            docker system prune -f
-          EOF
+          docker build -t website:latest .
+
+      - name: Save Docker image
+        run: |
+          docker save website:latest -o website.tar
+
+      - name: Transfer image to Droplet
+        run: |
+          scp -i ~/.ssh/id_rsa website.tar root@${{ secrets.DROPLET_IP }}:/root/website.tar
+
+      - name: Determine deployment configuration
+        id: config
+        run: |
+          CONFIG=$(ssh -i ~/.ssh/id_rsa root@${{ secrets.DROPLET_IP }} 'readlink /etc/caddy/Caddyfile | grep -q "blue" && echo green || echo blue')
+          PORT=$( [ "$CONFIG" = "blue" ] && echo 8080 || echo 8081 )
+          echo "config=$CONFIG" >> $GITHUB_OUTPUT
+          echo "port=$PORT" >> $GITHUB_OUTPUT
+
+      - name: Load Docker image on host
+        run: |
+          ssh -i ~/.ssh/id_rsa root@${{ secrets.DROPLET_IP }} "docker load -i /root/website.tar && rm /root/website.tar"
+
+      - name: Run new container
+        run: |
+          VERSION=$(date +%s)
+          ssh -i ~/.ssh/id_rsa root@${{ secrets.DROPLET_IP }} "\
+            docker run -d \
+              -p ${{ steps.config.outputs.port }}:8080 \
+              --env PORT=8080 \
+              --env VERSION=$VERSION \
+              website:latest"
+
+      - name: Check health of new container
+        run: |
+          ssh -i ~/.ssh/id_rsa root@${{ secrets.DROPLET_IP }} "\
+            for i in {1..10}; do \
+              curl -s --fail http://localhost:${{ steps.config.outputs.port }}/health > /dev/null && exit 0; \
+              sleep 2; \
+            done; \
+            docker ps --filter 'publish=${{ steps.config.outputs.port }}' -q | xargs -r docker rm -f; \
+            exit 1"
+
+      - name: Update reverse proxy symlink and reload Caddy
+        run: |
+          ssh -i ~/.ssh/id_rsa root@${{ secrets.DROPLET_IP }} "\
+            ln -sf /root/caddy/caddy/Caddyfile.${{ steps.config.outputs.config }} /root/caddy/caddy/Caddyfile && \
+            docker exec caddy caddy reload"
+
+      - name: Stop old container
+        run: |
+          OLD_PORT=$( [ "${{ steps.config.outputs.port }}" = "8080" ] && echo 8081 || echo 8080 )
+          ssh -i ~/.ssh/id_rsa root@${{ secrets.DROPLET_IP }} "\
+            docker ps --filter 'publish=$OLD_PORT' -q | xargs -r docker rm -f"
+
+      - name: Clean up unused Docker resources
+        run: |
+          ssh -i ~/.ssh/id_rsa root@${{ secrets.DROPLET_IP }} "docker system prune -f -a > /dev/null 2>&1"
