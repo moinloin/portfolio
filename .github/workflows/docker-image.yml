@@ -47,10 +47,11 @@ jobs:
         run: |
           VERSION=$(date +%s)
           ssh -i ~/.ssh/id_rsa root@${{ secrets.DROPLET_IP }} "\
-            docker run -d -t website \
+            docker run -d \
               -p ${{ steps.config.outputs.port }}:8080 \
               --env PORT=8080 \
               --env VERSION=$VERSION \
+              --name website-${{ steps.config.outputs.config }} \
               website:latest"
 
       - name: Check health of new container
