@@ -49,9 +49,9 @@ jobs:
           DEPLOY_FOLDER="deploy_$(date +%s)"
           ssh ${{ secrets.SSH_USER }}@${{ secrets.DROPLET_IP }} "mkdir -p ~/$DEPLOY_FOLDER"
           echo "deploy_folder=$DEPLOY_FOLDER" >> $GITHUB_ENV
-
+          
           ACTIVE_CONFIG=$(ssh ${{ secrets.SSH_USER }}@${{ secrets.DROPLET_IP }} 'sudo readlink ${{ env.CADDY_PATH }}/Caddyfile | grep -q "blue" && echo "blue" || echo "green"')
-
+          
           if [ "$ACTIVE_CONFIG" = "blue" ]; then
             TARGET_CONFIG="green"
             TARGET_PORT=8081
@@ -59,7 +59,7 @@ jobs:
             TARGET_CONFIG="blue"
             TARGET_PORT=8080
           fi
-
+          
           echo "active_config=$ACTIVE_CONFIG" >> $GITHUB_OUTPUT
           echo "target_config=$TARGET_CONFIG" >> $GITHUB_OUTPUT
           echo "target_port=$TARGET_PORT" >> $GITHUB_OUTPUT
@@ -87,13 +87,13 @@ jobs:
         id: deploy
         run: |
           VERSION=$(date +%s)
-
+          
           PORT_IN_USE=$(ssh ${{ secrets.SSH_USER }}@${{ secrets.DROPLET_IP }} "netstat -tuln | grep :${{ steps.config.outputs.target_port }} > /dev/null && echo 'true' || echo 'false'")
           if [ "$PORT_IN_USE" = "true" ]; then
             ssh ${{ secrets.SSH_USER }}@${{ secrets.DROPLET_IP }} "docker ps -q --filter publish=${{ steps.config.outputs.target_port }} | xargs -r docker rm -f"
             sleep 2
           fi
-
+          
           if ssh ${{ secrets.SSH_USER }}@${{ secrets.DROPLET_IP }} "docker run -d \
           --restart unless-stopped \
           --network web-network \
@@ -101,6 +101,8 @@ jobs:
           --env PORT=8080 \
           --env COMMIT_SHA=${{ github.sha }} \
           --name website-${{ steps.config.outputs.target_config }}-$(date +%s) \
+          --cap-drop=ALL \
+          --security-opt no-new-privileges=true \
           ${{ env.DOCKER_IMAGE_NAME }}:latest"; then
             echo "container_id=$(ssh ${{ secrets.SSH_USER }}@${{ secrets.DROPLET_IP }} "docker ps -q --filter name=website-${{ steps.config.outputs.target_config }}")" >> $GITHUB_OUTPUT
             echo "deployment_success=true" >> $GITHUB_OUTPUT
@@ -120,7 +122,7 @@ jobs:
               sleep ${{ env.HEALTH_CHECK_INTERVAL }}; \
             done; \
             exit 1"
-
+          
           if [ $? -eq 0 ]; then
             echo "health_status=passed" >> $GITHUB_OUTPUT
           else
