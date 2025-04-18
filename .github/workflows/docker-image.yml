@@ -8,7 +8,7 @@ env:
   DOCKER_IMAGE_NAME: website
   HEALTH_CHECK_RETRIES: 15
   HEALTH_CHECK_INTERVAL: 2
-  CADDY_PATH: /etc/caddy
+  CADDY_PATH: /etc/caddy/caddy/
 
 jobs:
   deploy:
@@ -134,7 +134,7 @@ jobs:
         run: |
           ssh ${{ secrets.SSH_USER }}@${{ secrets.DROPLET_IP }} "\
             sudo ln -sf ${{ env.CADDY_PATH }}/Caddyfile.${{ steps.config.outputs.target_config }} ${{ env.CADDY_PATH }}/Caddyfile && \
-            sudo docker compose -f ${{ env.CADDY_PATH }}/docker-compose.yml restart"
+            sudo docker compose -f /etc/caddy/docker-compose.yml restart"
 
       - name: Rollback deployment
         if: steps.health_check.outputs.health_status == 'failed'
