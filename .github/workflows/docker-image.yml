@@ -8,7 +8,7 @@ env:
   DOCKER_IMAGE_NAME: website
   HEALTH_CHECK_RETRIES: 15
   HEALTH_CHECK_INTERVAL: 2
-  CADDY_PATH: /etc/caddy/caddy/
+  CADDY_PATH: /etc/caddy/caddy
 
 jobs:
   deploy:
