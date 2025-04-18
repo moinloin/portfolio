@@ -1,80 +1,133 @@
 name: Deploy to Droplet
-
 on:
   push:
     branches: [ "main" ]
+  workflow_dispatch:
+
+env:
+  DOCKER_IMAGE_NAME: website
+  HEALTH_CHECK_RETRIES: 15
+  HEALTH_CHECK_INTERVAL: 2
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    concurrency:
+      group: production_environment
+      cancel-in-progress: false
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Set up SSH access
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.DROPLET_IP }} >> ~/.ssh/known_hosts
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Build Docker image
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add host key to known_hosts
+        run: ssh-keyscan -H ${{ secrets.DROPLET_IP }} >> ~/.ssh/known_hosts
+
+      - name: Build Docker image with metadata
         run: |
-          docker build -t website:latest .
+          VERSION=$(date +%s)
+          COMMIT_SHA=${{ github.sha }}
+          BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+
+          docker build \
+            --build-arg COMMIT_SHA=$COMMIT_SHA \
+            --build-arg BUILD_DATE=$BUILD_DATE \
+            --build-arg VERSION=$VERSION \
+            --label org.opencontainers.image.created=$BUILD_DATE \
+            --label org.opencontainers.image.revision=$COMMIT_SHA \
+            --label org.opencontainers.image.version=$VERSION \
+            -t ${{ env.DOCKER_IMAGE_NAME }}:latest .
 
       - name: Save Docker image
         run: |
-          docker save website:latest -o website.tar
+          docker save ${{ env.DOCKER_IMAGE_NAME }}:latest | gzip > ${{ env.DOCKER_IMAGE_NAME }}.tar.gz
 
       - name: Transfer image to Droplet
         run: |
-          scp -i ~/.ssh/id_rsa website.tar root@${{ secrets.DROPLET_IP }}:/root/website.tar
+          DEPLOY_FOLDER="deploy_$(date +%s)"
+          ssh root@${{ secrets.DROPLET_IP }} "mkdir -p /root/$DEPLOY_FOLDER"
+          scp ${{ env.DOCKER_IMAGE_NAME }}.tar.gz root@${{ secrets.DROPLET_IP }}:/root/$DEPLOY_FOLDER/
+          echo "deploy_folder=$DEPLOY_FOLDER" >> $GITHUB_ENV
 
       - name: Determine deployment configuration
         id: config
         run: |
-          CONFIG=$(ssh -i ~/.ssh/id_rsa root@${{ secrets.DROPLET_IP }} 'readlink /etc/caddy/Caddyfile | grep -q "blue" && echo green || echo blue')
+          CONFIG=$(ssh root@${{ secrets.DROPLET_IP }} 'readlink /root/caddy/Caddyfile | grep -q "blue" && echo green || echo blue')
           PORT=$( [ "$CONFIG" = "blue" ] && echo 8080 || echo 8081 )
           echo "config=$CONFIG" >> $GITHUB_OUTPUT
           echo "port=$PORT" >> $GITHUB_OUTPUT
 
       - name: Load Docker image on host
         run: |
-          ssh -i ~/.ssh/id_rsa root@${{ secrets.DROPLET_IP }} "docker load -i /root/website.tar && rm /root/website.tar"
+          ssh root@${{ secrets.DROPLET_IP }} "cd /root/${{ env.deploy_folder }} && \
+            gunzip -c ${{ env.DOCKER_IMAGE_NAME }}.tar.gz | docker load && \
+            rm ${{ env.DOCKER_IMAGE_NAME }}.tar.gz"
+
+      - name: Create Docker network if it doesn't exist
+        run: |
+          ssh root@${{ secrets.DROPLET_IP }} "docker network inspect web-network >/dev/null 2>&1 || docker network create web-network"
 
       - name: Run new container
         run: |
           VERSION=$(date +%s)
-          ssh -i ~/.ssh/id_rsa root@${{ secrets.DROPLET_IP }} "\
-            docker run -d \
-              -p ${{ steps.config.outputs.port }}:8080 \
-              --env PORT=8080 \
-              --env VERSION=$VERSION \
-              --name website-${{ steps.config.outputs.config }} \
-              website:latest"
+          ssh root@${{ secrets.DROPLET_IP }} "docker run -d \
+            --restart unless-stopped \
+            --network web-network \
+            -p ${{ steps.config.outputs.port }}:8080 \
+            --env PORT=8080 \
+            --env VERSION=$VERSION \
+            --env COMMIT_SHA=${{ github.sha }} \
+            --env DEPLOY_ENV=production \
+            --health-cmd=\"curl -f http://localhost:8080/health || exit 1\" \
+            --health-interval=10s \
+            --health-timeout=5s \
+            --health-retries=3 \
+            --health-start-period=10s \
+            --name website-${{ steps.config.outputs.config }}-$VERSION \
+            --log-driver=json-file \
+            --log-opt max-size=10m \
+            --log-opt max-file=3 \
+            --cap-drop=ALL \
+            --security-opt no-new-privileges=true \
+            ${{ env.DOCKER_IMAGE_NAME }}:latest"
 
       - name: Check health of new container
         run: |
-          ssh -i ~/.ssh/id_rsa root@${{ secrets.DROPLET_IP }} "\
-            for i in {1..10}; do \
-              curl -s --fail http://localhost:${{ steps.config.outputs.port }}/health > /dev/null && exit 0; \
-              sleep 2; \
+          ssh root@${{ secrets.DROPLET_IP }} "\
+            for i in \$(seq 1 ${{ env.HEALTH_CHECK_RETRIES }}); do \
+              if curl -s --fail http://localhost:${{ steps.config.outputs.port }}/health > /dev/null; then \
+                echo 'Health check passed'; \
+                exit 0; \
+              fi; \
+              echo \"Health check failed, retrying (\$i/${{ env.HEALTH_CHECK_RETRIES }})...\"; \
+              sleep ${{ env.HEALTH_CHECK_INTERVAL }}; \
             done; \
-            docker ps --filter 'publish=${{ steps.config.outputs.port }}' -q | xargs -r docker rm -f; \
+            echo 'Health check failed after ${{ env.HEALTH_CHECK_RETRIES }} attempts. Rolling back.'; \
+            docker ps --filter 'name=website-${{ steps.config.outputs.config }}' -q | xargs -r docker rm -f; \
             exit 1"
 
-      - name: Update reverse proxy symlink and reload Caddy
+      - name: Update reverse proxy configuration
         run: |
-          ssh -i ~/.ssh/id_rsa root@${{ secrets.DROPLET_IP }} "\
-            ln -sf /root/caddy/caddy/Caddyfile.${{ steps.config.outputs.config }} /root/caddy/caddy/Caddyfile"
+          ssh root@${{ secrets.DROPLET_IP }} "\
+            ln -sf /root/caddy/Caddyfile.${{ steps.config.outputs.config }} /root/caddy/Caddyfile"
 
-      - name: Stop old container
+      - name: Stop old containers
         run: |
-          OLD_PORT=$( [ "${{ steps.config.outputs.port }}" = "8080" ] && echo 8081 || echo 8080 )
-          ssh -i ~/.ssh/id_rsa root@${{ secrets.DROPLET_IP }} "\
-            docker ps --filter 'publish=$OLD_PORT' -q | xargs -r docker rm -f"
+          OLD_CONFIG=$( [ "${{ steps.config.outputs.config }}" = "blue" ] && echo green || echo blue )
+          ssh root@${{ secrets.DROPLET_IP }} "\
+            docker ps --filter 'name=website-$OLD_CONFIG' -q | xargs -r docker rm -f"
 
       - name: Clean up unused Docker resources
+        if: always()
         run: |
-          ssh -i ~/.ssh/id_rsa root@${{ secrets.DROPLET_IP }} "docker system prune -f -a > /dev/null 2>&1"
+          ssh root@${{ secrets.DROPLET_IP }} "\
+            rm -rf /root/${{ env.deploy_folder }} && \
+            docker system prune -f --volumes > /dev/null 2>&1"
