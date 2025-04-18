@@ -117,7 +117,8 @@ jobs:
       - name: Update reverse proxy configuration
         run: |
           ssh root@${{ secrets.DROPLET_IP }} "\
-            ln -sf /root/caddy/Caddyfile.${{ steps.config.outputs.config }} /root/caddy/Caddyfile"
+            ln -sf /root/caddy/Caddyfile.${{ steps.config.outputs.config }} /root/caddy/caddy/Caddyfile && \
+            docker compose -f /root/caddy/docker-compose.yml restart"
 
       - name: Stop old containers
         run: |
