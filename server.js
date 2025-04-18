@@ -21,7 +21,7 @@ app.get('/cv', (req, res) => {
 });
 
 app.get('/health', (req, res) => {
-  res.status(200).send('OK');
+  //res.status(200).send('OK');
 });
 
 app.get('/version', (req, res) => {
