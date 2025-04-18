@@ -1,33 +1,13 @@
-const express = require('express');
-const path = require('path');
-const app = express();
+FROM node:18-alpine
 
-const PORT = process.env.PORT || 8080;
-const VERSION = process.env.VERSION || 'unknown';
+WORKDIR /app
 
-app.use(express.static(path.join(__dirname, 'public')));
+COPY package*.json ./
 
-app.use('/robots.txt', (req, res) => {
-    res.type('text/plain');
-    res.sendFile(path.join(__dirname, 'public', 'views', 'robots.txt'));
-});
+RUN npm install --only=production
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'views', 'index.html'));
-});
+COPY . .
 
-app.get('/cv', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'views', 'cv.html'));
-});
+EXPOSE 8080
 
-app.get('/health', (req, res) => {
-    res.status(200).json({ status: 'ok', version: VERSION });
-});
-
-app.use((req, res) => {
-    res.status(404).sendFile(path.join(__dirname, 'public', 'views', '404.html'));
-});
-
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}, version: ${VERSION}`);
-});
+CMD ["node", "server.js"]
