@@ -47,7 +47,7 @@ jobs:
         run: |
           VERSION=$(date +%s)
           ssh -i ~/.ssh/id_rsa root@${{ secrets.DROPLET_IP }} "\
-            docker run -d \
+            docker run -d -t website \
               -p ${{ steps.config.outputs.port }}:8080 \
               --env PORT=8080 \
               --env VERSION=$VERSION \
@@ -66,8 +66,7 @@ jobs:
       - name: Update reverse proxy symlink and reload Caddy
         run: |
           ssh -i ~/.ssh/id_rsa root@${{ secrets.DROPLET_IP }} "\
-            ln -sf /root/caddy/caddy/Caddyfile.${{ steps.config.outputs.config }} /root/caddy/caddy/Caddyfile && \
-            docker exec caddy caddy reload"
+            ln -sf /root/caddy/caddy/Caddyfile.${{ steps.config.outputs.config }} /root/caddy/caddy/Caddyfile"
 
       - name: Stop old container
         run: |
