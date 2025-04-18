@@ -9,14 +9,17 @@ const bioText = document.getElementById("bio-text");
 
 const imageCache = {};
 let currentlyDisplayedProject = null;
+let isMobile = window.innerWidth <= 768;
 
 let cursorX = 0;
 let cursorY = 0;
 let rafPending = false;
 
 function handleCursorActivate(active) {
-  cursor.style.width = active ? "60px" : "40px";
-  cursor.style.height = active ? "60px" : "40px";
+  if (cursor && !isMobile) {
+    cursor.style.width = active ? "60px" : "40px";
+    cursor.style.height = active ? "60px" : "40px";
+  }
 }
 
 function toggleModal(state, src = "", alt = "") {
@@ -31,11 +34,29 @@ function toggleModal(state, src = "", alt = "") {
   }
 }
 
+function checkMobile() {
+  isMobile = window.innerWidth <= 768;
+  if (isMobile) {
+    if (cursor) cursor.style.display = 'none';
+    document.body.style.cursor = 'auto';
+    document.querySelectorAll('a, button').forEach(el => {
+      el.style.cursor = 'pointer';
+    });
+  } else {
+    if (cursor) cursor.style.display = 'block';
+    initCursorSettings();
+  }
+}
+
+window.addEventListener('resize', checkMobile);
+
 document.addEventListener("mousemove", (e) => {
+  if (isMobile) return;
+
   cursorX = e.clientX;
   cursorY = e.clientY;
 
-  if (!rafPending) {
+  if (!rafPending && cursor) {
     rafPending = true;
     requestAnimationFrame(() => {
       cursor.style.left = `${cursorX}px`;
@@ -49,12 +70,20 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") toggleModal(false);
 });
 
-logoLink.addEventListener("mouseenter", () => handleCursorActivate(true));
-logoLink.addEventListener("mouseleave", () => handleCursorActivate(false));
-infoLink.addEventListener("mouseenter", () => handleCursorActivate(true));
-infoLink.addEventListener("mouseleave", () => handleCursorActivate(false));
-closeModalBtn.addEventListener("mouseenter", () => handleCursorActivate(true));
-closeModalBtn.addEventListener("mouseleave", () => handleCursorActivate(false));
+if (logoLink) {
+  logoLink.addEventListener("mouseenter", () => handleCursorActivate(true));
+  logoLink.addEventListener("mouseleave", () => handleCursorActivate(false));
+}
+
+if (infoLink) {
+  infoLink.addEventListener("mouseenter", () => handleCursorActivate(true));
+  infoLink.addEventListener("mouseleave", () => handleCursorActivate(false));
+}
+
+if (closeModalBtn) {
+  closeModalBtn.addEventListener("mouseenter", () => handleCursorActivate(true));
+  closeModalBtn.addEventListener("mouseleave", () => handleCursorActivate(false));
+}
 
 const projects = [
   { id: 1, name: "lookbook", image: "../images/lookbook.png" },
@@ -75,30 +104,48 @@ function initializeProjects() {
     a.className = "project-link";
     a.dataset.id = project.id;
 
-    a.addEventListener("mouseenter", () => {
-      handleCursorActivate(true);
-      document.querySelectorAll(".project-link").forEach(link => link.classList.remove("active"));
-      a.classList.add("active");
-      showProjectImage(project);
-    });
+    if (isMobile) {
+      // On mobile, clicking directly opens the modal
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        document.querySelectorAll(".project-link").forEach(link => link.classList.remove("active"));
+        a.classList.add("active");
+        toggleModal(true, project.image, project.name);
+      });
+    } else {
+      // On desktop, hovering shows the image in the container
+      a.addEventListener("mouseenter", () => {
+        handleCursorActivate(true);
+        document.querySelectorAll(".project-link").forEach(link => link.classList.remove("active"));
+        a.classList.add("active");
+        showProjectImage(project);
+      });
 
-    a.addEventListener("mouseleave", () => {
-      setTimeout(() => {
-        if (!document.querySelector(".project-link:hover")) {
-          handleCursorActivate(false);
-          hideProjectImage();
-          a.classList.remove("active");
-        }
-      }, 50);
-    });
+      a.addEventListener("mouseleave", () => {
+        setTimeout(() => {
+          if (!document.querySelector(".project-link:hover")) {
+            handleCursorActivate(false);
+            hideProjectImage();
+            a.classList.remove("active");
+          }
+        }, 50);
+      });
 
-    a.addEventListener("click", (e) => e.preventDefault());
+      // On desktop, clicking opens the modal
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        toggleModal(true, project.image, project.name);
+      });
+    }
+
     li.appendChild(a);
     projectList.appendChild(li);
   });
 }
 
 function showProjectImage(project) {
+  if (isMobile) return;
+
   if (currentlyDisplayedProject && currentlyDisplayedProject.id === project.id) {
     return;
   }
@@ -188,35 +235,37 @@ function hideProjectImage() {
 }
 
 function initCursorSettings() {
-  document.body.style.cursor = "none";
+  if (cursor && !isMobile) {
+    document.body.style.cursor = "none";
 
-  document.querySelectorAll("a, button, input, textarea, select, [role='button']").forEach(el => {
-    el.style.cursor = "none";
-  });
+    document.querySelectorAll("a, button, input, textarea, select, [role='button']").forEach(el => {
+      el.style.cursor = "none";
+    });
 
-  new MutationObserver(mutations => {
-    for (const m of mutations) {
-      if (!m.addedNodes.length) continue;
+    new MutationObserver(mutations => {
+      for (const m of mutations) {
+        if (!m.addedNodes.length) continue;
 
-      for (const node of m.addedNodes) {
-        if (node.nodeType !== 1) continue;
+        for (const node of m.addedNodes) {
+          if (node.nodeType !== 1) continue;
 
-        if (["A", "BUTTON", "INPUT", "TEXTAREA", "SELECT"].includes(node.tagName) ||
-            node.getAttribute("role") === "button") {
-          node.style.cursor = "none";
-        }
+          if (["A", "BUTTON", "INPUT", "TEXTAREA", "SELECT"].includes(node.tagName) ||
+              node.getAttribute("role") === "button") {
+            node.style.cursor = "none";
+          }
 
-        const interactiveChildren = node.querySelectorAll("a, button, input, textarea, select, [role='button']");
-        for (const child of interactiveChildren) {
-          child.style.cursor = "none";
+          const interactiveChildren = node.querySelectorAll("a, button, input, textarea, select, [role='button']");
+          for (const child of interactiveChildren) {
+            child.style.cursor = "none";
+          }
         }
       }
-    }
-  }).observe(document.body, { childList: true, subtree: true });
+    }).observe(document.body, { childList: true, subtree: true });
+  }
 }
 
 function init() {
-  initCursorSettings();
+  checkMobile();
   initializeProjects();
 }
 

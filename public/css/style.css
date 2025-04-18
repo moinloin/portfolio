@@ -211,3 +211,222 @@ html {
   transition: opacity 0.3s ease, transform 0.3s ease;
   cursor: none;
 }
+
+@media (max-width: 1280px) {
+  .header-link {
+    font-size: 2rem;
+  }
+
+  #bio-text p {
+    font-size: 1.3rem;
+    max-width: 90%;
+  }
+}
+
+@media (max-width: 1024px) {
+  .header-link {
+    font-size: 1.8rem;
+  }
+
+  #bio-text p {
+    font-size: 1.2rem;
+  }
+
+  .project-link {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Reset all problematic styles */
+  body, html {
+    height: 100vh;
+    overflow: hidden;
+    cursor: auto !important;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+  }
+
+  /* Layout container */
+  .scroll-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 0;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Header */
+  header {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 1.5rem !important;
+    z-index: 40;
+  }
+
+  header a {
+    mix-blend-mode: normal !important;
+    text-decoration: none;
+    color: #000 !important;
+  }
+
+  .header-link {
+    font-size: 1.5rem;
+    cursor: pointer !important;
+  }
+
+  /* Main container */
+  .mobile-container {
+    flex-direction: column;
+    width: 100%;
+    height: 100vh;
+    position: relative;
+  }
+
+  /* Bio text */
+  #bio-text {
+    position: fixed;
+    top: 6rem;
+    left: 0;
+    width: 100%;
+    padding: 0 1.5rem;
+    transform: none !important;
+    opacity: 1 !important;
+    z-index: 10;
+    display: block;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+
+  #bio-text p {
+    font-size: 1.1rem;
+    line-height: 1.5;
+    font-weight: 400;
+    margin: 0;
+    max-width: 100%;
+    text-align: left;
+  }
+
+  /* Project list */
+  .project-list-container {
+    position: fixed;
+    width: 100%;
+    top: auto;
+    bottom: 4rem;
+    left: 0;
+    padding-left: 1.5rem;
+  }
+
+  #project-list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding: 0;
+    margin: 0;
+  }
+
+  #project-list li {
+    margin: 0;
+  }
+
+  .project-link {
+    font-size: 1.3rem;
+    opacity: 0.5;
+    font-weight: 300;
+    cursor: pointer !important;
+    transition: all 0.3s ease;
+  }
+
+  .project-link:hover,
+  .project-link.active {
+    opacity: 1;
+    letter-spacing: 0.04em;
+    transform: translateX(5px);
+  }
+
+  /* Image display and container */
+  #image-display {
+    width: 100%;
+    margin-left: 0;
+    height: auto;
+    position: relative;
+  }
+
+  #project-image-container {
+    display: none;
+  }
+
+  /* Modal for images */
+  #modal {
+    z-index: 100;
+  }
+
+  #modal-image {
+    max-width: 90%;
+    max-height: 80vh;
+  }
+
+  #close-modal-btn {
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 2rem;
+    height: 2rem;
+    background-color: transparent;
+    border: none;
+    cursor: pointer !important;
+    z-index: 101;
+  }
+
+  /* Hide cursor for mobile */
+  #custom-cursor {
+    display: none;
+  }
+
+  /* Reset all cursor styles for mobile */
+  * {
+    cursor: auto !important;
+  }
+
+  a, button, [role="button"] {
+    cursor: pointer !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-link {
+    font-size: 1.2rem;
+  }
+
+  #bio-text p {
+    font-size: 1rem;
+  }
+
+  .project-link {
+    font-size: 1.2rem;
+  }
+
+  header {
+    padding: 1rem !important;
+  }
+
+  #bio-text {
+    top: 4.5rem;
+    padding: 0 1rem;
+  }
+
+  .project-list-container {
+    padding-left: 1rem;
+    bottom: 3rem;
+  }
+}
