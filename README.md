@@ -118,6 +118,7 @@ This project uses GitHub Actions for continuous integration and deployment:
 1. On push to the main branch, the CI/CD pipeline:
    - Runs tests to ensure code quality
    - Builds a Docker image with the current version
+   - Implements blue-green deployment strategy for zero-downtime updates
    - Deploys to the production server
 
 ## Recent Improvements
@@ -125,6 +126,7 @@ This project uses GitHub Actions for continuous integration and deployment:
 - Added automated testing with Jest
 - Implemented environment configuration with dotenv
 - Enhanced CI/CD pipeline with testing integration
+- Added blue-green deployment for zero-downtime updates
 - Optimized image loading for high-resolution displays
 - Enhanced transition animations between content sections
 - Implemented hardware acceleration for smoother cursor movement
