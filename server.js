@@ -1,10 +1,19 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
+const helmet = require('helmet');
+const compression = require('compression');
+const morgan = require('morgan');
+
 const app = express();
 
 const PORT = process.env.PORT || 8080;
 const VERSION = process.env.VERSION || 'unknown';
+const NODE_ENV = process.env.NODE_ENV || 'production';
 
+app.use(helmet());
+app.use(compression());
+app.use(morgan(NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/robots.txt', (req, res) => {
@@ -32,6 +41,10 @@ app.use((req, res) => {
   res.status(404).sendFile(path.join(__dirname, 'public', 'views', '404.html'));
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server running in ${NODE_ENV} mode on port ${PORT}`);
+  });
+}
+
+module.exports = app;
