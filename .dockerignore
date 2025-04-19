@@ -5,3 +5,13 @@ Dockerfile
 .git
 .gitignore
 README.md
+.env
+.env.local
+.env.*.local
+__tests__
+jest.config.js
+coverage
+.github
+*.test.js
+*.spec.js
+old
