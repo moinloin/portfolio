@@ -1,4 +1,4 @@
-# Portfolio Website
+# portfolio
 
 ## Overview
 This is a fully custom-built personal portfolio website developed using **Node.js**, with **Docker** and **CI/CD** integration. The website serves as a dynamic and interactive platform to showcase projects, creative work, and professional expertise. It highlights technical skills, personal projects, and achievements in a well-structured and engaging manner.
