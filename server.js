@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
-const helmet = require('helmet');
 const compression = require('compression');
 const morgan = require('morgan');
 
@@ -11,7 +10,6 @@ const PORT = process.env.PORT || 8080;
 const VERSION = process.env.VERSION || 'unknown';
 const NODE_ENV = process.env.NODE_ENV || 'production';
 
-app.use(helmet());
 app.use(compression());
 app.use(morgan(NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(express.static(path.join(__dirname, 'public')));
