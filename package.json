@@ -4,8 +4,11 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -20,8 +23,14 @@
   "homepage": "https://github.com/moinloin/portfolio#readme",
   "dependencies": {
     "compression": "^1.8.0",
+    "dotenv": "^16.5.0",
     "express": "^4.21.2",
     "helmet": "^8.1.0",
     "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.9",
+    "supertest": "^6.3.4"
   }
 }
