@@ -111,8 +111,9 @@ if (closeModalBtn) {
 
 const projects = [
   { id: 1, name: "lookbook", image: "../images/lookbook.png" },
-  { id: 2, name: "fontainebleau", image: "./images/fontainebleau.jpg" },
-  { id: 3, name: "bloom", image: "./images/bloom.jpg" }
+  { id: 2, name: "rock", image: "./images/rock.jpg" },
+  { id: 3, name: "fontainebleau", image: "./images/fontainebleau.jpg" },
+  { id: 4, name: "bloom", image: "./images/bloom.jpg" }
 ];
 
 function initializeProjects() {
