@@ -40,6 +40,12 @@ function toggleModal(state, src = "", alt = "") {
       container.style.opacity = "0";
       container.style.visibility = "hidden";
     }
+  } else if (!state) {
+    const container = document.getElementById("project-image-container");
+    if (container && currentlyDisplayedProject) {
+      container.style.visibility = "visible";
+      container.style.opacity = "1";
+    }
   }
 }
 
@@ -241,20 +247,22 @@ function hideProjectImage() {
     projectDiv.style.transform = "translateY(10px)";
 
     setTimeout(() => {
-      if (!document.querySelector(".project-link.active")) {
+      if (!document.querySelector(".project-link.active") && !modal.classList.contains("visible")) {
         bioText.style.opacity = "1";
         bioText.style.transform = "translateY(0)";
       }
 
-      if (!document.querySelector(".project-link.active")) {
+      if (!document.querySelector(".project-link.active") && !modal.classList.contains("visible")) {
         container.innerHTML = "";
         currentlyDisplayedProject = null;
       }
     }, 250);
   } else {
-    bioText.style.opacity = "1";
-    bioText.style.transform = "translateY(0)";
-    currentlyDisplayedProject = null;
+    if (!modal.classList.contains("visible")) {
+      bioText.style.opacity = "1";
+      bioText.style.transform = "translateY(0)";
+      currentlyDisplayedProject = null;
+    }
   }
 }
 
