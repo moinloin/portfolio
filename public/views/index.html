@@ -7,46 +7,74 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://use.typekit.net/bou8qre.css">
   <link rel="icon" type="image/x-icon" href="/images/favicon-16x16.png">
-  <script defer src="https://umami.loiskauffungen.com/script.js" data-website-id="eef02b1a-d5e1-4dbf-bb3a-9124e0a0db0a"></script>
   <link rel="stylesheet" href="/css/style.css">
+  <script defer src="https://umami.loiskauffungen.com/script.js" data-website-id="eef02b1a-d5e1-4dbf-bb3a-9124e0a0db0a"></script>
 </head>
 <body>
-  <div class="scroll-container">
-    <div class="grid-background"></div>
+  <div class="grid-background"></div>
+  <div class="particles" id="particles"></div>
 
-    <div id="custom-cursor"></div>
+  <div id="custom-cursor"></div>
 
-    <header class="fixed top-0 left-0 right-0 flex justify-between items-center px-8 py-12 z-40 text-white" style="mix-blend-mode: difference;">
-      <a href="#" class="header-link" id="logo-link">loïs kauffungen</a>
-      <a href="/cv" class="header-link" id="info-link">info</a>
-    </header>
+  <header class="fixed top-0 left-0 right-0 flex justify-between items-center px-8 py-12 z-40 text-white" style="mix-blend-mode: difference;">
+    <a href="#" class="header-link" id="logo-link">loïs kauffungen</a>
+    <a href="/cv" class="header-link" id="info-link">about</a>
+  </header>
 
-    <div class="flex h-screen mobile-container">
-      <div class="w-1/4 h-screen z-20 flex flex-col justify-center pl-16 fixed project-list-container">
-        <ul class="space-y-5" id="project-list"></ul>
+  <div class="flex h-screen">
+    <div class="w-1/4 h-screen z-20 flex flex-col justify-center pl-16 fixed">
+      <div class="category-filter">
+        <button class="filter-btn active" data-category="all">everything</button>
+        <button class="filter-btn" data-category="poster">posters</button>
+        <button class="filter-btn" data-category="code">code</button>
       </div>
-
-      <div class="w-3/4 h-screen ml-1/4 bg-transparent relative" id="image-display">
-        <div class="fixed inset-y-0 right-0 w-3/4 flex items-center justify-center z-10" id="bio-text">
-          <p class="max-w-xl text-black">
-            Security Analyst based in Switzerland, with a passion about learning new things.
-            Spread interests in design, photography, audio, computer science and climbing.
-          </p>
-        </div>
-        <div id="project-image-container"></div>
-      </div>
+      <ul id="project-list"></ul>
     </div>
 
-    <div class="h-screen"></div>
+    <div class="w-3/4 h-screen ml-1/4 bg-transparent relative">
+      <div class="fixed inset-y-0 right-0 w-3/4 flex items-center justify-center z-10" id="bio-text">
+        <p class="max-w-xl text-black text-2xl font-light leading-relaxed">
+          Security Analyst based in Switzerland, with a passion about learning new things. Spread interests in design, photography, audio, computer science and climbing.
+        </p>
+      </div>
+      <div id="project-image-container" class="fixed inset-y-0 right-0 w-3/4 z-20"></div>
+    </div>
   </div>
 
   <div id="modal" onclick="toggleModal(false)">
-    <button id="close-modal-btn" onclick="toggleModal(false)">
-      <div></div>
-      <div></div>
+    <button id="close-modal-btn" class="fixed top-8 right-8 w-10 h-10 bg-transparent border-none cursor-none" onclick="toggleModal(false)">
+      <div class="absolute w-full h-0.5 bg-black top-1/2 left-0 transform rotate-45"></div>
+      <div class="absolute w-full h-0.5 bg-black top-1/2 left-0 transform -rotate-45"></div>
     </button>
-    <div class="max-w-[90%] max-h-[90vh] relative flex flex-col items-center" onclick="event.stopPropagation()">
-      <img id="modal-image" />
+    <div id="modal-content" class="max-w-[90%] max-h-[90vh] relative flex flex-col items-center" onclick="event.stopPropagation()">
+      <div class="loading-spinner" id="loading-spinner"></div>
+      <img id="modal-image" class="max-w-full max-h-[80vh] object-contain rounded shadow-2xl" style="display: none;" />
+      <div id="modal-video" class="video-container" style="display: none;">
+        <video controls class="w-full h-full">
+          <source src="" type="video/mp4">
+        </video>
+      </div>
+      <div id="modal-github" class="github-card" style="display: none;">
+        <h3 class="text-2xl font-bold mb-2" id="github-name"></h3>
+        <p class="text-gray-600 mb-4" id="github-description"></p>
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-value" id="github-stars">0</div>
+            <div class="stat-label">stars</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="github-forks">0</div>
+            <div class="stat-label">forks</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="github-language">-</div>
+            <div class="stat-label">language</div>
+          </div>
+        </div>
+        <a href="" target="_blank" id="github-link" class="inline-block mt-4 px-4 py-2 bg-black text-white rounded hover:bg-gray-800 transition">
+          View on GitHub →
+        </a>
+      </div>
     </div>
   </div>
 
