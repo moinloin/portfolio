@@ -17,6 +17,11 @@ let hideTimeout = null;
 const cursor = document.getElementById("custom-cursor");
 let cursorX = 0, cursorY = 0;
 
+function preloadImage(src) {
+  const img = new Image();
+  img.src = src;
+}
+
 document.addEventListener("mousemove", (e) => {
   if (isMobile) return;
   cursorX = e.clientX;
@@ -87,12 +92,10 @@ function toggleModal(state, project = null) {
       modalVideo.querySelector('source').src = project.video;
       modalVideo.querySelector('video').load();
     } else if (project.type === 'github') {
-      // Real GitHub data based on repository information
       setTimeout(() => {
         loadingSpinner.style.display = 'none';
         modalGithub.style.display = 'block';
 
-        // Set project-specific data based on real repositories
         if (project.name === 'portfolio') {
           document.getElementById('github-name').textContent = 'portfolio';
           document.getElementById('github-description').textContent = 'A collection of projects, experiences, and learnings that reflect my professional and personal growth.';
@@ -169,9 +172,7 @@ function renderProjects() {
         handleCursorHover(false);
         if (!isMobile && project.type === 'image') {
           hideTimeout = setTimeout(() => {
-            if (!document.querySelector('.project-link:hover')) {
-              hideProjectImage();
-            }
+            hideProjectImage();
           }, 100);
         }
       });
@@ -223,7 +224,9 @@ function showProjectImage(project) {
       createAndShowProjectImage(container, project);
     }, 200);
   } else {
-    createAndShowProjectImage(container, project);
+    setTimeout(() => {
+      createAndShowProjectImage(container, project);
+    }, 100);
   }
 
   currentlyDisplayedProject = project;
@@ -236,18 +239,41 @@ function createAndShowProjectImage(container, project) {
   div.className = 'project-container h-screen w-full flex justify-end items-center cursor-none';
   div.addEventListener('click', () => toggleModal(true, project));
 
+  div.addEventListener('mouseleave', () => {
+    if (!document.querySelector('.project-link:hover')) {
+      hideTimeout = setTimeout(() => {
+        hideProjectImage();
+      }, 150);
+    }
+  });
+
+  div.addEventListener('mouseenter', () => {
+    if (hideTimeout) {
+      clearTimeout(hideTimeout);
+      hideTimeout = null;
+    }
+  });
+
   const img = document.createElement('img');
-  img.src = project.image;
   img.alt = project.name;
   img.className = 'h-screen w-auto object-contain';
+  img.style.opacity = '0';
+  img.style.transition = 'opacity 0.3s ease';
+
+  img.loading = 'eager';
+
+  img.onload = () => {
+    requestAnimationFrame(() => {
+      img.style.opacity = '1';
+      div.style.opacity = '1';
+      div.style.transform = 'translateY(0)';
+    });
+  };
+
+  img.src = project.image;
 
   div.appendChild(img);
   container.appendChild(div);
-
-  requestAnimationFrame(() => {
-    div.style.opacity = '1';
-    div.style.transform = 'translateY(0)';
-  });
 }
 
 function hideProjectImage() {
@@ -258,17 +284,20 @@ function hideProjectImage() {
     clearTimeout(imageTransitionTimeout);
   }
 
+  if (hideTimeout) {
+    clearTimeout(hideTimeout);
+    hideTimeout = null;
+  }
+
   if (container.firstChild) {
     container.firstChild.style.opacity = '0';
     container.firstChild.style.transform = 'translateY(10px)';
 
     imageTransitionTimeout = setTimeout(() => {
-      if (!document.querySelector('.project-link:hover')) {
-        container.innerHTML = '';
-        bioText.style.opacity = '1';
-        bioText.style.transform = 'translateY(0)';
-        currentlyDisplayedProject = null;
-      }
+      container.innerHTML = '';
+      bioText.style.opacity = '1';
+      bioText.style.transform = 'translateY(0)';
+      currentlyDisplayedProject = null;
     }, 300);
   } else {
     bioText.style.opacity = '1';
@@ -294,8 +323,31 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+  const projectList = document.getElementById('project-list');
+
+  projectList.addEventListener('mouseleave', () => {
+    if (!isMobile && currentlyDisplayedProject) {
+      hideTimeout = setTimeout(() => {
+        hideProjectImage();
+      }, 100);
+    }
+  });
+
+  projectList.addEventListener('mouseenter', () => {
+    if (hideTimeout) {
+      clearTimeout(hideTimeout);
+      hideTimeout = null;
+    }
+  });
+});
+
 createParticles();
 renderProjects();
+
+projects.filter(p => p.type === 'image').forEach(p => {
+  preloadImage(p.image);
+});
 
 window.addEventListener('resize', () => {
   isMobile = window.innerWidth <= 768;
