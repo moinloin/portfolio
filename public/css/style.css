@@ -69,7 +69,6 @@ h1, h2, h3, h4, h5, h6, header a {
   animation: fadeIn 1s ease forwards;
 }
 
-/* Animated particles background */
 .particles {
   position: fixed;
   top: 0;
@@ -211,7 +210,8 @@ h1, h2, h3, h4, h5, h6, header a {
 #bio-text {
   opacity: 0;
   animation: fadeIn 0.5s ease forwards 0.4s;
-  transition: opacity 0.15s ease, transform 0.15s ease;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  will-change: opacity, transform;
 }
 
 #project-list {
@@ -230,6 +230,11 @@ h1, h2, h3, h4, h5, h6, header a {
 .project-container {
   opacity: 0;
   animation: imageReveal 0.6s ease forwards;
+  will-change: opacity, transform;
+}
+
+.project-container img {
+  will-change: opacity;
 }
 
 #modal {
@@ -318,7 +323,6 @@ h1, h2, h3, h4, h5, h6, header a {
   opacity: 0.6;
 }
 
-/* Mobile styles */
 @media (max-width: 768px) {
   body, html {
     cursor: auto !important;
