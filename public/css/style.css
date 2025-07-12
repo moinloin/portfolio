@@ -1,6 +1,6 @@
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translate3d(0, 20px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 
 @keyframes glitch {
@@ -12,8 +12,8 @@
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-10px) rotate(1deg); }
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(0, -10px, 0) rotate(1deg); }
 }
 
 @keyframes modalIn {
@@ -30,16 +30,16 @@
 @keyframes imageReveal {
   from {
     opacity: 0;
-    transform: scale(0.9) translateY(20px);
+    transform: scale3d(0.9, 0.9, 1) translate3d(0, 20px, 0);
   }
   to {
     opacity: 1;
-    transform: scale(1) translateY(0);
+    transform: scale3d(1, 1, 1) translate3d(0, 0, 0);
   }
 }
 
 @keyframes spin {
-  to { transform: translate(-50%, -50%) rotate(360deg); }
+  to { transform: translate3d(-50%, -50%, 0) rotate(360deg); }
 }
 
 body {
@@ -96,31 +96,68 @@ h1, h2, h3, h4, h5, h6, header a {
 
 .filter-btn {
   font-size: 0.65rem;
-  padding: 0;
+  padding: 0.25rem 0.5rem;
   margin-right: 1rem;
   margin-bottom: 0;
-  background: transparent;
+  background: linear-gradient(145deg, rgba(70, 130, 180, 0.06), rgba(100, 150, 200, 0.1));
   border: none;
+  border-radius: 14px;
   cursor: none;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: "loos-wide", sans-serif;
-  font-weight: 300;
+  font-weight: 400;
   color: black;
-  opacity: 0.25;
+  opacity: 0.4;
   position: relative;
   letter-spacing: 0.02em;
-  transform: translateY(0px);
+  text-transform: lowercase;
+  box-shadow: 
+    inset 0 0.5px 1px rgba(255, 255, 255, 0.3),
+    inset 0 -0.5px 0.5px rgba(70, 130, 180, 0.1),
+    0 0.5px 2px rgba(70, 130, 180, 0.06);
+  overflow: hidden;
+}
+
+.filter-btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, rgba(70, 130, 180, 0.2) 0%, transparent 70%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.3s ease;
+  pointer-events: none;
 }
 
 .filter-btn:hover {
-  opacity: 0.7;
-  transform: translateY(-1px);
-  letter-spacing: 0.03em;
-  color: #4a5568;
+  opacity: 0.8;
+  background: linear-gradient(145deg, rgba(70, 130, 180, 0.1), rgba(100, 150, 200, 0.14));
+  box-shadow: 
+    inset 0 0.5px 1px rgba(255, 255, 255, 0.35),
+    inset 0 -0.5px 0.5px rgba(70, 130, 180, 0.15),
+    0 1px 3px rgba(70, 130, 180, 0.08);
+}
+
+.filter-btn:hover::after {
+  width: 100%;
+  height: 100%;
 }
 
 .filter-btn.active {
-  opacity: 0.9;
+  opacity: 1;
+  background: linear-gradient(145deg, rgba(70, 130, 180, 0.14), rgba(100, 150, 200, 0.18));
+  box-shadow: 
+    inset 0 0.5px 1px rgba(255, 255, 255, 0.4),
+    inset 0 -0.5px 0.5px rgba(70, 130, 180, 0.2),
+    0 1px 3px rgba(70, 130, 180, 0.1);
+}
+
+.filter-btn.active::after {
+  width: 80%;
+  height: 80%;
 }
 
 .filter-btn:last-child {
@@ -130,21 +167,48 @@ h1, h2, h3, h4, h5, h6, header a {
 .project-link {
   position: relative;
   display: inline-block;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
   color: #000;
-  opacity: 0.5;
-  font-weight: 300;
+  opacity: 0.6;
+  font-weight: 400;
   font-family: "loos-wide", sans-serif;
-  transition: all 0.3s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: none;
   font-size: 1.3rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 16px;
+  background: linear-gradient(145deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.1));
+  border: none;
+  box-shadow: 
+    inset 0 1px 2px rgba(255, 255, 255, 0.3),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.05),
+    0 1px 3px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.project-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  transition: left 0.5s ease;
 }
 
 .project-link:hover {
   opacity: 1;
-  letter-spacing: 0.04em;
-  transform: translateX(5px);
-  color: #2d3748;
+  background: linear-gradient(145deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.15));
+  box-shadow: 
+    inset 0 1px 2px rgba(255, 255, 255, 0.4),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+
+.project-link:hover::before {
+  left: 100%;
 }
 
 .project-link.glitch:hover {
@@ -211,7 +275,6 @@ h1, h2, h3, h4, h5, h6, header a {
   opacity: 0;
   animation: fadeIn 0.5s ease forwards 0.4s;
   transition: opacity 0.3s ease, transform 0.3s ease;
-  will-change: opacity, transform;
 }
 
 #project-list {
@@ -230,11 +293,10 @@ h1, h2, h3, h4, h5, h6, header a {
 .project-container {
   opacity: 0;
   animation: imageReveal 0.6s ease forwards;
-  will-change: opacity, transform;
 }
 
 .project-container img {
-  will-change: opacity;
+  transition: opacity 0.3s ease;
 }
 
 #modal {
@@ -276,6 +338,16 @@ h1, h2, h3, h4, h5, h6, header a {
   border-top-color: #000;
   border-radius: 50%;
   animation: spin 1s linear infinite;
+}
+
+#close-modal-btn {
+  z-index: 9999;
+  pointer-events: auto;
+}
+
+#close-modal-btn:hover {
+  opacity: 0.7;
+  transform: scale(1.1);
 }
 
 .video-container {
@@ -326,8 +398,9 @@ h1, h2, h3, h4, h5, h6, header a {
 @media (max-width: 768px) {
   body, html {
     cursor: auto !important;
-    overflow-y: auto;
-    height: auto;
+    overflow: hidden !important;
+    height: 100vh;
+    min-height: 100vh;
   }
 
   #custom-cursor {
@@ -338,45 +411,189 @@ h1, h2, h3, h4, h5, h6, header a {
     cursor: auto !important;
   }
 
+  header {
+    position: fixed !important;
+    padding: 1rem !important;
+    z-index: 50;
+  }
+
+  .header-link {
+    font-size: 1.2rem !important;
+  }
+
+  .flex.h-screen {
+    display: flex !important;
+    flex-direction: column !important;
+    height: auto !important;
+    min-height: 100vh;
+    padding-top: 6rem;
+    padding-bottom: 2rem;
+  }
+
+  #bio-text {
+    position: static !important;
+    width: 100% !important;
+    padding: 0 1.5rem 1.5rem 1.5rem !important;
+    text-align: left !important;
+    order: 1;
+  }
+
+  #bio-text p {
+    font-size: 1.05rem !important;
+    max-width: 100% !important;
+    line-height: 1.5;
+    margin: 0;
+    opacity: 0.85;
+  }
+
+  #project-image-container {
+    display: none !important;
+  }
+
+  .w-3\/4.h-screen.ml-1\/4.bg-transparent.relative {
+    width: 100% !important;
+    height: auto !important;
+    margin-left: 0 !important;
+    order: 1;
+    position: static !important;
+  }
+
+  .w-1\/4.h-screen.z-20.flex.flex-col.justify-center.pl-16.fixed {
+    position: static !important;
+    width: 100% !important;
+    height: auto !important;
+    padding: 0 1.5rem !important;
+    justify-content: flex-start !important;
+    display: flex !important;
+    flex-direction: column !important;
+    order: 2;
+  }
+
+  #project-list {
+    padding: 0 !important;
+    margin-bottom: 2rem;
+    order: 1;
+  }
+
+  .project-link {
+    font-size: 1rem !important;
+    display: inline-block;
+    padding: 0.5rem 0.8rem !important;
+    margin-bottom: 0.4rem !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 400;
+    border-radius: 15px;
+    background: linear-gradient(145deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.1)) !important;
+    border: none;
+    opacity: 0.7;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 
+      inset 0 1px 2px rgba(255, 255, 255, 0.25),
+      inset 0 -1px 1px rgba(0, 0, 0, 0.04),
+      0 1px 2px rgba(0, 0, 0, 0.04);
+  }
+
+  .project-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+    transition: left 0.4s ease;
+  }
+
+  .project-link:hover {
+    opacity: 1;
+    background: linear-gradient(145deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.15)) !important;
+    box-shadow: 
+      inset 0 1px 2px rgba(255, 255, 255, 0.35),
+      inset 0 -1px 1px rgba(0, 0, 0, 0.06),
+      0 2px 6px rgba(0, 0, 0, 0.06);
+    transform: translateY(-1px);
+  }
+
+  .project-link:hover::before {
+    left: 100%;
+  }
+
+  #project-list li:not(.separator) {
+    margin-bottom: 0;
+  }
+
+  .separator {
+    margin: 0.5rem 0 !important;
+    opacity: 0.2;
+  }
+
+  .separator-line {
+    display: none;
+  }
+
+  .category-filter {
+    padding: 1rem 0 0 0 !important;
+    margin: 0 !important;
+    order: 2;
+  }
+
   .filter-btn {
     cursor: pointer !important;
-    font-size: 0.65rem;
-    margin-right: 0.6rem;
+    font-size: 0.6rem !important;
+    margin-right: 0.4rem;
+    padding: 0.2rem 0.4rem !important;
+    background: linear-gradient(145deg, rgba(70, 130, 180, 0.06), rgba(100, 150, 200, 0.1)) !important;
+    border: none !important;
+    border-radius: 14px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    text-transform: lowercase;
+    opacity: 0.4;
+    position: relative;
+    box-shadow: 
+      inset 0 0.5px 1px rgba(255, 255, 255, 0.25),
+      0 0.5px 1px rgba(70, 130, 180, 0.05);
+  }
+
+  .filter-btn.active {
+    opacity: 1;
+    background: linear-gradient(145deg, rgba(70, 130, 180, 0.14), rgba(100, 150, 200, 0.18)) !important;
+    box-shadow: 
+      inset 0 0.5px 1px rgba(255, 255, 255, 0.35),
+      0 0.5px 2px rgba(70, 130, 180, 0.08);
+  }
+
+  .filter-btn:hover {
+    opacity: 0.8;
+    background: linear-gradient(145deg, rgba(70, 130, 180, 0.1), rgba(100, 150, 200, 0.14)) !important;
+    box-shadow: 
+      inset 0 0.5px 1px rgba(255, 255, 255, 0.3),
+      0 0.5px 2px rgba(70, 130, 180, 0.06);
   }
 
   .filter-separator {
     display: none;
   }
 
-  .filter-btn:hover {
-    color: rgba(0, 0, 0, 0.8);
+  #modal-content {
+    max-width: 95% !important;
+    max-height: 85vh !important;
+    margin: 2rem auto;
+  }
+
+  #modal-image {
+    max-height: 70vh !important;
+  }
+
+  #close-modal-btn {
+    top: 1rem !important;
+    right: 1rem !important;
+    cursor: pointer !important;
   }
 
   a, button {
     cursor: pointer !important;
-  }
-
-  .project-link:hover {
-    transform: none;
-  }
-
-  .header-link {
-    font-size: 1.5rem;
-  }
-
-  .category-filter {
-    padding: 0 1rem;
-  }
-
-  #project-list {
-    padding: 0 1rem;
-  }
-
-  .separator {
-    margin: 0.5rem 0 0.75rem 0;
-  }
-
-  #project-list li:not(.separator) {
-    margin-bottom: 0.5rem;
   }
 }
