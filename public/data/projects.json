@@ -1,0 +1,58 @@
+[
+  { 
+    "id": 1, 
+    "name": "lookbook", 
+    "category": "poster", 
+    "type": "image", 
+    "image": "/images/lookbook.png",
+    "alt": "Lookbook poster design featuring modern typography and layout"
+  },
+  { 
+    "id": 2, 
+    "name": "rock", 
+    "category": "poster", 
+    "type": "image", 
+    "image": "/images/rock.jpg",
+    "alt": "Rock climbing poster with dynamic composition and bold colors"
+  },
+  { 
+    "id": 3, 
+    "name": "fontainebleau", 
+    "category": "poster", 
+    "type": "image", 
+    "image": "/images/fontainebleau.jpg",
+    "alt": "Fontainebleau bouldering area poster showcasing natural beauty"
+  },
+  { 
+    "id": 4, 
+    "name": "bloom", 
+    "category": "poster", 
+    "type": "image", 
+    "image": "/images/bloom.jpg",
+    "alt": "Bloom poster design with organic patterns and color gradients"
+  },
+  { 
+    "id": 6, 
+    "name": "portfolio", 
+    "category": "code", 
+    "type": "github", 
+    "github": "moinloin/portfolio",
+    "title": "portfolio",
+    "description": "A collection of projects, experiences, and learnings that reflect my professional and personal growth.",
+    "stars": "1",
+    "forks": "0",
+    "language": "HTML"
+  },
+  { 
+    "id": 7, 
+    "name": "deployment", 
+    "category": "code", 
+    "type": "github", 
+    "github": "moinloin/VM-deployment",
+    "title": "VM-deployment",
+    "description": "Fully automated API for provisioning and configuring Proxmox VMs – powered by Flask, Terraform & Ansible. Runs in Docker and handles both creation and post-configuration of virtual machines.",
+    "stars": "1",
+    "forks": "0",
+    "language": "Python"
+  }
+]
