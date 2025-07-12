@@ -1,25 +1,70 @@
-const projects = [
-  { id: 1, name: "lookbook", category: "poster", type: "image", image: "/images/lookbook.png" },
-  { id: 2, name: "rock", category: "poster", type: "image", image: "/images/rock.jpg" },
-  { id: 3, name: "fontainebleau", category: "poster", type: "image", image: "/images/fontainebleau.jpg" },
-  { id: 4, name: "bloom", category: "poster", type: "image", image: "/images/bloom.jpg" },
+let projects = [];
 
-  { id: 6, name: "portfolio", category: "code", type: "github", github: "moinloin/portfolio" },
-  { id: 7, name: "deployment", category: "code", type: "github", github: "moinloin/VM-deployment" },
-];
+async function loadProjects() {
+  try {
+    const response = await fetch('/data/projects.json');
+    if (!response.ok) throw new Error('Failed to load projects');
+    projects = await response.json();
+    renderProjects();
+    projects.filter(p => p.type === 'image').forEach(p => {
+      preloadImage(p.image);
+    });
+  } catch (error) {
+    console.error('Error loading projects:', error);
+    projects = [
+      { id: 1, name: "lookbook", category: "poster", type: "image", image: "/images/lookbook.png", alt: "Lookbook poster design" },
+      { id: 2, name: "rock", category: "poster", type: "image", image: "/images/rock.jpg", alt: "Rock climbing poster" },
+      { id: 3, name: "fontainebleau", category: "poster", type: "image", image: "/images/fontainebleau.jpg", alt: "Fontainebleau bouldering poster" },
+      { id: 4, name: "bloom", category: "poster", type: "image", image: "/images/bloom.jpg", alt: "Bloom poster design" },
+      { id: 6, name: "portfolio", category: "code", type: "github", github: "moinloin/portfolio", title: "portfolio", description: "A collection of projects and experiences.", stars: "1", forks: "0", language: "HTML" },
+      { id: 7, name: "deployment", category: "code", type: "github", github: "moinloin/VM-deployment", title: "VM-deployment", description: "Automated API for provisioning Proxmox VMs.", stars: "1", forks: "0", language: "Python" }
+    ];
+    renderProjects();
+  }
+}
 
 let currentFilter = 'all';
 let currentlyDisplayedProject = null;
 let isMobile = window.innerWidth <= 768;
 let imageTransitionTimeout = null;
 let hideTimeout = null;
+let preloadedImages = new Map();
+let imageCache = new Map();
 
 const cursor = document.getElementById("custom-cursor");
 let cursorX = 0, cursorY = 0;
 
 function preloadImage(src) {
-  const img = new Image();
-  img.src = src;
+  return new Promise((resolve, reject) => {
+    if (imageCache.has(src)) {
+      resolve(imageCache.get(src));
+      return;
+    }
+
+    const img = new Image();
+    img.onload = () => {
+      imageCache.set(src, img);
+      resolve(img);
+    };
+    img.onerror = () => reject(new Error(`Failed to load image: ${src}`));
+    
+    img.src = src;
+  });
+}
+
+function preloadAllImages() {
+  const imageProjects = projects.filter(p => p.type === 'image');
+  
+  imageProjects.forEach((project, index) => {
+    setTimeout(() => {
+      preloadImage(project.image).then(img => {
+        preloadedImages.set(project.id, img);
+        console.log(`Preloaded: ${project.name}`);
+      }).catch(err => {
+        console.warn(`Failed to preload ${project.name}:`, err);
+      });
+    }, index * 100);
+  });
 }
 
 document.addEventListener("mousemove", (e) => {
@@ -51,17 +96,30 @@ function createParticles() {
   }
 }
 
-document.querySelectorAll('.filter-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    currentFilter = btn.dataset.category;
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderProjects();
-  });
+function setupFilterButtons() {
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentFilter = btn.dataset.category;
+      document.querySelectorAll('.filter-btn').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
+      renderProjects();
+    });
 
-  btn.addEventListener('mouseenter', () => handleCursorHover(true));
-  btn.addEventListener('mouseleave', () => handleCursorHover(false));
-});
+    btn.addEventListener('mouseenter', () => handleCursorHover(true));
+    btn.addEventListener('mouseleave', () => handleCursorHover(false));
+    
+    btn.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        btn.click();
+      }
+    });
+  });
+}
 
 function toggleModal(state, project = null) {
   const modal = document.getElementById('modal');
@@ -72,6 +130,8 @@ function toggleModal(state, project = null) {
 
   if (state && project) {
     modal.classList.add('visible');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
 
     modalImage.style.display = 'none';
     modalVideo.style.display = 'none';
@@ -83,7 +143,12 @@ function toggleModal(state, project = null) {
       img.onload = () => {
         loadingSpinner.style.display = 'none';
         modalImage.src = project.image;
+        modalImage.alt = project.alt || project.name;
         modalImage.style.display = 'block';
+      };
+      img.onerror = () => {
+        loadingSpinner.style.display = 'none';
+        console.error('Failed to load modal image:', project.image);
       };
       img.src = project.image;
     } else if (project.type === 'video') {
@@ -96,25 +161,19 @@ function toggleModal(state, project = null) {
         loadingSpinner.style.display = 'none';
         modalGithub.style.display = 'block';
 
-        if (project.name === 'portfolio') {
-          document.getElementById('github-name').textContent = 'portfolio';
-          document.getElementById('github-description').textContent = 'A collection of projects, experiences, and learnings that reflect my professional and personal growth.';
-          document.getElementById('github-stars').textContent = '1';
-          document.getElementById('github-forks').textContent = '0';
-          document.getElementById('github-language').textContent = 'HTML';
-        } else if (project.name === 'deployment') {
-          document.getElementById('github-name').textContent = 'VM-deployment';
-          document.getElementById('github-description').textContent = 'Fully automated API for provisioning and configuring Proxmox VMs – powered by Flask, Terraform & Ansible. Runs in Docker and handles both creation and post-configuration of virtual machines.';
-          document.getElementById('github-stars').textContent = '1';
-          document.getElementById('github-forks').textContent = '0';
-          document.getElementById('github-language').textContent = 'Python';
-        }
+        document.getElementById('github-name').textContent = project.title || project.name;
+        document.getElementById('github-description').textContent = project.description || '';
+        document.getElementById('github-stars').textContent = project.stars || '0';
+        document.getElementById('github-forks').textContent = project.forks || '0';
+        document.getElementById('github-language').textContent = project.language || '-';
 
         document.getElementById('github-link').href = `https://github.com/${project.github}`;
       }, 500);
     }
   } else {
     modal.classList.remove('visible');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
   }
 }
 
@@ -147,6 +206,7 @@ function renderProjects() {
       a.href = '#';
       a.className = 'project-link';
       a.textContent = project.name;
+      a.setAttribute('aria-label', `View ${project.name} project`);
 
       if (project.category === 'code') {
         a.classList.add('glitch');
@@ -222,11 +282,11 @@ function showProjectImage(project) {
 
     imageTransitionTimeout = setTimeout(() => {
       createAndShowProjectImage(container, project);
-    }, 200);
+    }, 150);
   } else {
     setTimeout(() => {
       createAndShowProjectImage(container, project);
-    }, 100);
+    }, 50);
   }
 
   currentlyDisplayedProject = project;
@@ -254,26 +314,65 @@ function createAndShowProjectImage(container, project) {
     }
   });
 
-  const img = document.createElement('img');
-  img.alt = project.name;
-  img.className = 'h-screen w-auto object-contain';
-  img.style.opacity = '0';
-  img.style.transition = 'opacity 0.3s ease';
-
-  img.loading = 'eager';
-
-  img.onload = () => {
+  // Check if image is already preloaded
+  const cachedImg = preloadedImages.get(project.id) || imageCache.get(project.image);
+  
+  if (cachedImg) {
+    // Use preloaded image immediately
+    const img = cachedImg.cloneNode();
+    img.alt = project.alt || project.name;
+    img.className = 'h-screen w-auto object-contain';
+    img.style.opacity = '0';
+    img.style.transition = 'opacity 0.2s ease';
+    
+    // Show immediately since it's cached
     requestAnimationFrame(() => {
       img.style.opacity = '1';
       div.style.opacity = '1';
       div.style.transform = 'translateY(0)';
     });
-  };
+    
+    div.appendChild(img);
+    container.appendChild(div);
+  } else {
+    // Show loading state first, then load image
+    const img = document.createElement('img');
+    img.alt = project.alt || project.name;
+    img.className = 'h-screen w-auto object-contain';
+    img.style.opacity = '0';
+    img.style.transition = 'opacity 0.2s ease';
+    
+    // Add loading indicator
+    const loadingDiv = document.createElement('div');
+    loadingDiv.className = 'flex items-center justify-center h-screen w-full';
+    loadingDiv.innerHTML = '<div class="loading-spinner"></div>';
+    div.appendChild(loadingDiv);
+    container.appendChild(div);
 
-  img.src = project.image;
+    img.onload = () => {
+      // Cache the loaded image
+      imageCache.set(project.image, img);
+      preloadedImages.set(project.id, img);
+      
+      // Replace loading with image
+      div.innerHTML = '';
+      div.appendChild(img);
+      
+      requestAnimationFrame(() => {
+        img.style.opacity = '1';
+        div.style.opacity = '1';
+        div.style.transform = 'translateY(0)';
+      });
+    };
+    
+    img.onerror = () => {
+      console.error('Failed to load preview image:', project.image);
+      div.style.display = 'none';
+    };
 
-  div.appendChild(img);
-  container.appendChild(div);
+    // Start loading
+    img.src = project.image;
+  }
 }
 
 function hideProjectImage() {
@@ -315,6 +414,12 @@ const closeModalBtn = document.getElementById('close-modal-btn');
 if (closeModalBtn) {
   closeModalBtn.addEventListener('mouseenter', () => handleCursorHover(true));
   closeModalBtn.addEventListener('mouseleave', () => handleCursorHover(false));
+  // Add explicit click handler to ensure modal closes
+  closeModalBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleModal(false);
+  });
 }
 
 document.addEventListener('keydown', (e) => {
@@ -342,18 +447,52 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-createParticles();
-renderProjects();
+// Initialize the app
+function initApp() {
+  createParticles();
+  setupFilterButtons();
+  loadProjects();
+  
+  // Start aggressive preloading after a short delay
+  setTimeout(() => {
+    preloadAllImages();
+  }, 1000);
+  
+  // Set up keyboard navigation for modal
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      toggleModal(false);
+    }
+  });
+}
 
-projects.filter(p => p.type === 'image').forEach(p => {
-  preloadImage(p.image);
-});
+// Start the app when DOM is loaded
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
 
-window.addEventListener('resize', () => {
+// Debounced resize handler
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+const debouncedResize = debounce(() => {
   isMobile = window.innerWidth <= 768;
   if (isMobile) {
     cursor.style.display = 'none';
   } else {
     cursor.style.display = 'block';
   }
-});
+}, 250);
+
+window.addEventListener('resize', debouncedResize);
