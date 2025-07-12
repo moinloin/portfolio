@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const compression = require('compression');
+const helmet = require('helmet');
 const morgan = require('morgan');
 
 const app = express();
@@ -9,6 +10,23 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 const VERSION = process.env.VERSION || 'unknown';
 const NODE_ENV = process.env.NODE_ENV || 'production';
+
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://use.typekit.net", "https://cdn.tailwindcss.com"],
+      scriptSrc: ["'self'", "https://cdn.tailwindcss.com", "https://umami.loiskauffungen.com"],
+      imgSrc: ["'self'", "data:"],
+      fontSrc: ["'self'", "https://use.typekit.net"],
+      connectSrc: ["'self'", "https://umami.loiskauffungen.com"],
+      frameSrc: ["'none'"],
+      objectSrc: ["'none'"],
+      baseUri: ["'self'"]
+    }
+  },
+  crossOriginEmbedderPolicy: false
+}));
 
 app.use(compression());
 app.use(morgan(NODE_ENV === 'production' ? 'combined' : 'dev'));
