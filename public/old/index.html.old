@@ -11,7 +11,6 @@
     <script defer src="https://umami.loiskauffungen.com/script.js" data-website-id="eef02b1a-d5e1-4dbf-bb3a-9124e0a0db0a"></script>
 </head>
 <body>
-    <div class="cursor" id="cursor"></div>
     <div class="container">
         <header>
             <a class="header-left" href="/">loïs kauffungen</a>
@@ -57,17 +56,6 @@
         });
 
 
-        document.addEventListener("mousemove", function(event) {
-            let cursor = document.getElementById("cursor");
-    
-            let x = event.clientX;
-            let y = event.clientY;
-
-            requestAnimationFrame(() => {
-                cursor.style.left = `${x - 20}px`;
-                 cursor.style.top = `${y - 20}px`;
-            });
-        });
     </script>
 </body>
 </html>

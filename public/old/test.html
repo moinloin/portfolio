@@ -17,7 +17,6 @@
         }
 
         * {
-            cursor: none;
             box-sizing: border-box;
             margin: 0;
             padding: 0;
@@ -104,7 +103,6 @@
         .project {
             position: relative;
             overflow: hidden;
-            cursor: pointer;
         }
 
         .project-large {
@@ -224,25 +222,6 @@
             color: var(--accent-color);
         }
 
-        .cursor {
-            position: fixed;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: white;
-            pointer-events: none;
-            z-index: 9999;
-            will-change: transform;
-            mix-blend-mode: difference;
-            transition: transform 0.15s ease-out, width 0.3s ease, height 0.3s ease;
-            transform: translate(-50%, -50%);
-        }
-
-        .cursor.active {
-            width: 60px; /* Reduced from 100px to 60px */
-            height: 60px; /* Reduced from 100px to 60px */
-            transition: width 0.4s ease, height 0.4s ease;
-        }
 
         /* Spotlight effect */
         .spotlight {
@@ -333,7 +312,6 @@
             font-family: "loos-wide", sans-serif;
             font-size: 1.2rem;
             font-weight: bold;
-            cursor: pointer;
             transition: background-color 0.3s ease, color 0.3s ease;
             transform: translateY(50px);
             opacity: 0;
@@ -484,13 +462,6 @@
                 display: none;
             }
 
-            * {
-                cursor: auto !important;
-            }
-
-            .cursor {
-                display: none;
-            }
 
             footer {
                 flex-direction: column;
@@ -502,7 +473,6 @@
     <script defer src="https://umami.loiskauffungen.com/script.js" data-website-id="eef02b1a-d5e1-4dbf-bb3a-9124e0a0db0a"></script>
 </head>
 <body>
-    <div class="cursor" id="cursor"></div>
     <div class="spotlight" id="spotlight"></div>
     <div class="font-check" id="font-check">Font loaded: loos-wide ✓</div>
 
@@ -608,34 +578,17 @@
             lastScrollTop = scrollPosition;
         });
 
-        // Enhanced cursor
-        const cursor = document.getElementById("cursor");
+        // Enhanced spotlight
         const spotlight = document.getElementById("spotlight");
 
         document.addEventListener("mousemove", function(event) {
             let x = event.clientX;
             let y = event.clientY;
 
-            requestAnimationFrame(() => {
-                cursor.style.left = `${x}px`;
-                cursor.style.top = `${y}px`;
-            });
-
             // Update spotlight position
             if (spotlight.classList.contains("active")) {
                 spotlight.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(0,0,0,0) 10%, rgba(0,0,0,0.8) 100%)`;
             }
-        });
-
-        // Add cursor and spotlight interactions
-        document.querySelectorAll("a, .project, .scroll-item, .featured-cta").forEach(item => {
-            item.addEventListener("mouseenter", function() {
-                cursor.classList.add("active");
-            });
-
-            item.addEventListener("mouseleave", function() {
-                cursor.classList.remove("active");
-            });
         });
 
         // Add spotlight toggle with keyboard shortcut (press 'S')

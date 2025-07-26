@@ -5,6 +5,7 @@
     "category": "poster", 
     "type": "image", 
     "image": "/images/lookbook.png",
+    "preview": "/images/previews/lookbook.jpg",
     "alt": "Lookbook poster design featuring modern typography and layout"
   },
   { 
@@ -13,6 +14,7 @@
     "category": "poster", 
     "type": "image", 
     "image": "/images/rock.jpg",
+    "preview": "/images/previews/rock.jpg",
     "alt": "Rock climbing poster with dynamic composition and bold colors"
   },
   { 
@@ -21,6 +23,7 @@
     "category": "poster", 
     "type": "image", 
     "image": "/images/fontainebleau.jpg",
+    "preview": "/images/previews/fontainebleau.jpg",
     "alt": "Fontainebleau bouldering area poster showcasing natural beauty"
   },
   { 
@@ -29,6 +32,7 @@
     "category": "poster", 
     "type": "image", 
     "image": "/images/bloom.jpg",
+    "preview": "/images/previews/bloom.jpg",
     "alt": "Bloom poster design with organic patterns and color gradients"
   },
   { 

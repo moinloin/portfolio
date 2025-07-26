@@ -12,38 +12,58 @@
 
 </head>
 <body>
-  <div class="grid-background"></div>
+  <div class="grid-background" id="grid-background"></div>
   <div class="particles" id="particles"></div>
 
-  <div id="custom-cursor"></div>
+  <div id="video-background" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; opacity: 0; transition: opacity 0.8s ease;">
+  </div>
 
-  <header class="fixed top-0 left-0 right-0 flex justify-between items-center px-8 py-12 z-40 text-white" style="mix-blend-mode: difference;">
-    <a href="#" class="header-link" id="logo-link" aria-label="Loïs Kauffungen - Home">loïs kauffungen</a>
-    <a href="/cv" class="header-link" id="info-link" aria-label="About Loïs Kauffungen">about</a>
-  </header>
+
+  <div class="fixed top-8 left-8 z-50">
+    <div class="flex items-baseline">
+      <h1 class="text-black text-2xl font-light opacity-70" style="font-family: 'loos-wide', sans-serif;">projects</h1>
+      <div style="margin-left: 12rem;">
+        <h2 class="text-black text-xl font-light opacity-70" style="font-family: 'loos-wide', sans-serif;">posters</h2>
+        <ul id="poster-list" class="mt-4" style="pointer-events: auto; position: relative; z-index: 60;"></ul>
+      </div>
+      <div style="margin-left: 14rem;">
+        <h2 class="text-black text-xl font-light opacity-70" style="font-family: 'loos-wide', sans-serif;">code</h2>
+        <ul id="code-list" class="mt-4" style="pointer-events: auto; position: relative; z-index: 60;"></ul>
+      </div>
+    </div>
+    <div id="poster-preview-container" style="position: absolute; top: 3.5rem; left: -7rem; width: 475px; height: 356px; opacity: 0; transition: opacity 0.3s ease; z-index: 45;"></div>
+  </div>
+
+
 
   <div class="flex h-screen">
-    <div class="w-1/4 h-screen z-20 flex flex-col justify-center pl-16 fixed">
-      <div class="category-filter" role="tablist" aria-label="Project category filters">
-        <button class="filter-btn active" data-category="all" role="tab" aria-selected="true" aria-controls="project-list">everything</button>
-        <button class="filter-btn" data-category="poster" role="tab" aria-selected="false" aria-controls="project-list">posters</button>
-        <button class="filter-btn" data-category="code" role="tab" aria-selected="false" aria-controls="project-list">code</button>
-      </div>
+    <div class="w-1/4 h-screen z-50 flex flex-col justify-center pl-16 fixed" style="max-width: 300px;">
       <ul id="project-list" role="tabpanel" aria-live="polite"></ul>
     </div>
 
     <div class="w-3/4 h-screen ml-1/4 bg-transparent relative">
-      <div class="fixed inset-y-0 right-0 w-3/4 flex items-center justify-center z-10" id="bio-text">
-        <p class="max-w-xl text-black text-2xl font-light leading-relaxed" role="banner">
-          Security Solution Engineer based in Switzerland, with a passion about learning new things. Spread interests in design, photography, audio, computer science and climbing.
-        </p>
+      <div class="fixed inset-y-0 right-0 w-3/4 flex items-center justify-center z-30" id="bio-text" style="padding-top: 8rem; pointer-events: none;">
+        <div class="text-center">
+          <p class="max-w-xl text-black text-2xl font-light leading-relaxed mb-4 typewriter-text" role="banner">
+            Become the center of gravity.
+          </p>
+        </div>
       </div>
-      <div id="project-image-container" class="fixed inset-y-0 right-0 w-3/4 z-20"></div>
+
+      <div class="explore-button-container">
+        <div class="explore-button-wrapper">
+          <div class="explore-button">
+            <span class="explore-button-text">explore →</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="project-image-container" class="fixed inset-y-0 right-0 w-3/4 z-40" style="pointer-events: none;"></div>
     </div>
   </div>
 
   <div id="modal" onclick="toggleModal(false)" role="dialog" aria-hidden="true" aria-labelledby="modal-title">
-    <button id="close-modal-btn" class="fixed top-8 right-8 w-10 h-10 bg-transparent border-none cursor-none" onclick="toggleModal(false)" aria-label="Close modal">
+    <button id="close-modal-btn" class="fixed top-8 right-8 w-10 h-10 bg-transparent border-none" onclick="toggleModal(false)" aria-label="Close modal">
       <div class="absolute w-full h-0.5 bg-black top-1/2 left-0 transform rotate-45"></div>
       <div class="absolute w-full h-0.5 bg-black top-1/2 left-0 transform -rotate-45"></div>
     </button>
@@ -56,27 +76,41 @@
         </video>
       </div>
       <div id="modal-github" class="github-card" style="display: none;">
-        <h3 class="text-2xl font-bold mb-2" id="github-name" id="modal-title"></h3>
-        <p class="text-gray-600 mb-4" id="github-description"></p>
-        <div class="stats">
-          <div class="stat">
-            <div class="stat-value" id="github-stars">0</div>
-            <div class="stat-label">stars</div>
+        <div class="github-header">
+          <h3 id="github-name" id="modal-title"></h3>
+          <div class="github-language" id="github-language"></div>
+        </div>
+        <p class="github-description" id="github-description"></p>
+        <div class="github-stats">
+          <div class="github-stat">
+            <span class="github-stat-value" id="github-stars">0</span>
+            <span class="github-stat-label">stars</span>
           </div>
-          <div class="stat">
-            <div class="stat-value" id="github-forks">0</div>
-            <div class="stat-label">forks</div>
-          </div>
-          <div class="stat">
-            <div class="stat-value" id="github-language">-</div>
-            <div class="stat-label">language</div>
+          <div class="github-stat">
+            <span class="github-stat-value" id="github-forks">0</span>
+            <span class="github-stat-label">forks</span>
           </div>
         </div>
-        <a href="" target="_blank" id="github-link" class="inline-block mt-4 px-4 py-2 bg-black text-white rounded hover:bg-gray-800 transition">
-          View on GitHub →
+        <a href="" target="_blank" id="github-link" class="github-link">
+          view repository
         </a>
       </div>
     </div>
+  </div>
+
+  <header class="fixed bottom-12 left-0 right-0 flex justify-between items-center px-8 py-12 z-40 text-white" style="mix-blend-mode: difference;">
+    <div class="header-link" id="logo-link">
+      <span class="magnetic-letter">l</span><span class="magnetic-letter">o</span><span class="magnetic-letter">ï</span><span class="magnetic-letter">s</span><span class="magnetic-letter"> </span><span class="magnetic-letter">k</span><span class="magnetic-letter">a</span><span class="magnetic-letter">u</span><span class="magnetic-letter">f</span><span class="magnetic-letter">f</span><span class="magnetic-letter">u</span><span class="magnetic-letter">n</span><span class="magnetic-letter">g</span><span class="magnetic-letter">e</span><span class="magnetic-letter">n</span>
+    </div>
+    <a href="/cv" class="header-link" id="info-link">
+      <span class="typewriter-char">a</span><span class="typewriter-char">b</span><span class="typewriter-char">o</span><span class="typewriter-char">u</span><span class="typewriter-char">t</span>
+    </a>
+  </header>
+
+  <div class="fixed bottom-10 left-8 z-30" id="bio-marquee">
+    <p class="text-black text-lg font-light opacity-70 text-left leading-relaxed">
+      Security Solution Engineer from Switzerland with a passion for</br>design, photography, audio, computer science, and climbing.
+    </p>
   </div>
 
   <script src="/js/index.js"></script>

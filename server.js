@@ -16,10 +16,10 @@ app.use(helmet({
     directives: {
       defaultSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://use.typekit.net", "https://cdn.tailwindcss.com"],
-      scriptSrc: ["'self'", "https://cdn.tailwindcss.com", "https://umami.loiskauffungen.com"],
-      imgSrc: ["'self'", "data:"],
+      scriptSrc: ["'self'", "https://cdn.tailwindcss.com", "https://umami.loiskauffungen.com", "https://cdn.jsdelivr.net"],
+      imgSrc: ["'self'", "data:", "https://assets.unicorn.studio"],
       fontSrc: ["'self'", "https://use.typekit.net"],
-      connectSrc: ["'self'", "https://umami.loiskauffungen.com"],
+      connectSrc: ["'self'", "https://umami.loiskauffungen.com", "https://storage.googleapis.com"],
       frameSrc: ["'none'"],
       objectSrc: ["'none'"],
       baseUri: ["'self'"]
