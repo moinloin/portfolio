@@ -9,10 +9,17 @@
   <link rel="icon" type="image/x-icon" href="/images/favicon-16x16.png">
   <link rel="stylesheet" href="/css/style.css">
   <script defer src="https://umami.loiskauffungen.com/script.js" data-website-id="eef02b1a-d5e1-4dbf-bb3a-9124e0a0db0a"></script>
+  
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@latest/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@latest/examples/jsm/"
+      }
+    }
+  </script>
 </head>
 <body>
-  <div class="grid-background" id="grid-background"></div>
-  <div class="particles" id="particles"></div>
 
   <div id="video-background" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; opacity: 0; transition: opacity 0.8s ease;">
   </div>
@@ -101,6 +108,7 @@
     </p>
   </div>
 
+  <script type="module" src="/js/ascii-background.js"></script>
   <script src="/js/index.js"></script>
 </body>
 </html>

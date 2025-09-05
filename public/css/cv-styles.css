@@ -27,9 +27,6 @@ html {
   height: 100%;
 }
 
-/* ================================
-   GRID BACKGROUND
-   ================================ */
 
 .grid-background {
   background-image: 
@@ -44,9 +41,6 @@ html {
   z-index: 0;
 }
 
-/* ================================
-   CONTAINER LAYOUT
-   ================================ */
 
 .container {
   width: 96%;
@@ -65,9 +59,6 @@ html {
   box-sizing: border-box;
 }
 
-/* ================================
-   TYPOGRAPHY
-   ================================ */
 
 .title {
   grid-column: 1 / span 4;
@@ -168,9 +159,6 @@ a {
   line-height: 1.5;
 }
 
-/* ================================
-   EXPERIENCE SECTION
-   ================================ */
 
 .experience-title {
   grid-column: 1 / span 1;
@@ -202,9 +190,6 @@ a {
   line-height: 2;
 }
 
-/* ================================
-   PROJECT SECTION
-   ================================ */
 
 .project-title {
   grid-column: 1 / span 1;
@@ -289,18 +274,12 @@ a {
   text-decoration: none;
 }
 
-/* ================================
-   SPACERS
-   ================================ */
 
 .spacer1 { grid-column: 1 / 1; grid-row: 1; height: 400px; }
 .spacer2 { grid-column: 1 / 1; grid-row: 2; height: 400px; }
 .spacer3 { grid-column: 1 / 1; grid-row: 3; height: 400px; }
 .spacerend { grid-column: 1 / 1; grid-row: 11; height: 10px; }
 
-/* ================================
-   BACK BUTTON COMPONENT
-   ================================ */
 
 .back-btn {
   font-size: 2rem;
@@ -349,9 +328,6 @@ a {
   transform: translateX(0);
 }
 
-/* ================================
-   RESPONSIVE DESIGN
-   ================================ */
 
 @media (max-width: 768px) {
   body {
