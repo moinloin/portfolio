@@ -219,15 +219,7 @@ header,
 }
 
 .explore-button-container {
-  position: fixed;
-  top: 46.5%;
-  right: 0;
-  width: 80%;
-  display: flex;
-  justify-content: center;
-  z-index: 100;
-  pointer-events: none;
-  padding-top: 8rem;
+  display: none;
 }
 
 .explore-button-wrapper {
@@ -319,11 +311,11 @@ header,
 }
 
 #bio-text {
-  opacity: 0;
-  animation: fadeIn 0.5s ease forwards 0.4s;
-  transition:
-    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: none;
+}
+
+.fixed.top-8.left-8 {
+  display: none;
 }
 
 .magnetic-letter {

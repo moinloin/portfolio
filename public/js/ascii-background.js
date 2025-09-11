@@ -157,8 +157,13 @@ function createPosterGallery(THREE) {
         posterGroup.add(poster);
     }
     
-    posterGroup.visible = false;
+    posterGroup.visible = true;
     scene.add(posterGroup);
+    
+    setTimeout(() => {
+        loadPosterTextures();
+        createHTMLPosters();
+    }, 500);
 }
 
 function showPosterGallery3D() {
