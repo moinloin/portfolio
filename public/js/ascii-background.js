@@ -1,5 +1,6 @@
 let camera, controls, scene, renderer, effect;
 let rock;
+let posterGroup;
 let scrollOffset = 0;
 const start = Date.now();
 
@@ -25,8 +26,8 @@ function init(THREE, AsciiEffect, TrackballControls) {
     console.log('Initializing ASCII background...');
     
     camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 1000);
-    camera.position.y = 250;
-    camera.position.z = 200;
+    camera.position.y = 0;
+    camera.position.z = 400;
 
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0, 0, 0);
@@ -40,6 +41,7 @@ function init(THREE, AsciiEffect, TrackballControls) {
     scene.add(pointLight2);
 
     createRock(THREE);
+    createPosterGallery(THREE);
 
     renderer = new THREE.WebGLRenderer({ antialias: false });
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -64,8 +66,8 @@ function init(THREE, AsciiEffect, TrackballControls) {
     console.log('ASCII effect added to DOM');
 
     controls = new TrackballControls(camera, effect.domElement);
-    controls.minDistance = 220;
-    controls.maxDistance = 600;
+    controls.minDistance = 300;
+    controls.maxDistance = 800;
 
     const direction = new THREE.Vector3();
     direction.subVectors(camera.position, controls.target).normalize();
@@ -127,6 +129,80 @@ function createRock(THREE) {
     scene.add(rock);
 }
 
+function createPosterGallery(THREE) {
+    posterGroup = new THREE.Group();
+    
+    const radius = 250;
+    const posterCount = 4;
+    
+    for (let i = 0; i < posterCount; i++) {
+        const angle = (i / posterCount) * Math.PI * 2;
+        const x = Math.cos(angle) * radius;
+        const z = Math.sin(angle) * radius;
+        
+        const geometry = new THREE.PlaneGeometry(120, 168);
+        const material = new THREE.MeshBasicMaterial({ 
+            color: 0xffffff,
+            side: THREE.DoubleSide,
+            transparent: true
+        });
+        
+        const poster = new THREE.Mesh(geometry, material);
+        poster.position.set(x, 0, z);
+        
+        const outwardDirection = new THREE.Vector3(x, 0, z).normalize();
+        const lookAtPoint = new THREE.Vector3().addVectors(poster.position, outwardDirection);
+        poster.lookAt(lookAtPoint);
+        
+        posterGroup.add(poster);
+    }
+    
+    posterGroup.visible = false;
+    scene.add(posterGroup);
+}
+
+function showPosterGallery3D() {
+    if (posterGroup) {
+        posterGroup.visible = true;
+        loadPosterTextures();
+    }
+}
+
+function hidePosterGallery3D() {
+    if (posterGroup) {
+        posterGroup.visible = false;
+    }
+}
+
+async function loadPosterTextures() {
+    if (!window.THREE || !posterGroup) return;
+    
+    const posterProjects = [
+        { image: '/images/lookbook.png' },
+        { image: '/images/rock.jpg' },
+        { image: '/images/fontainebleau.jpg' },
+        { image: '/images/bloom.jpg' }
+    ];
+    
+    const textureLoader = new window.THREE.TextureLoader();
+    
+    posterProjects.forEach((project, index) => {
+        if (posterGroup.children[index]) {
+            textureLoader.load(project.image, (texture) => {
+                texture.generateMipmaps = false;
+                texture.minFilter = window.THREE.LinearFilter;
+                texture.magFilter = window.THREE.LinearFilter;
+                
+                posterGroup.children[index].material.map = texture;
+                posterGroup.children[index].material.transparent = false;
+                posterGroup.children[index].material.needsUpdate = true;
+            }, undefined, (error) => {
+                console.error('Error loading texture:', project.image, error);
+            });
+        }
+    });
+}
+
 function setupScrollHandling() {
     window.addEventListener('wheel', (event) => {
         scrollOffset += event.deltaY * 0.3;
@@ -183,12 +259,19 @@ function animate() {
     rock.rotation.y = timer * 0.0001;
     rock.rotation.z = timer * 0.0003;
 
+    if (posterGroup) {
+        posterGroup.rotation.y = timer * 0.0005;
+    }
+
     controls.update();
 
     effect.render(scene, camera);
     
     requestAnimationFrame(animate);
 }
+
+window.showPosterGallery3D = showPosterGallery3D;
+window.hidePosterGallery3D = hidePosterGallery3D;
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initAsciiBackground);

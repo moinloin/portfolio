@@ -750,6 +750,105 @@ body.video-active #project-list {
   position: relative;
 }
 
+.poster-gallery {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: transparent;
+  z-index: 200;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.poster-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.poster-item img {
+  width: 320px;
+  height: 450px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+body.gallery-active .explore-button {
+  background: linear-gradient(145deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.05));
+  border-color: rgba(0, 0, 0, 0.2);
+  color: #000;
+}
+
+body.gallery-active .explore-button:hover {
+  background: linear-gradient(145deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.08));
+  border-color: rgba(0, 0, 0, 0.3);
+}
+
+body.gallery-active .typewriter-text {
+  color: #000;
+  border-right-color: #000;
+}
+
+body.gallery-active #bio-text {
+  position: fixed !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  right: 0 !important;
+  width: 75% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 30 !important;
+  padding-top: 8rem !important;
+  pointer-events: none !important;
+  transform: translateY(0) !important;
+}
+
+body.gallery-active .explore-button-container {
+  position: fixed !important;
+  top: 2rem !important;
+  right: 2rem !important;
+  width: auto !important;
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: flex-start !important;
+  z-index: 300 !important;
+  pointer-events: none !important;
+  padding: 0 !important;
+}
+
+body.gallery-active .explore-button-wrapper {
+  display: flex !important;
+  justify-content: flex-end !important;
+  max-width: none !important;
+  width: auto !important;
+  padding: 0 !important;
+}
+
+body.gallery-active .explore-button {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
+
+body.gallery-active .fixed.top-8.left-8,
+body.gallery-active #project-list,
+body.gallery-active #project-image-container,
+body.gallery-active .fixed.bottom-12,
+body.gallery-active .fixed.bottom-10,
+body.gallery-active .grid-background,
+body.gallery-active .particles {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 @media (max-width: 768px) {
   body {
     overflow: hidden !important;

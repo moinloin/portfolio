@@ -1,7 +1,7 @@
 let projects = [];
 let currentProject = null;
 let isMobile = window.innerWidth <= 768;
-let isVideoActive = false;
+let isGalleryActive = false;
 let isTyping = false;
 let isTransitioning = false;
 
@@ -78,24 +78,9 @@ function handleMouseMove(e) {
   cursor.x = e.clientX;
   cursor.y = e.clientY;
 
-  if (isMobile || isTransitioning) return;
+  if (isMobile || isTransitioning || isGalleryActive) return;
 
-  const moveX = (e.clientX / window.innerWidth - 0.5) * 100;
-  const moveY = (e.clientY / window.innerHeight - 0.5) * 100;
-
-  const gridBackground = document.getElementById('grid-background');
-  if (gridBackground && isVideoActive) {
-    gridBackground.style.transform = `translate(${-moveX}px, ${-moveY}px)`;
-  }
-
-  const videoBackground = document.getElementById('video-background');
-  if (videoBackground && isVideoActive) {
-    videoBackground.style.transform = `translate(${-moveX * 0.7}px, ${-moveY * 0.7}px)`;
-  }
-
-  if (!isVideoActive) {
-    handleMagneticEffect(e);
-  }
+  handleMagneticEffect(e);
 }
 
 function handleMagneticEffect(e) {
@@ -264,12 +249,12 @@ function createProjectListItem(project, index, category) {
 function attachProjectEventListeners(link, project, category) {
   link.addEventListener('click', function(e) {
     e.preventDefault();
-    if (isVideoActive) return;
+    if (isGalleryActive) return;
     toggleModal(true, project);
   });
 
   link.addEventListener('mouseenter', function() {
-    if (isVideoActive || isMobile) return;
+    if (isGalleryActive || isMobile) return;
 
     animateProjectTypewriter(link, project.name);
 
@@ -288,7 +273,7 @@ function attachProjectEventListeners(link, project, category) {
   });
 
   link.addEventListener('mouseleave', function() {
-    if (isVideoActive || isMobile || project.type !== 'image') return;
+    if (isGalleryActive || isMobile || project.type !== 'image') return;
 
     timeouts.hide = setTimeout(() => {
       if (category === 'poster') {
@@ -339,7 +324,7 @@ function createAndShowProjectImage(container, project) {
   div.className = 'project-container h-screen w-full flex justify-end items-center';
 
   div.addEventListener('click', function() {
-    if (isVideoActive) return;
+    if (isGalleryActive) return;
     toggleModal(true, project);
   });
 
@@ -633,16 +618,16 @@ function handleExploreClick(e) {
 
   button.style.animation = 'buttonMorph 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
 
-  if (!isVideoActive) {
-    activateVideoMode(buttonText);
+  if (!isGalleryActive) {
+    activateGalleryMode(buttonText);
   } else {
-    deactivateVideoMode(buttonText);
+    deactivateGalleryMode(buttonText);
   }
 
   setTimeout(() => button.style.animation = '', 600);
 }
 
-function activateVideoMode(buttonText) {
+function activateGalleryMode(buttonText) {
   stopAllTyping();
 
   if (window.typewriterElement) {
@@ -650,15 +635,13 @@ function activateVideoMode(buttonText) {
   }
 
   hideExploreButton();
-  createVideoBackground();
+  showPosterGallery();
   animateButtonText(buttonText, '← back');
 
-  isVideoActive = true;
-  initializeLetterPhysics();
-  startPhysicsAnimation();
+  isGalleryActive = true;
 }
 
-function deactivateVideoMode(buttonText) {
+function deactivateGalleryMode(buttonText) {
   stopAllTyping();
 
   if (window.typewriterElement) {
@@ -667,322 +650,64 @@ function deactivateVideoMode(buttonText) {
 
   isTransitioning = true;
   hideExploreButton();
-  hideVideoBackground();
+  hidePosterGallery();
   animateButtonText(buttonText, 'explore →');
 
-  isVideoActive = false;
-
-  const gridBackground = document.getElementById('grid-background');
-  if (gridBackground) {
-    gridBackground.style.transition = 'transform 0.8s ease-out, opacity 0.8s ease';
-    gridBackground.style.transform = 'translate(0, 0)';
-
-    setTimeout(() => {
-      gridBackground.style.transition = 'transform 0.1s ease-out';
-      isTransitioning = false;
-    }, 800);
-  }
-
-  stopPhysicsAnimation();
-  resetLettersToOriginalPositions();
+  isGalleryActive = false;
 
   setTimeout(() => {
+    isTransitioning = false;
     if (window.typewriterElement && window.originalText) {
       typeWriterForward(window.typewriterElement, window.originalText, null, false);
     }
   }, 300);
 }
 
-function createVideoBackground() {
-  const videoBackground = document.getElementById('video-background');
-  const gridBackground = document.getElementById('grid-background');
-  const particles = document.getElementById('particles');
-
-  const video = document.createElement('video');
-  Object.assign(video, {
-    src: '/videos/background.mp4',
-    autoplay: true,
-    loop: true,
-    muted: true,
-    playsInline: true
-  });
-
-  Object.assign(video.style, {
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover'
-  });
-
-  video.addEventListener('loadeddata', function() {
-    videoBackground.style.opacity = '1';
-    gridBackground.style.opacity = '0';
-    particles.style.opacity = '0';
-    document.body.classList.add('video-active');
-
-    hidePosterPreview();
-    hideProjectImage();
-
-    setTimeout(() => {
-      if (window.typewriterElement && window.originalText) {
-        typeWriterForward(window.typewriterElement, window.originalText, null, true);
-      }
-      setTimeout(() => showExploreButton(), 500);
-    }, 100);
-  });
-
-  videoBackground.innerHTML = '';
-  videoBackground.appendChild(video);
-}
-
-function hideVideoBackground() {
-  const videoBackground = document.getElementById('video-background');
-  const gridBackground = document.getElementById('grid-background');
-  const particles = document.getElementById('particles');
+function showPosterGallery() {
+  hidePosterPreview();
+  hideProjectImage();
   
-  videoBackground.style.transition = 'opacity 0.8s ease';
-  gridBackground.style.transition = 'transform 0.8s ease-out, opacity 0.8s ease';
-  particles.style.transition = 'opacity 0.8s ease';
+  document.body.classList.add('gallery-active');
   
-  videoBackground.style.opacity = '0';
-  gridBackground.style.opacity = '1';
-  particles.style.opacity = '0';
-  document.body.classList.remove('video-active');
-
+  const asciiEffect = document.getElementById('ascii-effect');
+  if (asciiEffect) {
+    asciiEffect.style.opacity = '1';
+    asciiEffect.style.zIndex = '5';
+  }
+  
+  if (window.showPosterGallery3D) {
+    window.showPosterGallery3D();
+  }
+  
   setTimeout(() => {
-    videoBackground.innerHTML = '';
-    gridBackground.style.transition = 'transform 0.1s ease-out';
-    particles.style.transition = 'transform 0.15s ease-out, opacity 1s';
-  }, 800);
-}
-
-function initializeLetterPhysics() {
-  document.querySelectorAll('.magnetic-letter').forEach(letter => {
-    const originalPos = JSON.parse(letter.dataset.originalPosition);
-
-    letter.physics = {
-      originalX: originalPos.x,
-      originalY: originalPos.y,
-      x: originalPos.x,
-      y: originalPos.y,
-      vx: 0,
-      vy: 0,
-      angularMomentum: (Math.random() - 0.5) * 300,
-      mass: 0.3 + Math.random() * 0.2,
-      rotation: 0,
-      scale: 1,
-      opacity: 1,
-      width: originalPos.width,
-      height: originalPos.height
-    };
-    
-    Object.assign(letter.style, {
-      position: 'fixed',
-      left: originalPos.left + 'px',
-      top: originalPos.top + 'px',
-      transform: 'translate3d(0, 0, 0) rotate(0deg) scale(1)',
-      zIndex: '5000'
-    });
-  });
-
-  document.querySelectorAll('#info-link .typewriter-char').forEach(letter => {
-    const originalPos = JSON.parse(letter.dataset.originalPosition);
-    
-    letter.physics = {
-      originalX: originalPos.x,
-      originalY: originalPos.y,
-      x: originalPos.x,
-      y: originalPos.y,
-      vx: 0,
-      vy: 0,
-      angularMomentum: (Math.random() - 0.5) * 250,
-      mass: 0.2 + Math.random() * 0.2,
-      rotation: 0,
-      scale: 1,
-      opacity: 1,
-      width: originalPos.width,
-      height: originalPos.height
-    };
-
-    Object.assign(letter.style, {
-      position: 'fixed',
-      left: originalPos.left + 'px',
-      top: originalPos.top + 'px',
-      transform: 'translate3d(0, 0, 0) rotate(0deg) scale(1)',
-      zIndex: '5000'
-    });
-  });
-}
-
-function startPhysicsAnimation() {
-  if (!physics.animationId && isVideoActive) {
-    physics.letters = Array.from(document.querySelectorAll('.magnetic-letter'));
-    physics.aboutLetters = Array.from(document.querySelectorAll('#info-link .typewriter-char'));
-    physics.lastFrame = 0;
-    animatePhysics(0);
-  }
-}
-
-function stopPhysicsAnimation() {
-  if (physics.animationId) {
-    cancelAnimationFrame(physics.animationId);
-    physics.animationId = null;
-  }
-}
-
-function animatePhysics(currentTime) {
-  if (!isVideoActive) {
-    physics.animationId = null;
-    return;
-  }
-  
-  if (currentTime - physics.lastFrame < physics.interval) {
-    physics.animationId = requestAnimationFrame((time) => animatePhysics(time));
-    return;
-  }
-  
-  physics.lastFrame = currentTime;
-
-  physics.letters.forEach(letter => {
-    updateLetterPhysics(letter, cursor.x, cursor.y);
-  });
-
-  physics.aboutLetters.forEach(letter => {
-    updateLetterPhysics(letter, cursor.x, cursor.y, true);
-  });
-
-  physics.animationId = requestAnimationFrame((time) => animatePhysics(time));
-}
-
-function updateLetterPhysics(letter, cursorX, cursorY, isAboutLetter = false) {
-  const range = 400;
-  const mass = 5000;
-
-  if (!letter.physics) return;
-
-  const physics = letter.physics;
-  const dx = cursorX - physics.x;
-  const dy = cursorY - physics.y;
-  const distance = Math.sqrt(dx * dx + dy * dy);
-  
-  if (distance < range && distance > 0.1) {
-    const distanceSquared = distance * distance;
-    const force = (mass * physics.mass) / distanceSquared;
-    const invDistance = 1 / distance;
-    const normalizedDx = dx * invDistance;
-    const normalizedDy = dy * invDistance;
-    
-    const gravAccelX = (force * normalizedDx) / physics.mass;
-    const gravAccelY = (force * normalizedDy) / physics.mass;
-    
-    const orbitalSpeed = physics.angularMomentum * invDistance;
-    const orbitalVx = -normalizedDy * orbitalSpeed * 0.08;
-    const orbitalVy = normalizedDx * orbitalSpeed * 0.08;
-    
-    physics.vx += gravAccelX * 0.004 + orbitalVx;
-    physics.vy += gravAccelY * 0.004 + orbitalVy;
-    
-    const maxSpeed = 12;
-    const currentSpeed = Math.sqrt(physics.vx * physics.vx + physics.vy * physics.vy);
-    if (currentSpeed > maxSpeed) {
-      physics.vx = (physics.vx / currentSpeed) * maxSpeed;
-      physics.vy = (physics.vy / currentSpeed) * maxSpeed;
+    if (window.typewriterElement && window.originalText) {
+      typeWriterForward(window.typewriterElement, window.originalText, null, true);
     }
-    
-    physics.x += physics.vx;
-    physics.y += physics.vy;
-    
-    const margin = 100;
-    physics.x = Math.max(margin, Math.min(window.innerWidth - margin, physics.x));
-    physics.y = Math.max(margin, Math.min(window.innerHeight - margin, physics.y));
-    
-    physics.scale = 1;
-    physics.opacity = 1;
-    
-    const rotationSpeed = (range - distance) / range * (isAboutLetter ? 12 : 10);
-    physics.rotation += rotationSpeed + Math.atan2(physics.vy, physics.vx) * (isAboutLetter ? 1.8 : 2);
-    
-    applyPhysicsStyles(letter, physics);
-  } else {
-    physics.vx *= 0.99;
-    physics.vy *= 0.99;
-    physics.x += physics.vx;
-    physics.y += physics.vy;
-    
-    const driftForce = 0.0001;
-    physics.vx += dx * driftForce;
-    physics.vy += dy * driftForce;
-    
-    physics.scale = 1;
-    physics.opacity = 1;
-    physics.rotation += isAboutLetter ? 0.08 : 0.1;
-    
-    applyPhysicsStyles(letter, physics);
+    setTimeout(() => showExploreButton(), 500);
+  }, 100);
+}
+
+function hidePosterGallery() {
+  const asciiEffect = document.getElementById('ascii-effect');
+  if (asciiEffect) {
+    asciiEffect.style.opacity = '0';
+    asciiEffect.style.zIndex = '1';
   }
-}
-
-function applyPhysicsStyles(letter, physics) {
-  letter.classList.add('magnetic');
-
-  if (!physics.width) {
-    physics.width = letter.offsetWidth;
-    physics.height = letter.offsetHeight;
+  
+  if (window.hidePosterGallery3D) {
+    window.hidePosterGallery3D();
   }
-
-  Object.assign(letter.style, {
-    left: (physics.x - physics.width / 2) + 'px',
-    top: (physics.y - physics.height / 2) + 'px',
-    transform: `rotate(${physics.rotation}deg) scale(${physics.scale})`,
-    opacity: physics.opacity,
-    display: 'inline-block',
-    zIndex: Math.max(5000, 8000 - Math.floor(Math.sqrt((cursor.x - physics.x) ** 2 + (cursor.y - physics.y) ** 2)))
-  });
+  
+  document.body.classList.remove('gallery-active');
 }
 
-function resetLettersToOriginalPositions() {
-  document.querySelectorAll('.magnetic-letter, #info-link .typewriter-char').forEach((letter) => {
-    if (letter.physics) {
-      const originalPos = JSON.parse(letter.dataset.originalPosition);
 
-      Object.assign(letter.physics, {
-        vx: 0,
-        vy: 0,
-        rotation: 0,
-        scale: 1,
-        opacity: 1
-      });
 
-      Object.assign(letter.style, {
-        transition: 'all 1.2s cubic-bezier(0.4, 0, 0.2, 1)',
-        left: originalPos.left + 'px',
-        top: originalPos.top + 'px',
-        transform: 'translate3d(0, 0, 0) rotate(0deg) scale(1)',
-        opacity: '1',
-        zIndex: ''
-      });
 
-      setTimeout(() => {
-        Object.assign(letter.style, {
-          transition: '',
-          position: '',
-          left: '',
-          top: '',
-          transform: '',
-          zIndex: '',
-          display: ''
-        });
 
-        if (letter.dataset.originalStyle) {
-          letter.setAttribute('style', letter.dataset.originalStyle);
-        } else {
-          letter.removeAttribute('style');
-        }
 
-        letter.physics = undefined;
-        letter.classList.remove('magnetic');
-      }, 1200);
-    }
-  });
-}
+
+
 
 function storeOriginalPositions() {
   document.querySelectorAll('.magnetic-letter, #info-link .typewriter-char').forEach(letter => {
