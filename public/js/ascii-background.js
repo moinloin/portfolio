@@ -46,7 +46,7 @@ function init(THREE, AsciiEffect, TrackballControls) {
     renderer = new THREE.WebGLRenderer({ antialias: false });
     renderer.setSize(window.innerWidth, window.innerHeight);
 
-    effect = new AsciiEffect(renderer, ' .:-+*=%@#', { invert: true, resolution: 0.15 });
+    effect = new AsciiEffect(renderer, ' .:-+*=%@#', { invert: true, resolution: 0.25 });
     effect.setSize(window.innerWidth, window.innerHeight);
     effect.domElement.style.color = 'black';
     effect.domElement.style.backgroundColor = 'white';
@@ -132,7 +132,7 @@ function createRock(THREE) {
 function createPosterGallery(THREE) {
     posterGroup = new THREE.Group();
     
-    const radius = 250;
+    const radius = 150;
     const posterCount = 4;
     
     for (let i = 0; i < posterCount; i++) {
