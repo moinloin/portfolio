@@ -26,8 +26,8 @@ function init(THREE, AsciiEffect, TrackballControls) {
     console.log('Initializing ASCII background...');
     
     camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 1000);
-    camera.position.y = 100;
-    camera.position.z = 350;
+    camera.position.y = 50;
+    camera.position.z = 300;
 
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0, 0, 0);
@@ -66,12 +66,9 @@ function init(THREE, AsciiEffect, TrackballControls) {
     console.log('ASCII effect added to DOM');
 
     controls = new TrackballControls(camera, effect.domElement);
-    controls.minDistance = 300;
-    controls.maxDistance = 800;
+    controls.enabled = false;
 
-    const direction = new THREE.Vector3();
-    direction.subVectors(camera.position, controls.target).normalize();
-    camera.position.copy(direction.multiplyScalar(controls.minDistance));
+    updateCameraFromScroll();
 
     setupScrollHandling();
 
@@ -126,40 +123,41 @@ function createRock(THREE) {
     }
 
     rock = rockGroup;
+    rock.position.set(0, 0, 0);
     scene.add(rock);
 }
 
 function createPosterGallery(THREE) {
     posterGroup = new THREE.Group();
-    
+
     const radius = 150;
     const posterCount = 4;
-    
+
     for (let i = 0; i < posterCount; i++) {
         const angle = (i / posterCount) * Math.PI * 2;
         const x = Math.cos(angle) * radius;
         const z = Math.sin(angle) * radius;
-        
+
         const geometry = new THREE.PlaneGeometry(92, 105);
-        const material = new THREE.MeshBasicMaterial({ 
+        const material = new THREE.MeshBasicMaterial({
             color: 0xffffff,
             side: THREE.DoubleSide,
             transparent: true
         });
-        
+
         const poster = new THREE.Mesh(geometry, material);
         poster.position.set(x, 0, z);
-        
+
         const outwardDirection = new THREE.Vector3(x, 0, z).normalize();
         const lookAtPoint = new THREE.Vector3().addVectors(poster.position, outwardDirection);
         poster.lookAt(lookAtPoint);
-        
+
         posterGroup.add(poster);
     }
-    
+
     posterGroup.visible = true;
     scene.add(posterGroup);
-    
+
     setTimeout(() => {
         loadPosterTextures();
         createHTMLPosters();
@@ -212,7 +210,7 @@ function setupScrollHandling() {
     window.addEventListener('wheel', (event) => {
         scrollOffset += event.deltaY * 0.3;
         scrollOffset = Math.max(0, Math.min(scrollOffset, 300));
-        
+
         updateCameraFromScroll();
     }, { passive: true });
 
@@ -220,7 +218,7 @@ function setupScrollHandling() {
     window.addEventListener('touchstart', (event) => {
         touchStartY = event.touches[0].clientY;
     }, { passive: true });
-    
+
     window.addEventListener('touchmove', (event) => {
         const touchY = event.touches[0].clientY;
         const deltaY = touchStartY - touchY;
@@ -232,14 +230,46 @@ function setupScrollHandling() {
 }
 
 function updateCameraFromScroll() {
-    if (!camera || !controls) return;
-    
+    if (!camera) return;
+
     const progress = scrollOffset / 300;
-    const targetDistance = controls.minDistance + (controls.maxDistance - controls.minDistance) * progress;
+    const distance = 300;
+
+    const startAngle = 0;
+    const endAngle = Math.PI / 2;
+
+    const currentAngle = startAngle + (endAngle - startAngle) * progress;
+
+    const currentY = Math.sin(currentAngle) * distance;
+    const currentZ = Math.cos(currentAngle) * distance;
+
+    camera.position.set(0, currentY, currentZ);
+    camera.lookAt(0, 0, 0);
+}
+
+function updateProjectHeaderVisibility(progress) {
+    const header = document.querySelector('.fixed.top-8.left-8');
+    if (!header) return;
     
-    const direction = new THREE.Vector3();
-    direction.subVectors(camera.position, controls.target).normalize();
-    camera.position.copy(direction.multiplyScalar(targetDistance));
+    const startScale = 8;
+    const endScale = 1;
+    const startTranslateX = -50;
+    const endTranslateX = 0;
+    
+    const adjustedProgress = Math.max(0, Math.min(1, progress * 2));
+    
+    const currentScale = startScale - (startScale - endScale) * adjustedProgress;
+    const currentTranslateX = startTranslateX - (startTranslateX - endTranslateX) * adjustedProgress;
+    const currentOpacity = Math.min(1, adjustedProgress * 3);
+    
+    header.style.transform = `scale(${currentScale}) translateX(${currentTranslateX}px)`;
+    header.style.opacity = currentOpacity;
+    
+    if (progress > 0.4) {
+        header.classList.add('interactive');
+    } else {
+        header.classList.remove('interactive');
+    }
 }
 
 function onWindowResize() {
@@ -267,8 +297,6 @@ function animate() {
     if (posterGroup) {
         posterGroup.rotation.y = timer * 0.0005;
     }
-
-    controls.update();
 
     effect.render(scene, camera);
     
