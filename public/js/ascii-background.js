@@ -46,7 +46,7 @@ function init(THREE, AsciiEffect, TrackballControls) {
     renderer = new THREE.WebGLRenderer({ antialias: false });
     renderer.setSize(window.innerWidth, window.innerHeight);
 
-    effect = new AsciiEffect(renderer, ' .:-+*=%@#', { invert: true, resolution: 0.35 });
+    effect = new AsciiEffect(renderer, ' .:-+*=%@#', { invert: true, resolution: 0.15 });
     effect.setSize(window.innerWidth, window.innerHeight);
     effect.domElement.style.color = 'black';
     effect.domElement.style.backgroundColor = 'white';
@@ -138,7 +138,7 @@ function createPosterGallery(THREE) {
         const x = Math.cos(angle) * radius;
         const z = Math.sin(angle) * radius;
 
-        const geometry = new THREE.PlaneGeometry(92, 105);
+        const geometry = new THREE.PlaneGeometry(70, 105);
         const material = new THREE.MeshBasicMaterial({
             color: 0xffffff,
             side: THREE.DoubleSide,
