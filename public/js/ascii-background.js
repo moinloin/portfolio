@@ -1,7 +1,7 @@
 let camera, controls, scene, renderer, effect;
 let rock;
 let posterGroup;
-let scrollOffset = 0;
+let highlightedPosterData = null;
 const start = Date.now();
 
 async function initAsciiBackground() {
@@ -26,8 +26,8 @@ function init(THREE, AsciiEffect, TrackballControls) {
     console.log('Initializing ASCII background...');
     
     camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 1000);
-    camera.position.y = 50;
-    camera.position.z = 300;
+    camera.position.set(0, 300, 50);
+    camera.lookAt(0, 0, 0);
 
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0, 0, 0);
@@ -46,10 +46,10 @@ function init(THREE, AsciiEffect, TrackballControls) {
     renderer = new THREE.WebGLRenderer({ antialias: false });
     renderer.setSize(window.innerWidth, window.innerHeight);
 
-    effect = new AsciiEffect(renderer, ' .:-+*=%@#', { invert: true, resolution: 0.15 });
+    effect = new AsciiEffect(renderer, ' .:-+*=%@#', { invert: true });
     effect.setSize(window.innerWidth, window.innerHeight);
     effect.domElement.style.color = 'black';
-    effect.domElement.style.backgroundColor = 'white';
+    effect.domElement.style.backgroundColor = 'transparent';
     
     effect.domElement.style.position = 'fixed';
     effect.domElement.style.top = '0';
@@ -61,6 +61,17 @@ function init(THREE, AsciiEffect, TrackballControls) {
     effect.domElement.id = 'ascii-effect';
     
     effect.domElement.style.pointerEvents = 'auto';
+
+    // Add white background layer below everything
+    const bgLayer = document.createElement('div');
+    bgLayer.style.position = 'fixed';
+    bgLayer.style.top = '0';
+    bgLayer.style.left = '0';
+    bgLayer.style.width = '100vw';
+    bgLayer.style.height = '100vh';
+    bgLayer.style.backgroundColor = 'white';
+    bgLayer.style.zIndex = '-1';
+    document.body.appendChild(bgLayer);
 
     document.body.appendChild(effect.domElement);
     console.log('ASCII effect added to DOM');
@@ -122,6 +133,15 @@ function createRock(THREE) {
         rockGroup.add(smallRock);
     }
 
+    // Calculate bounding box to center the rock properly
+    const box = new THREE.Box3().setFromObject(rockGroup);
+    const center = box.getCenter(new THREE.Vector3());
+
+    // Offset all children by the negative of the center to truly center the group
+    rockGroup.children.forEach(child => {
+        child.position.sub(center);
+    });
+
     rock = rockGroup;
     rock.position.set(0, 0, 0);
     scene.add(rock);
@@ -132,6 +152,7 @@ function createPosterGallery(THREE) {
 
     const radius = 150;
     const posterCount = 4;
+    const posterNames = ['lookbook', 'rock', 'fontainebleau', 'bloom'];
 
     for (let i = 0; i < posterCount; i++) {
         const angle = (i / posterCount) * Math.PI * 2;
@@ -147,6 +168,8 @@ function createPosterGallery(THREE) {
 
         const poster = new THREE.Mesh(geometry, material);
         poster.position.set(x, 0, z);
+        poster.userData.name = posterNames[i];
+        poster.userData.index = i;
 
         const outwardDirection = new THREE.Vector3(x, 0, z).normalize();
         const lookAtPoint = new THREE.Vector3().addVectors(poster.position, outwardDirection);
@@ -160,7 +183,6 @@ function createPosterGallery(THREE) {
 
     setTimeout(() => {
         loadPosterTextures();
-        createHTMLPosters();
     }, 500);
 }
 
@@ -179,23 +201,23 @@ function hidePosterGallery3D() {
 
 async function loadPosterTextures() {
     if (!window.THREE || !posterGroup) return;
-    
+
     const posterProjects = [
         { image: '/images/lookbook.png' },
         { image: '/images/rock.jpg' },
         { image: '/images/fontainebleau.jpg' },
         { image: '/images/bloom.jpg' }
     ];
-    
+
     const textureLoader = new window.THREE.TextureLoader();
-    
+
     posterProjects.forEach((project, index) => {
         if (posterGroup.children[index]) {
             textureLoader.load(project.image, (texture) => {
                 texture.generateMipmaps = false;
                 texture.minFilter = window.THREE.LinearFilter;
                 texture.magFilter = window.THREE.LinearFilter;
-                
+
                 posterGroup.children[index].material.map = texture;
                 posterGroup.children[index].material.transparent = false;
                 posterGroup.children[index].material.needsUpdate = true;
@@ -206,37 +228,67 @@ async function loadPosterTextures() {
     });
 }
 
+function highlightPoster(posterName) {
+    if (!posterGroup) return;
+
+    unhighlightPoster();
+
+    const poster = posterGroup.children.find(p => p.userData.name === posterName);
+    if (!poster) return;
+
+    poster.visible = false;
+    highlightedPosterData = { poster, posterName };
+
+    // Create image overlay
+    let overlay = document.getElementById('poster-image-overlay');
+    if (!overlay) {
+        overlay = document.createElement('img');
+        overlay.id = 'poster-image-overlay';
+        overlay.style.position = 'fixed';
+        overlay.style.pointerEvents = 'none';
+        overlay.style.zIndex = '3';
+        overlay.style.transition = 'transform 0.1s ease-out';
+        document.body.appendChild(overlay);
+    }
+
+    const imageMap = {
+        'lookbook': '/images/lookbook.png',
+        'rock': '/images/rock.jpg',
+        'fontainebleau': '/images/fontainebleau.jpg',
+        'bloom': '/images/bloom.jpg'
+    };
+
+    overlay.src = imageMap[posterName];
+    overlay.style.display = 'block';
+}
+
+function unhighlightPoster() {
+    if (highlightedPosterData) {
+        highlightedPosterData.poster.visible = true;
+        highlightedPosterData = null;
+    }
+
+    const overlay = document.getElementById('poster-image-overlay');
+    if (overlay) {
+        overlay.style.display = 'none';
+    }
+}
+
 function setupScrollHandling() {
-    window.addEventListener('wheel', (event) => {
-        scrollOffset += event.deltaY * 0.3;
-        scrollOffset = Math.max(0, Math.min(scrollOffset, 300));
-
+    window.addEventListener('scroll', () => {
         updateCameraFromScroll();
-    }, { passive: true });
-
-    let touchStartY = 0;
-    window.addEventListener('touchstart', (event) => {
-        touchStartY = event.touches[0].clientY;
-    }, { passive: true });
-
-    window.addEventListener('touchmove', (event) => {
-        const touchY = event.touches[0].clientY;
-        const deltaY = touchStartY - touchY;
-        scrollOffset += deltaY * 0.2;
-        scrollOffset = Math.max(0, Math.min(scrollOffset, 300));
-        updateCameraFromScroll();
-        touchStartY = touchY;
     }, { passive: true });
 }
 
 function updateCameraFromScroll() {
     if (!camera) return;
 
-    const progress = scrollOffset / 300;
+    const maxScroll = window.innerHeight;
+    const progress = Math.min(1, window.scrollY / maxScroll);
     const distance = 300;
 
-    const startAngle = 0;
-    const endAngle = Math.PI / 2;
+    const startAngle = Math.PI / 2;
+    const endAngle = 0;
 
     const currentAngle = startAngle + (endAngle - startAngle) * progress;
 
@@ -245,39 +297,39 @@ function updateCameraFromScroll() {
 
     camera.position.set(0, currentY, currentZ);
     camera.lookAt(0, 0, 0);
+
+    updateContentPosition(progress);
+}
+
+function updateContentPosition(progress) {
+    const translate = -(window.innerHeight - 200) * progress;
+    document.querySelector('header').style.transform = `translateY(${translate}px)`;
+    document.getElementById('bio-marquee').style.transform = `translateY(${translate}px)`;
+
+    // Projects section comes in from below the screen
+    const projectsHeader = document.querySelector('.fixed.bottom-8.left-8');
+    if (projectsHeader) {
+        const projectsTranslate = (window.innerHeight - 200) * (1 - progress);
+        projectsHeader.style.transform = `translateY(${projectsTranslate}px)`;
+        projectsHeader.style.opacity = progress;
+    }
 }
 
 function updateProjectHeaderVisibility(progress) {
-    const header = document.querySelector('.fixed.top-8.left-8');
+    const header = document.querySelector('.fixed.bottom-8.left-8');
     if (!header) return;
-    
-    const startScale = 8;
-    const endScale = 1;
-    const startTranslateX = -50;
-    const endTranslateX = 0;
-    
-    const adjustedProgress = Math.max(0, Math.min(1, progress * 2));
-    
-    const currentScale = startScale - (startScale - endScale) * adjustedProgress;
-    const currentTranslateX = startTranslateX - (startTranslateX - endTranslateX) * adjustedProgress;
-    const currentOpacity = Math.min(1, adjustedProgress * 3);
-    
-    header.style.transform = `scale(${currentScale}) translateX(${currentTranslateX}px)`;
-    header.style.opacity = currentOpacity;
-    
-    if (progress > 0.4) {
-        header.classList.add('interactive');
-    } else {
-        header.classList.remove('interactive');
-    }
+
+    // Keep it always visible
+    header.style.opacity = 1;
+    header.style.transform = 'none';
 }
 
 function onWindowResize() {
     if (!camera || !renderer || !effect) return;
-    
+
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-    
+
     renderer.setSize(window.innerWidth, window.innerHeight);
     effect.setSize(window.innerWidth, window.innerHeight);
 }
@@ -299,12 +351,85 @@ function animate() {
     }
 
     effect.render(scene, camera);
-    
+
+    // Update image overlay position and rotation
+    if (highlightedPosterData) {
+        const overlay = document.getElementById('poster-image-overlay');
+        if (overlay && camera) {
+            const poster = highlightedPosterData.poster;
+
+            // Get world position
+            const worldPos = new window.THREE.Vector3();
+            poster.getWorldPosition(worldPos);
+
+            // Calculate screen size by projecting all four corners
+            // Poster geometry is 70 wide x 105 tall
+            const topLeft = new window.THREE.Vector3(-35, 52.5, 0);
+            const topRight = new window.THREE.Vector3(35, 52.5, 0);
+            const bottomLeft = new window.THREE.Vector3(-35, -52.5, 0);
+            const bottomRight = new window.THREE.Vector3(35, -52.5, 0);
+
+            topLeft.applyMatrix4(poster.matrixWorld);
+            topRight.applyMatrix4(poster.matrixWorld);
+            bottomLeft.applyMatrix4(poster.matrixWorld);
+            bottomRight.applyMatrix4(poster.matrixWorld);
+
+            const tlScreen = topLeft.project(camera);
+            const trScreen = topRight.project(camera);
+            const blScreen = bottomLeft.project(camera);
+            const brScreen = bottomRight.project(camera);
+
+            const tlx = (tlScreen.x * 0.5 + 0.5) * window.innerWidth;
+            const tly = (-tlScreen.y * 0.5 + 0.5) * window.innerHeight;
+            const trx = (trScreen.x * 0.5 + 0.5) * window.innerWidth;
+            const try_ = (-trScreen.y * 0.5 + 0.5) * window.innerHeight;
+            const blx = (blScreen.x * 0.5 + 0.5) * window.innerWidth;
+            const bly = (-blScreen.y * 0.5 + 0.5) * window.innerHeight;
+            const brx = (brScreen.x * 0.5 + 0.5) * window.innerWidth;
+            const bry = (-brScreen.y * 0.5 + 0.5) * window.innerHeight;
+
+            // Calculate actual width and height from adjacent corners (not bounding box)
+            const posterWidth = Math.sqrt(Math.pow(trx - tlx, 2) + Math.pow(try_ - tly, 2));
+            const posterHeight = Math.sqrt(Math.pow(bly - tly, 2) + Math.pow(blx - tlx, 2));
+            const centerX = (tlx + trx + blx + brx) / 4;
+            const centerY = (tly + try_ + bly + bry) / 4;
+
+            // Check if poster is facing away from camera (should be mirrored)
+            const posterNormal = new window.THREE.Vector3(0, 0, 1);
+            posterNormal.applyQuaternion(new window.THREE.Quaternion().setFromRotationMatrix(poster.matrixWorld));
+            const cameraDirection = new window.THREE.Vector3();
+            cameraDirection.subVectors(worldPos, camera.position).normalize();
+            const dotProduct = posterNormal.dot(cameraDirection);
+            const isFacingAway = dotProduct > 0;
+
+            // Calculate depth to determine z-index layering
+            const posterDistance = camera.position.distanceTo(worldPos);
+            const rockDistance = camera.position.distanceTo(new window.THREE.Vector3(0, 0, 0));
+
+            // If poster is behind rock, put it below ASCII (z-index 0), otherwise above (z-index 3)
+            const zIndex = posterDistance > rockDistance ? '0' : '3';
+
+            overlay.style.left = `${centerX}px`;
+            overlay.style.top = `${centerY}px`;
+            overlay.style.width = `${posterWidth}px`;
+            overlay.style.height = `${posterHeight}px`;
+            overlay.style.zIndex = zIndex;
+            overlay.style.opacity = '1';
+            overlay.style.transform = `translate(-50%, -50%) scaleX(${isFacingAway ? -1 : 1})`;
+        }
+    }
+
     requestAnimationFrame(animate);
 }
 
 window.showPosterGallery3D = showPosterGallery3D;
 window.hidePosterGallery3D = hidePosterGallery3D;
+window.highlightPoster = highlightPoster;
+window.unhighlightPoster = unhighlightPoster;
+
+// Reset scroll position on page load
+window.history.scrollRestoration = 'manual';
+window.scrollTo(0, 0);
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initAsciiBackground);

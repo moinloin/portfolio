@@ -24,19 +24,20 @@
   <div id="video-background" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; opacity: 0; transition: opacity 0.8s ease;">
   </div>
 
-  <div class="fixed top-8 left-8 z-50">
-    <div class="flex items-baseline">
-      <h1 class="text-black text-2xl font-light opacity-70" style="font-family: 'loos-wide', sans-serif;">projects</h1>
-      <div style="margin-left: 12rem;">
-        <h2 class="text-black text-xl font-light opacity-70" style="font-family: 'loos-wide', sans-serif;">posters</h2>
-        <ul id="poster-list" class="mt-4" style="pointer-events: auto; position: relative; z-index: 60;"></ul>
+  <div class="fixed bottom-8 left-8 z-50">
+    <div class="flex items-end">
+      <div style="display: flex; flex-direction: column-reverse;">
+        <h1 class="text-black text-2xl font-light opacity-70" style="font-family: 'loos-wide', sans-serif;">projects</h1>
       </div>
-      <div style="margin-left: 14rem;">
+      <div style="margin-left: 12rem; display: flex; flex-direction: column-reverse;">
+        <h2 class="text-black text-xl font-light opacity-70" style="font-family: 'loos-wide', sans-serif;">posters</h2>
+        <ul id="poster-list" class="mb-4" style="pointer-events: auto; position: relative; z-index: 60;"></ul>
+      </div>
+      <div style="margin-left: 14rem; display: flex; flex-direction: column-reverse;">
         <h2 class="text-black text-xl font-light opacity-70" style="font-family: 'loos-wide', sans-serif;">code</h2>
-        <ul id="code-list" class="mt-4" style="pointer-events: auto; position: relative; z-index: 60;"></ul>
+        <ul id="code-list" class="mb-4" style="pointer-events: auto; position: relative; z-index: 60;"></ul>
       </div>
     </div>
-    <div id="poster-preview-container" style="position: absolute; top: 3.5rem; left: -7rem; width: 475px; height: 356px; opacity: 0; transition: opacity 0.3s ease; z-index: 45;"></div>
   </div>
 
   <div class="flex h-screen">
@@ -107,6 +108,8 @@
       Security Solution Engineer from Switzerland with a passion for </br>design, photography, audio, computer science, and climbing.
     </p>
   </div>
+
+  <div id="scroll-spacer" style="height: 100vh;"></div>
 
   <script type="module" src="/js/ascii-background.js"></script>
   <script src="/js/index.js"></script>

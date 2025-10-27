@@ -432,89 +432,20 @@ function hideProjectImage() {
 }
 
 function showPosterPreview(project) {
-  let container = document.getElementById('poster-preview-container');
-  if (!container) return;
-
   if (timeouts.hide) {
     clearTimeout(timeouts.hide);
     timeouts.hide = null;
   }
 
-  container.innerHTML = '';
-
-  const previewSrc = project.preview || project.image;
-  const newContainer = container.cloneNode(false);
-  container.parentNode.replaceChild(newContainer, container);
-  
-  container = newContainer;
-
-  newContainer.addEventListener('mouseenter', function() {
-    if (timeouts.hide) {
-      clearTimeout(timeouts.hide);
-      timeouts.hide = null;
-    }
-  });
-  
-  newContainer.addEventListener('mouseleave', function() {
-    timeouts.hide = setTimeout(() => hidePosterPreview(), 100);
-  });
-  
-  const cachedImg = cache.preloaded.get(project.id) || cache.images.get(previewSrc);
-  
-  if (cachedImg) {
-    displayPosterPreview(newContainer, cachedImg, project);
-  } else {
-    loadPosterPreview(newContainer, project, previewSrc);
+  if (window.highlightPoster) {
+    window.highlightPoster(project.name);
   }
 }
 
-function displayPosterPreview(container, img, project) {
-  const clonedImg = img.cloneNode();
-  clonedImg.alt = project.alt || project.name;
-  Object.assign(clonedImg.style, {
-    width: '100%',
-    height: '100%',
-    objectFit: 'contain',
-    borderRadius: '8px',
-    transition: 'opacity 0.2s ease',
-    opacity: '1'
-  });
-
-  container.appendChild(clonedImg);
-  container.style.opacity = '1';
-}
-
-function loadPosterPreview(container, project, src) {
-  const img = document.createElement('img');
-  img.alt = project.alt || project.name;
-  Object.assign(img.style, {
-    width: '100%',
-    height: '100%',
-    objectFit: 'contain',
-    borderRadius: '8px',
-    transition: 'opacity 0.2s ease',
-    opacity: '0'
-  });
-
-  img.onload = function() {
-    cache.images.set(src, img);
-    cache.preloaded.set(project.id, img);
-    img.style.opacity = '1';
-    container.style.opacity = '1';
-  };
-
-  img.onerror = function() {};
-
-  container.appendChild(img);
-  img.src = src;
-}
-
 function hidePosterPreview() {
-  const container = document.getElementById('poster-preview-container');
-  if (!container) return;
-
-  container.style.opacity = '0';
-  setTimeout(() => container.innerHTML = '', 300);
+  if (window.unhighlightPoster) {
+    window.unhighlightPoster();
+  }
 }
 
 function toggleModal(state, project = null) {
