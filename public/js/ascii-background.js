@@ -303,10 +303,15 @@ function updateCameraFromScroll() {
 
 function updateContentPosition(progress) {
     const translate = -(window.innerHeight - 200) * progress;
-    document.querySelector('header').style.transform = `translateY(${translate}px)`;
+
+    // Move logo and bio marquee up
+    const logoLink = document.getElementById('logo-link');
+    if (logoLink) {
+        logoLink.style.transform = `translateY(${translate}px)`;
+    }
     document.getElementById('bio-marquee').style.transform = `translateY(${translate}px)`;
 
-    // Projects section comes in from below the screen
+    // Projects section comes in from below
     const projectsHeader = document.querySelector('.fixed.bottom-8.left-8');
     if (projectsHeader) {
         const projectsTranslate = (window.innerHeight - 200) * (1 - progress);
