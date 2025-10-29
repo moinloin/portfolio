@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
   initAboutTypewriter();
 
   setTimeout(() => storeOriginalPositions(), 100);
-  setTimeout(() => preloadAllImages(), 1000);
+  preloadAllImages();
 });
 
 function setupEventListeners() {
@@ -154,14 +154,12 @@ function preloadImage(src) {
 
 function preloadAllImages() {
   const imageProjects = projects.filter(p => p.type === 'image');
-  
-  imageProjects.forEach((project, index) => {
-    setTimeout(() => {
-      const imageSrc = project.preview || project.image;
-      preloadImage(imageSrc).then(img => {
-        cache.preloaded.set(project.id, img);
-      }).catch(() => {});
-    }, index * 100);
+
+  imageProjects.forEach(project => {
+    const imageSrc = project.preview || project.image;
+    preloadImage(imageSrc).then(img => {
+      cache.preloaded.set(project.id, img);
+    }).catch(() => {});
   });
 }
 
@@ -275,11 +273,9 @@ function showProjectImage(project) {
 
     timeouts.imageTransition = setTimeout(() => {
       createAndShowProjectImage(container, project);
-    }, 150);
+    }, 100);
   } else {
-    setTimeout(() => {
-      createAndShowProjectImage(container, project);
-    }, 50);
+    createAndShowProjectImage(container, project);
   }
 
   currentProject = project;
@@ -322,15 +318,17 @@ function displayCachedImage(div, img, project) {
   clonedImg.alt = project.alt || project.name;
   clonedImg.className = 'h-screen w-auto object-contain';
   clonedImg.style.opacity = '0';
-  clonedImg.style.transition = 'opacity 0.2s ease';
-
-  requestAnimationFrame(() => {
-    clonedImg.style.opacity = '1';
-    div.style.opacity = '1';
-    div.style.transform = 'translateY(0)';
-  });
+  clonedImg.style.transition = 'opacity 0.15s ease';
 
   div.appendChild(clonedImg);
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      clonedImg.style.opacity = '1';
+      div.style.opacity = '1';
+      div.style.transform = 'translateY(0)';
+    });
+  });
 }
 
 function loadAndDisplayImage(div, project) {
