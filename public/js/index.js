@@ -1,9 +1,6 @@
 let projects = [];
 let currentProject = null;
-let isMobile = window.innerWidth <= 768;
-let isGalleryActive = false;
 let isTyping = false;
-let isTransitioning = false;
 
 let timeouts = {
   typewriter: null,
@@ -16,20 +13,6 @@ let cache = {
   preloaded: new Map()
 };
 
-let physics = {
-  animationId: null,
-  letters: [],
-  aboutLetters: [],
-  lastFrame: 0,
-  fps: 60,
-  interval: 1000 / 60
-};
-
-let cursor = {
-  x: window.innerWidth / 2,
-  y: window.innerHeight / 2
-};
-
 document.addEventListener('mousemove', handleMouseMove);
 document.addEventListener('keydown', handleKeyDown);
 window.addEventListener('resize', debounce(handleResize, 250));
@@ -40,10 +23,8 @@ document.addEventListener('DOMContentLoaded', function() {
   loadProjects();
   initTypewriter();
   initAboutTypewriter();
-  setupExploreButton();
 
   setTimeout(() => storeOriginalPositions(), 100);
-  setTimeout(() => showExploreButton(), 12000);
   setTimeout(() => preloadAllImages(), 1000);
 });
 
@@ -60,7 +41,7 @@ function setupEventListeners() {
   const projectList = document.getElementById('project-list');
   if (projectList) {
     projectList.addEventListener('mouseleave', function() {
-      if (!isMobile && currentProject) {
+      if (currentProject) {
         timeouts.hide = setTimeout(() => hideProjectImage(), 100);
       }
     });
@@ -75,11 +56,6 @@ function setupEventListeners() {
 }
 
 function handleMouseMove(e) {
-  cursor.x = e.clientX;
-  cursor.y = e.clientY;
-
-  if (isMobile || isTransitioning || isGalleryActive) return;
-
   handleMagneticEffect(e);
 }
 
@@ -113,12 +89,7 @@ function handleKeyDown(e) {
 }
 
 function handleResize() {
-  const wasIsMobile = isMobile;
-  isMobile = window.innerWidth <= 768;
-
-  if (wasIsMobile !== isMobile) {
-    initAboutTypewriter();
-  }
+  initAboutTypewriter();
 }
 
 function createParticles() {
@@ -249,13 +220,10 @@ function createProjectListItem(project, index, category) {
 function attachProjectEventListeners(link, project, category) {
   link.addEventListener('click', function(e) {
     e.preventDefault();
-    if (isGalleryActive) return;
     toggleModal(true, project);
   });
 
   link.addEventListener('mouseenter', function() {
-    if (isGalleryActive || isMobile) return;
-
     animateProjectTypewriter(link, project.name);
 
     if (project.type === 'image') {
@@ -273,7 +241,7 @@ function attachProjectEventListeners(link, project, category) {
   });
 
   link.addEventListener('mouseleave', function() {
-    if (isGalleryActive || isMobile || project.type !== 'image') return;
+    if (project.type !== 'image') return;
 
     timeouts.hide = setTimeout(() => {
       if (category === 'poster') {
@@ -324,7 +292,6 @@ function createAndShowProjectImage(container, project) {
   div.className = 'project-container h-screen w-full flex justify-end items-center';
 
   div.addEventListener('click', function() {
-    if (isGalleryActive) return;
     toggleModal(true, project);
   });
 
@@ -515,131 +482,6 @@ function displayModalContent(project) {
   }
 }
 
-function setupExploreButton() {
-  const button = document.querySelector('.explore-button');
-  if (!button) return;
-
-  button.style.pointerEvents = 'none';
-
-  button.addEventListener('mouseenter', function() {
-    if (button.style.pointerEvents !== 'none') {
-      button.style.opacity = '0.8';
-      button.style.transform = 'translateY(-1px)';
-    }
-  });
-
-  button.addEventListener('mouseleave', function() {
-    if (button.style.pointerEvents !== 'none') {
-      button.style.opacity = '0.7';
-      button.style.transform = 'translateY(0)';
-    }
-  });
-
-  button.addEventListener('click', function(e) {
-    handleExploreClick(e);
-  });
-}
-
-function handleExploreClick(e) {
-  e.preventDefault();
-  e.stopPropagation();
-
-  const button = document.querySelector('.explore-button');
-  const buttonText = document.querySelector('.explore-button-text');
-
-  button.style.animation = 'buttonMorph 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-
-  if (!isGalleryActive) {
-    activateGalleryMode(buttonText);
-  } else {
-    deactivateGalleryMode(buttonText);
-  }
-
-  setTimeout(() => button.style.animation = '', 600);
-}
-
-function activateGalleryMode(buttonText) {
-  stopAllTyping();
-
-  if (window.typewriterElement) {
-    window.typewriterElement.textContent = '';
-  }
-
-  hideExploreButton();
-  showPosterGallery();
-  animateButtonText(buttonText, '← back');
-
-  isGalleryActive = true;
-}
-
-function deactivateGalleryMode(buttonText) {
-  stopAllTyping();
-
-  if (window.typewriterElement) {
-    window.typewriterElement.textContent = '';
-  }
-
-  isTransitioning = true;
-  hideExploreButton();
-  hidePosterGallery();
-  animateButtonText(buttonText, 'explore →');
-
-  isGalleryActive = false;
-
-  setTimeout(() => {
-    isTransitioning = false;
-    if (window.typewriterElement && window.originalText) {
-      typeWriterForward(window.typewriterElement, window.originalText, null, false);
-    }
-  }, 300);
-}
-
-function showPosterGallery() {
-  hidePosterPreview();
-  hideProjectImage();
-  
-  document.body.classList.add('gallery-active');
-  
-  const asciiEffect = document.getElementById('ascii-effect');
-  if (asciiEffect) {
-    asciiEffect.style.opacity = '1';
-    asciiEffect.style.zIndex = '5';
-  }
-  
-  if (window.showPosterGallery3D) {
-    window.showPosterGallery3D();
-  }
-  
-  setTimeout(() => {
-    if (window.typewriterElement && window.originalText) {
-      typeWriterForward(window.typewriterElement, window.originalText, null, true);
-    }
-    setTimeout(() => showExploreButton(), 500);
-  }, 100);
-}
-
-function hidePosterGallery() {
-  const asciiEffect = document.getElementById('ascii-effect');
-  if (asciiEffect) {
-    asciiEffect.style.opacity = '0';
-    asciiEffect.style.zIndex = '1';
-  }
-  
-  if (window.hidePosterGallery3D) {
-    window.hidePosterGallery3D();
-  }
-  
-  document.body.classList.remove('gallery-active');
-}
-
-
-
-
-
-
-
-
-
 function storeOriginalPositions() {
   document.querySelectorAll('.magnetic-letter, #info-link .typewriter-char').forEach(letter => {
     if (!letter.dataset.originalPosition) {
@@ -696,10 +538,6 @@ function typeWriterForward(element, text, callback, reverse = false) {
 
       const randomDelay = Math.random() * 150 + 50;
 
-      if (!reverse && currentIndex >= Math.floor(textToType.length * 0.7)) {
-        showExploreButton();
-      }
-
       timeouts.typewriter = setTimeout(typeNextLetter, randomDelay);
     } else {
       element.classList.remove('typing');
@@ -712,49 +550,6 @@ function typeWriterForward(element, text, callback, reverse = false) {
   };
 
   typeNextLetter();
-}
-
-function stopAllTyping() {
-  isTyping = false;
-  if (timeouts.typewriter) {
-    clearTimeout(timeouts.typewriter);
-    timeouts.typewriter = null;
-  }
-}
-
-function showExploreButton() {
-  const button = document.querySelector('.explore-button');
-  if (button) {
-    button.style.opacity = '0.7';
-    button.style.pointerEvents = 'auto';
-  }
-}
-
-function hideExploreButton() {
-  const button = document.querySelector('.explore-button');
-  if (button) {
-    button.style.opacity = '0';
-    button.style.pointerEvents = 'none';
-  }
-}
-
-function animateButtonText(textElement, newText, callback) {
-  if (!textElement) return;
-
-  setTimeout(() => {
-    textElement.classList.add('slide-out');
-
-    setTimeout(() => {
-      textElement.textContent = newText;
-      textElement.classList.remove('slide-out');
-      textElement.classList.add('slide-in');
-
-      setTimeout(() => {
-        textElement.classList.remove('slide-in');
-        if (callback) callback();
-      }, 400);
-    }, 200);
-  }, 100);
 }
 
 function animateProjectTypewriter(element, originalText) {
@@ -802,7 +597,7 @@ function animateProjectTypewriter(element, originalText) {
 
 function initAboutTypewriter() {
   const aboutLink = document.getElementById('info-link');
-  if (!aboutLink || isMobile) return;
+  if (!aboutLink) return;
 
   aboutLink.addEventListener('mouseenter', () => animateAboutTypewriter(aboutLink, 'about'));
   aboutLink.addEventListener('mouseleave', () => hideAboutArrow(aboutLink));
@@ -862,7 +657,7 @@ function hideAboutArrow(element) {
 
 function initRepoTypewriter() {
   const repoLink = document.getElementById('github-link');
-  if (!repoLink || isMobile) return;
+  if (!repoLink) return;
 
   repoLink.addEventListener('mouseenter', () => animateRepoTypewriter(repoLink, 'repository'));
   repoLink.addEventListener('mouseleave', () => hideRepoArrow(repoLink));

@@ -62,7 +62,6 @@ function init(THREE, AsciiEffect, TrackballControls) {
     
     effect.domElement.style.pointerEvents = 'auto';
 
-    // Add white background layer below everything
     const bgLayer = document.createElement('div');
     bgLayer.style.position = 'fixed';
     bgLayer.style.top = '0';
@@ -133,11 +132,9 @@ function createRock(THREE) {
         rockGroup.add(smallRock);
     }
 
-    // Calculate bounding box to center the rock properly
     const box = new THREE.Box3().setFromObject(rockGroup);
     const center = box.getCenter(new THREE.Vector3());
 
-    // Offset all children by the negative of the center to truly center the group
     rockGroup.children.forEach(child => {
         child.position.sub(center);
     });
@@ -186,19 +183,6 @@ function createPosterGallery(THREE) {
     }, 500);
 }
 
-function showPosterGallery3D() {
-    if (posterGroup) {
-        posterGroup.visible = true;
-        loadPosterTextures();
-    }
-}
-
-function hidePosterGallery3D() {
-    if (posterGroup) {
-        posterGroup.visible = false;
-    }
-}
-
 async function loadPosterTextures() {
     if (!window.THREE || !posterGroup) return;
 
@@ -239,7 +223,6 @@ function highlightPoster(posterName) {
     poster.visible = false;
     highlightedPosterData = { poster, posterName };
 
-    // Create image overlay
     let overlay = document.getElementById('poster-image-overlay');
     if (!overlay) {
         overlay = document.createElement('img');
@@ -304,29 +287,18 @@ function updateCameraFromScroll() {
 function updateContentPosition(progress) {
     const translate = -(window.innerHeight - 200) * progress;
 
-    // Move logo and bio marquee up
     const logoLink = document.getElementById('logo-link');
     if (logoLink) {
         logoLink.style.transform = `translateY(${translate}px)`;
     }
     document.getElementById('bio-marquee').style.transform = `translateY(${translate}px)`;
 
-    // Projects section comes in from below
     const projectsHeader = document.querySelector('.fixed.bottom-8.left-8');
     if (projectsHeader) {
         const projectsTranslate = (window.innerHeight - 200) * (1 - progress);
         projectsHeader.style.transform = `translateY(${projectsTranslate}px)`;
         projectsHeader.style.opacity = progress;
     }
-}
-
-function updateProjectHeaderVisibility(progress) {
-    const header = document.querySelector('.fixed.bottom-8.left-8');
-    if (!header) return;
-
-    // Keep it always visible
-    header.style.opacity = 1;
-    header.style.transform = 'none';
 }
 
 function onWindowResize() {
@@ -357,18 +329,14 @@ function animate() {
 
     effect.render(scene, camera);
 
-    // Update image overlay position and rotation
     if (highlightedPosterData) {
         const overlay = document.getElementById('poster-image-overlay');
         if (overlay && camera) {
             const poster = highlightedPosterData.poster;
 
-            // Get world position
             const worldPos = new window.THREE.Vector3();
             poster.getWorldPosition(worldPos);
 
-            // Calculate screen size by projecting all four corners
-            // Poster geometry is 70 wide x 105 tall
             const topLeft = new window.THREE.Vector3(-35, 52.5, 0);
             const topRight = new window.THREE.Vector3(35, 52.5, 0);
             const bottomLeft = new window.THREE.Vector3(-35, -52.5, 0);
@@ -393,13 +361,11 @@ function animate() {
             const brx = (brScreen.x * 0.5 + 0.5) * window.innerWidth;
             const bry = (-brScreen.y * 0.5 + 0.5) * window.innerHeight;
 
-            // Calculate actual width and height from adjacent corners (not bounding box)
             const posterWidth = Math.sqrt(Math.pow(trx - tlx, 2) + Math.pow(try_ - tly, 2));
             const posterHeight = Math.sqrt(Math.pow(bly - tly, 2) + Math.pow(blx - tlx, 2));
             const centerX = (tlx + trx + blx + brx) / 4;
             const centerY = (tly + try_ + bly + bry) / 4;
 
-            // Check if poster is facing away from camera (should be mirrored)
             const posterNormal = new window.THREE.Vector3(0, 0, 1);
             posterNormal.applyQuaternion(new window.THREE.Quaternion().setFromRotationMatrix(poster.matrixWorld));
             const cameraDirection = new window.THREE.Vector3();
@@ -407,11 +373,9 @@ function animate() {
             const dotProduct = posterNormal.dot(cameraDirection);
             const isFacingAway = dotProduct > 0;
 
-            // Calculate depth to determine z-index layering
             const posterDistance = camera.position.distanceTo(worldPos);
             const rockDistance = camera.position.distanceTo(new window.THREE.Vector3(0, 0, 0));
 
-            // If poster is behind rock, put it below ASCII (z-index 0), otherwise above (z-index 3)
             const zIndex = posterDistance > rockDistance ? '0' : '3';
 
             overlay.style.left = `${centerX}px`;
@@ -427,12 +391,9 @@ function animate() {
     requestAnimationFrame(animate);
 }
 
-window.showPosterGallery3D = showPosterGallery3D;
-window.hidePosterGallery3D = hidePosterGallery3D;
 window.highlightPoster = highlightPoster;
 window.unhighlightPoster = unhighlightPoster;
 
-// Reset scroll position on page load
 window.history.scrollRestoration = 'manual';
 window.scrollTo(0, 0);
 

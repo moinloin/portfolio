@@ -22,6 +22,10 @@ app.get('/version', (req, res) => {
   res.json({ version: '1.0.0' });
 });
 
+app.use((req, res) => {
+  res.status(404).sendFile(path.join(__dirname, 'public', 'views', '404.html'));
+});
+
 if (require.main === module) {
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
