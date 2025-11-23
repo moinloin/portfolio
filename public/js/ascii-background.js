@@ -1,7 +1,9 @@
 let camera, controls, scene, renderer, effect;
 let rock;
 let posterGroup;
+let videoGroup;
 let highlightedPosterData = null;
+let highlightedVideoData = null;
 const start = Date.now();
 
 async function initAsciiBackground() {
@@ -42,6 +44,7 @@ function init(THREE, AsciiEffect, TrackballControls) {
 
     createRock(THREE);
     createPosterGallery(THREE);
+    createVideoGallery(THREE);
 
     renderer = new THREE.WebGLRenderer({ antialias: false });
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -59,8 +62,8 @@ function init(THREE, AsciiEffect, TrackballControls) {
     effect.domElement.style.zIndex = '1';
     
     effect.domElement.id = 'ascii-effect';
-    
-    effect.domElement.style.pointerEvents = 'auto';
+
+    effect.domElement.style.pointerEvents = 'none';
 
     const bgLayer = document.createElement('div');
     bgLayer.style.position = 'fixed';
@@ -212,6 +215,71 @@ async function loadPosterTextures() {
     });
 }
 
+function createVideoGallery(THREE) {
+    videoGroup = new THREE.Group();
+
+    const radius = 130;
+    const videoCount = 1;
+    const videoNames = ['a island Road Trip'];
+
+    for (let i = 0; i < videoCount; i++) {
+        const angle = (i / videoCount) * Math.PI * 2;
+        const y = Math.cos(angle) * radius;
+        const z = Math.sin(angle) * radius;
+
+        const geometry = new THREE.PlaneGeometry(80, 45);
+        const material = new THREE.MeshBasicMaterial({
+            color: 0xffffff,
+            side: THREE.DoubleSide,
+            transparent: true
+        });
+
+        const video = new THREE.Mesh(geometry, material);
+        video.position.set(0, y, z);
+        video.userData.name = videoNames[i];
+        video.userData.index = i;
+
+        const outwardDirection = new THREE.Vector3(0, y, z).normalize();
+        const lookAtPoint = new THREE.Vector3().addVectors(video.position, outwardDirection);
+        video.lookAt(lookAtPoint);
+
+        videoGroup.add(video);
+    }
+
+    videoGroup.visible = true;
+    scene.add(videoGroup);
+
+    setTimeout(() => {
+        loadVideoTextures();
+    }, 500);
+}
+
+async function loadVideoTextures() {
+    if (!window.THREE || !videoGroup) return;
+
+    const videoProjects = [
+        { image: '/images/island-road-trip.jpg' }
+    ];
+
+    const textureLoader = new window.THREE.TextureLoader();
+
+    videoProjects.forEach((project, index) => {
+        if (videoGroup.children[index]) {
+            textureLoader.load(project.image, (texture) => {
+                texture.generateMipmaps = false;
+                texture.minFilter = window.THREE.LinearFilter;
+                texture.magFilter = window.THREE.LinearFilter;
+
+                videoGroup.children[index].material.map = texture;
+                videoGroup.children[index].material.transparent = false;
+                videoGroup.children[index].material.needsUpdate = true;
+            }, undefined, (error) => {
+                console.error('Error loading texture:', project.image, error);
+            });
+        }
+    });
+}
+
 function highlightPoster(posterName) {
     if (!posterGroup) return;
 
@@ -252,6 +320,48 @@ function unhighlightPoster() {
     }
 
     const overlay = document.getElementById('poster-image-overlay');
+    if (overlay) {
+        overlay.style.display = 'none';
+    }
+}
+
+function highlightVideo(videoName) {
+    if (!videoGroup) return;
+
+    unhighlightVideo();
+
+    const video = videoGroup.children.find(v => v.userData.name === videoName);
+    if (!video) return;
+
+    video.visible = false;
+    highlightedVideoData = { video, videoName };
+
+    let overlay = document.getElementById('video-image-overlay');
+    if (!overlay) {
+        overlay = document.createElement('img');
+        overlay.id = 'video-image-overlay';
+        overlay.style.position = 'fixed';
+        overlay.style.pointerEvents = 'none';
+        overlay.style.zIndex = '3';
+        overlay.style.transition = 'transform 0.1s ease-out';
+        document.body.appendChild(overlay);
+    }
+
+    const imageMap = {
+        'a island Road Trip': '/images/island-road-trip.jpg'
+    };
+
+    overlay.src = imageMap[videoName];
+    overlay.style.display = 'block';
+}
+
+function unhighlightVideo() {
+    if (highlightedVideoData) {
+        highlightedVideoData.video.visible = true;
+        highlightedVideoData = null;
+    }
+
+    const overlay = document.getElementById('video-image-overlay');
     if (overlay) {
         overlay.style.display = 'none';
     }
@@ -327,6 +437,10 @@ function animate() {
         posterGroup.rotation.y = timer * 0.0005;
     }
 
+    if (videoGroup) {
+        videoGroup.rotation.x = timer * -0.0005;
+    }
+
     effect.render(scene, camera);
 
     if (highlightedPosterData) {
@@ -388,11 +502,72 @@ function animate() {
         }
     }
 
+    if (highlightedVideoData) {
+        const overlay = document.getElementById('video-image-overlay');
+        if (overlay && camera) {
+            const video = highlightedVideoData.video;
+
+            const worldPos = new window.THREE.Vector3();
+            video.getWorldPosition(worldPos);
+
+            const topLeft = new window.THREE.Vector3(-40, 22.5, 0);
+            const topRight = new window.THREE.Vector3(40, 22.5, 0);
+            const bottomLeft = new window.THREE.Vector3(-40, -22.5, 0);
+            const bottomRight = new window.THREE.Vector3(40, -22.5, 0);
+
+            topLeft.applyMatrix4(video.matrixWorld);
+            topRight.applyMatrix4(video.matrixWorld);
+            bottomLeft.applyMatrix4(video.matrixWorld);
+            bottomRight.applyMatrix4(video.matrixWorld);
+
+            const tlScreen = topLeft.project(camera);
+            const trScreen = topRight.project(camera);
+            const blScreen = bottomLeft.project(camera);
+            const brScreen = bottomRight.project(camera);
+
+            const tlx = (tlScreen.x * 0.5 + 0.5) * window.innerWidth;
+            const tly = (-tlScreen.y * 0.5 + 0.5) * window.innerHeight;
+            const trx = (trScreen.x * 0.5 + 0.5) * window.innerWidth;
+            const try_ = (-trScreen.y * 0.5 + 0.5) * window.innerHeight;
+            const blx = (blScreen.x * 0.5 + 0.5) * window.innerWidth;
+            const bly = (-blScreen.y * 0.5 + 0.5) * window.innerHeight;
+            const brx = (brScreen.x * 0.5 + 0.5) * window.innerWidth;
+            const bry = (-brScreen.y * 0.5 + 0.5) * window.innerHeight;
+
+            const videoWidth = Math.sqrt(Math.pow(trx - tlx, 2) + Math.pow(try_ - tly, 2));
+            const videoHeight = Math.sqrt(Math.pow(bly - tly, 2) + Math.pow(blx - tlx, 2));
+            const centerX = (tlx + trx + blx + brx) / 4;
+            const centerY = (tly + try_ + bly + bry) / 4;
+
+            const videoNormal = new window.THREE.Vector3(0, 0, 1);
+            videoNormal.applyQuaternion(new window.THREE.Quaternion().setFromRotationMatrix(video.matrixWorld));
+            const cameraDirection = new window.THREE.Vector3();
+            cameraDirection.subVectors(worldPos, camera.position).normalize();
+            const dotProduct = videoNormal.dot(cameraDirection);
+            const isFacingAway = dotProduct > 0;
+
+            const videoDistance = camera.position.distanceTo(worldPos);
+            const rockDistance = camera.position.distanceTo(new window.THREE.Vector3(0, 0, 0));
+
+            const zIndex = '0';
+
+            overlay.style.left = `${centerX}px`;
+            overlay.style.top = `${centerY}px`;
+            overlay.style.width = `${videoWidth}px`;
+            overlay.style.height = `${videoHeight}px`;
+            overlay.style.zIndex = zIndex;
+            overlay.style.opacity = '1';
+            overlay.style.transform = `translate(-50%, -50%) scaleX(${isFacingAway ? -1 : 1})`;
+        }
+    }
+
     requestAnimationFrame(animate);
 }
 
 window.highlightPoster = highlightPoster;
 window.unhighlightPoster = unhighlightPoster;
+window.highlightVideo = highlightVideo;
+window.unhighlightVideo = unhighlightVideo;
 
 window.history.scrollRestoration = 'manual';
 window.scrollTo(0, 0);

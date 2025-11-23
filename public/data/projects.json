@@ -47,16 +47,25 @@
     "forks": "0",
     "language": "HTML"
   },
-  { 
-    "id": 7, 
-    "name": "deployment", 
-    "category": "code", 
-    "type": "github", 
+  {
+    "id": 7,
+    "name": "deployment",
+    "category": "code",
+    "type": "github",
     "github": "moinloin/VM-deployment",
     "title": "VM-deployment",
     "description": "Fully automated API for provisioning and configuring Proxmox VMs – powered by Flask, Terraform & Ansible. Runs in Docker and handles both creation and post-configuration of virtual machines.",
     "stars": "1",
     "forks": "0",
     "language": "Python"
+  },
+  {
+    "id": 8,
+    "name": "a island Road Trip",
+    "category": "video",
+    "type": "video",
+    "video": "/videos/island-road-trip.mp4",
+    "image": "/images/island-road-trip.jpg",
+    "alt": "A cinematic island road trip video"
   }
 ]

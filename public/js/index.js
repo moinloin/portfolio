@@ -165,20 +165,28 @@ function preloadAllImages() {
 
 function renderProjects() {
   const posterList = document.getElementById('poster-list');
+  const videoList = document.getElementById('video-list');
   const codeList = document.getElementById('code-list');
   const mainList = document.getElementById('project-list');
-  
+
   if (posterList) posterList.innerHTML = '';
+  if (videoList) videoList.innerHTML = '';
   if (codeList) codeList.innerHTML = '';
   if (mainList) mainList.innerHTML = '';
 
   const posterProjects = projects.filter(p => p.category === 'poster');
+  const videoProjects = projects.filter(p => p.category === 'video');
   const codeProjects = projects.filter(p => p.category === 'code');
-  const mainProjects = projects.filter(p => p.category !== 'poster' && p.category !== 'code');
+  const mainProjects = projects.filter(p => p.category !== 'poster' && p.category !== 'video' && p.category !== 'code');
 
   posterProjects.forEach((project, index) => {
     const listItem = createProjectListItem(project, index, 'poster');
     if (posterList) posterList.appendChild(listItem);
+  });
+
+  videoProjects.forEach((project, index) => {
+    const listItem = createProjectListItem(project, index, 'video');
+    if (videoList) videoList.appendChild(listItem);
   });
 
   codeProjects.forEach((project, index) => {
@@ -224,7 +232,7 @@ function attachProjectEventListeners(link, project, category) {
   link.addEventListener('mouseenter', function() {
     animateProjectTypewriter(link, project.name);
 
-    if (project.type === 'image') {
+    if (project.type === 'image' || (category === 'video' && project.image)) {
       if (timeouts.hide) {
         clearTimeout(timeouts.hide);
         timeouts.hide = null;
@@ -232,6 +240,8 @@ function attachProjectEventListeners(link, project, category) {
 
       if (category === 'poster') {
         showPosterPreview(project);
+      } else if (category === 'video') {
+        showVideoPreview(project);
       } else {
         showProjectImage(project);
       }
@@ -239,11 +249,13 @@ function attachProjectEventListeners(link, project, category) {
   });
 
   link.addEventListener('mouseleave', function() {
-    if (project.type !== 'image') return;
+    if (project.type !== 'image' && !(category === 'video' && project.image)) return;
 
     timeouts.hide = setTimeout(() => {
       if (category === 'poster') {
         hidePosterPreview();
+      } else if (category === 'video') {
+        hideVideoPreview();
       } else {
         hideProjectImage();
       }
@@ -410,6 +422,23 @@ function showPosterPreview(project) {
 function hidePosterPreview() {
   if (window.unhighlightPoster) {
     window.unhighlightPoster();
+  }
+}
+
+function showVideoPreview(project) {
+  if (timeouts.hide) {
+    clearTimeout(timeouts.hide);
+    timeouts.hide = null;
+  }
+
+  if (window.highlightVideo) {
+    window.highlightVideo(project.name);
+  }
+}
+
+function hideVideoPreview() {
+  if (window.unhighlightVideo) {
+    window.unhighlightVideo();
   }
 }
 
