@@ -35,17 +35,17 @@
     "preview": "/images/previews/bloom.jpg",
     "alt": "Bloom poster design with organic patterns and color gradients"
   },
-  { 
-    "id": 6, 
-    "name": "portfolio", 
-    "category": "code", 
-    "type": "github", 
+  {
+    "id": 6,
+    "name": "portfolio",
+    "category": "code",
+    "type": "github",
     "github": "moinloin/portfolio",
     "title": "portfolio",
     "description": "A collection of projects, experiences, and learnings that reflect my professional and personal growth.",
     "stars": "1",
     "forks": "0",
-    "language": "HTML"
+    "language": "JavaScript"
   },
   {
     "id": 7,
@@ -53,8 +53,8 @@
     "category": "code",
     "type": "github",
     "github": "moinloin/VM-deployment",
-    "title": "VM-deployment",
-    "description": "Fully automated API for provisioning and configuring Proxmox VMs – powered by Flask, Terraform & Ansible. Runs in Docker and handles both creation and post-configuration of virtual machines.",
+    "title": "vm deployment",
+    "description": "Fully automated API for provisioning and configuring Proxmox VMs using Flask, Terraform & Ansible. Runs in Docker and handles both creation and post-configuration of virtual machines.",
     "stars": "1",
     "forks": "0",
     "language": "Python"
@@ -67,5 +67,18 @@
     "video": "/videos/island-road-trip.mp4",
     "image": "/images/island-road-trip.jpg",
     "alt": "A cinematic island road trip video"
+  },
+  {
+    "id": 9,
+    "name": "davlo.io",
+    "category": "code",
+    "type": "github",
+    "github": "davloio",
+    "website": "https://davlo.io/",
+    "title": "davlo.io",
+    "description": "Two colleagues building solutions that solve real problems and expand what's possible. Every project pushes boundaries, every line of code serves a purpose.",
+    "stars": "—",
+    "forks": "—",
+    "language": "Rust"
   }
 ]

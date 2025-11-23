@@ -131,7 +131,7 @@ function getFallbackProjects() {
     { id: 3, name: "fontainebleau", category: "poster", type: "image", image: "/images/fontainebleau.jpg", alt: "Fontainebleau bouldering poster" },
     { id: 4, name: "bloom", category: "poster", type: "image", image: "/images/bloom.jpg", alt: "Bloom poster design" },
     { id: 6, name: "portfolio", category: "code", type: "github", github: "moinloin/portfolio", title: "portfolio", description: "A collection of projects and experiences.", stars: "1", forks: "0", language: "HTML" },
-    { id: 7, name: "deployment", category: "code", type: "github", github: "moinloin/VM-deployment", title: "VM-deployment", description: "Automated API for provisioning Proxmox VMs.", stars: "1", forks: "0", language: "Python" }
+    { id: 7, name: "deployment", category: "code", type: "github", github: "moinloin/VM-deployment", title: "vm deployment", description: "Automated API for provisioning Proxmox VMs.", stars: "1", forks: "0", language: "Python" }
   ];
 }
 
@@ -448,7 +448,7 @@ function toggleModal(state, project = null) {
   const modalVideo = document.getElementById('modal-video');
   const modalGithub = document.getElementById('modal-github');
   const loadingSpinner = document.getElementById('loading-spinner');
-  
+
   if (state && project) {
     modal.classList.add('visible');
     modal.setAttribute('aria-hidden', 'false');
@@ -502,6 +502,14 @@ function displayModalContent(project) {
         document.getElementById('github-description').textContent = project.description || '';
         document.getElementById('github-language').textContent = project.language || '-';
         document.getElementById('github-link').href = `https://github.com/${project.github}`;
+
+        const websiteLink = document.getElementById('website-link');
+        if (project.website) {
+          websiteLink.href = project.website;
+          websiteLink.style.display = 'inline-block';
+        } else {
+          websiteLink.style.display = 'none';
+        }
 
         setTimeout(() => initRepoTypewriter(), 100);
       }, 500);
@@ -684,10 +692,16 @@ function hideAboutArrow(element) {
 
 function initRepoTypewriter() {
   const repoLink = document.getElementById('github-link');
-  if (!repoLink) return;
+  if (repoLink) {
+    repoLink.addEventListener('mouseenter', () => animateRepoTypewriter(repoLink, 'repository'));
+    repoLink.addEventListener('mouseleave', () => hideRepoArrow(repoLink));
+  }
 
-  repoLink.addEventListener('mouseenter', () => animateRepoTypewriter(repoLink, 'repository'));
-  repoLink.addEventListener('mouseleave', () => hideRepoArrow(repoLink));
+  const websiteLink = document.getElementById('website-link');
+  if (websiteLink && websiteLink.style.display !== 'none') {
+    websiteLink.addEventListener('mouseenter', () => animateWebsiteTypewriter(websiteLink, 'website'));
+    websiteLink.addEventListener('mouseleave', () => hideWebsiteArrow(websiteLink));
+  }
 }
 
 function animateRepoTypewriter(element, originalText) {
@@ -737,6 +751,58 @@ function animateRepoTypewriter(element, originalText) {
 
 function hideRepoArrow(element) {
   const arrow = element.querySelector('.repo-arrow');
+  if (arrow) {
+    arrow.style.opacity = '0';
+  }
+}
+
+function animateWebsiteTypewriter(element, originalText) {
+  const chars = element.querySelectorAll('.typewriter-char');
+  if (chars.length === 0 || element.dataset.animating === 'true') return;
+
+  element.dataset.animating = 'true';
+  const arrow = element.querySelector('.website-arrow');
+
+  const getRandomChar = () => {
+    const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+    return alphabet[Math.floor(Math.random() * alphabet.length)];
+  };
+
+  chars.forEach((char, index) => {
+    setTimeout(() => {
+      char.textContent = getRandomChar();
+    }, index * 15);
+  });
+
+  setTimeout(() => {
+    chars.forEach((char, index) => {
+      setTimeout(() => {
+        let changeCount = 0;
+        const maxChanges = 2;
+
+        const changeInterval = setInterval(() => {
+          if (changeCount < maxChanges) {
+            char.textContent = getRandomChar();
+            changeCount++;
+          } else {
+            clearInterval(changeInterval);
+            char.textContent = originalText[index];
+
+            if (index === chars.length - 1) {
+              setTimeout(() => {
+                if (arrow) arrow.style.opacity = '1';
+                element.dataset.animating = 'false';
+              }, 50);
+            }
+          }
+        }, 30);
+      }, index * 35);
+    });
+  }, chars.length * 15);
+}
+
+function hideWebsiteArrow(element) {
+  const arrow = element.querySelector('.website-arrow');
   if (arrow) {
     arrow.style.opacity = '0';
   }
