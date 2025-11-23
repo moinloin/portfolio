@@ -132,13 +132,14 @@ jobs:
             --cache-to type=gha,mode=max \
             --load .
 
-      - name: Run Trivy vulnerability scanner
+      - name: Run Trivy scanner
         uses: aquasecurity/trivy-action@0.28.0
         with:
           image-ref: ${{ env.DOCKER_IMAGE_NAME }}:latest
           format: 'sarif'
           output: 'trivy-results.sarif'
           severity: 'CRITICAL,HIGH,MEDIUM,LOW,UNKNOWN'
+          scanners: 'vuln,secret'
 
       - name: Upload Trivy results to GitHub Security
         uses: github/codeql-action/upload-sarif@v4
@@ -146,19 +147,13 @@ jobs:
         with:
           sarif_file: 'trivy-results.sarif'
 
-      - name: Run Trivy vulnerability scanner
+      - name: Run Trivy scanner
         uses: aquasecurity/trivy-action@0.28.0
         with:
           image-ref: ${{ env.DOCKER_IMAGE_NAME }}:latest
           format: 'table'
-          severity: 'CRITICAL,HIGH,MEDIUM,LOW,UNKNOWN'
-
-      - name: Run Trivy vulnerability scanner (fail on high/critical)
-        uses: aquasecurity/trivy-action@0.28.0
-        with:
-          image-ref: ${{ env.DOCKER_IMAGE_NAME }}:latest
-          format: 'table'
-          severity: 'CRITICAL,HIGH'
+          severity: 'CRITICAL,HIGH,MEDIUM'
+          scanners: 'vuln,secret'
           exit-code: '1'
 
       - name: Save Docker image
