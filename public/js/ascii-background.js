@@ -8,24 +8,24 @@ const start = Date.now();
 
 async function initAsciiBackground() {
     try {
-        console.log('Loading Three.js modules...');
+        console.log("Loading Three.js modules...");
         
-        const THREE = await import('three');
+        const THREE = await import("three");
         window.THREE = THREE;
         
-        const { AsciiEffect } = await import('three/addons/effects/AsciiEffect.js');
-        const { TrackballControls } = await import('three/addons/controls/TrackballControls.js');
+        const { AsciiEffect } = await import("three/addons/effects/AsciiEffect.js");
+        const { TrackballControls } = await import("three/addons/controls/TrackballControls.js");
         
-        console.log('Three.js modules loaded, initializing...');
+        console.log("Three.js modules loaded, initializing...");
         init(THREE, AsciiEffect, TrackballControls);
         
     } catch (error) {
-        console.error('Failed to load Three.js modules:', error);
+        console.error("Failed to load Three.js modules:", error);
     }
 }
 
 function init(THREE, AsciiEffect, TrackballControls) {
-    console.log('Initializing ASCII background...');
+    console.log("Initializing ASCII background...");
     
     camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 1000);
     camera.position.set(0, 300, 50);
@@ -49,34 +49,34 @@ function init(THREE, AsciiEffect, TrackballControls) {
     renderer = new THREE.WebGLRenderer({ antialias: false });
     renderer.setSize(window.innerWidth, window.innerHeight);
 
-    effect = new AsciiEffect(renderer, ' .:-+*=%@#', { invert: true });
+    effect = new AsciiEffect(renderer, " .:-+*=%@#", { invert: true });
     effect.setSize(window.innerWidth, window.innerHeight);
-    effect.domElement.style.color = 'black';
-    effect.domElement.style.backgroundColor = 'transparent';
+    effect.domElement.style.color = "black";
+    effect.domElement.style.backgroundColor = "transparent";
     
-    effect.domElement.style.position = 'fixed';
-    effect.domElement.style.top = '0';
-    effect.domElement.style.left = '0';
-    effect.domElement.style.width = '100vw';
-    effect.domElement.style.height = '100vh';
-    effect.domElement.style.zIndex = '1';
+    effect.domElement.style.position = "fixed";
+    effect.domElement.style.top = "0";
+    effect.domElement.style.left = "0";
+    effect.domElement.style.width = "100vw";
+    effect.domElement.style.height = "100vh";
+    effect.domElement.style.zIndex = "1";
     
-    effect.domElement.id = 'ascii-effect';
+    effect.domElement.id = "ascii-effect";
 
-    effect.domElement.style.pointerEvents = 'none';
+    effect.domElement.style.pointerEvents = "none";
 
-    const bgLayer = document.createElement('div');
-    bgLayer.style.position = 'fixed';
-    bgLayer.style.top = '0';
-    bgLayer.style.left = '0';
-    bgLayer.style.width = '100vw';
-    bgLayer.style.height = '100vh';
-    bgLayer.style.backgroundColor = 'white';
-    bgLayer.style.zIndex = '-1';
+    const bgLayer = document.createElement("div");
+    bgLayer.style.position = "fixed";
+    bgLayer.style.top = "0";
+    bgLayer.style.left = "0";
+    bgLayer.style.width = "100vw";
+    bgLayer.style.height = "100vh";
+    bgLayer.style.backgroundColor = "white";
+    bgLayer.style.zIndex = "-1";
     document.body.appendChild(bgLayer);
 
     document.body.appendChild(effect.domElement);
-    console.log('ASCII effect added to DOM');
+    console.log("ASCII effect added to DOM");
 
     controls = new TrackballControls(camera, effect.domElement);
     controls.enabled = false;
@@ -85,11 +85,11 @@ function init(THREE, AsciiEffect, TrackballControls) {
 
     setupScrollHandling();
 
-    window.addEventListener('resize', onWindowResize);
+    window.addEventListener("resize", onWindowResize);
 
     animate();
     
-    console.log('ASCII background initialized successfully');
+    console.log("ASCII background initialized successfully");
 }
 
 function createRock(THREE) {
@@ -152,7 +152,7 @@ function createPosterGallery(THREE) {
 
     const radius = 150;
     const posterCount = 4;
-    const posterNames = ['lookbook', 'rock', 'fontainebleau', 'bloom'];
+    const posterNames = ["lookbook", "rock", "fontainebleau", "bloom"];
 
     for (let i = 0; i < posterCount; i++) {
         const angle = (i / posterCount) * Math.PI * 2;
@@ -190,10 +190,10 @@ async function loadPosterTextures() {
     if (!window.THREE || !posterGroup) return;
 
     const posterProjects = [
-        { image: '/images/lookbook.png' },
-        { image: '/images/rock.jpg' },
-        { image: '/images/fontainebleau.jpg' },
-        { image: '/images/bloom.jpg' }
+        { image: "/images/lookbook.png" },
+        { image: "/images/rock.jpg" },
+        { image: "/images/fontainebleau.jpg" },
+        { image: "/images/bloom.jpg" }
     ];
 
     const textureLoader = new window.THREE.TextureLoader();
@@ -209,7 +209,7 @@ async function loadPosterTextures() {
                 posterGroup.children[index].material.transparent = false;
                 posterGroup.children[index].material.needsUpdate = true;
             }, undefined, (error) => {
-                console.error('Error loading texture:', project.image, error);
+                console.error("Error loading texture:", project.image, error);
             });
         }
     });
@@ -220,7 +220,7 @@ function createVideoGallery(THREE) {
 
     const radius = 130;
     const videoCount = 1;
-    const videoNames = ['a island Road Trip'];
+    const videoNames = ["a island Road Trip"];
 
     for (let i = 0; i < videoCount; i++) {
         const angle = (i / videoCount) * Math.PI * 2;
@@ -258,7 +258,7 @@ async function loadVideoTextures() {
     if (!window.THREE || !videoGroup) return;
 
     const videoProjects = [
-        { image: '/images/island-road-trip.jpg' }
+        { image: "/images/island-road-trip.jpg" }
     ];
 
     const textureLoader = new window.THREE.TextureLoader();
@@ -274,7 +274,7 @@ async function loadVideoTextures() {
                 videoGroup.children[index].material.transparent = false;
                 videoGroup.children[index].material.needsUpdate = true;
             }, undefined, (error) => {
-                console.error('Error loading texture:', project.image, error);
+                console.error("Error loading texture:", project.image, error);
             });
         }
     });
@@ -291,26 +291,26 @@ function highlightPoster(posterName) {
     poster.visible = false;
     highlightedPosterData = { poster, posterName };
 
-    let overlay = document.getElementById('poster-image-overlay');
+    let overlay = document.getElementById("poster-image-overlay");
     if (!overlay) {
-        overlay = document.createElement('img');
-        overlay.id = 'poster-image-overlay';
-        overlay.style.position = 'fixed';
-        overlay.style.pointerEvents = 'none';
-        overlay.style.zIndex = '3';
-        overlay.style.transition = 'transform 0.1s ease-out';
+        overlay = document.createElement("img");
+        overlay.id = "poster-image-overlay";
+        overlay.style.position = "fixed";
+        overlay.style.pointerEvents = "none";
+        overlay.style.zIndex = "3";
+        overlay.style.transition = "transform 0.1s ease-out";
         document.body.appendChild(overlay);
     }
 
     const imageMap = {
-        'lookbook': '/images/lookbook.png',
-        'rock': '/images/rock.jpg',
-        'fontainebleau': '/images/fontainebleau.jpg',
-        'bloom': '/images/bloom.jpg'
+        "lookbook": "/images/lookbook.png",
+        "rock": "/images/rock.jpg",
+        "fontainebleau": "/images/fontainebleau.jpg",
+        "bloom": "/images/bloom.jpg"
     };
 
     overlay.src = imageMap[posterName];
-    overlay.style.display = 'block';
+    overlay.style.display = "block";
 }
 
 function unhighlightPoster() {
@@ -319,9 +319,9 @@ function unhighlightPoster() {
         highlightedPosterData = null;
     }
 
-    const overlay = document.getElementById('poster-image-overlay');
+    const overlay = document.getElementById("poster-image-overlay");
     if (overlay) {
-        overlay.style.display = 'none';
+        overlay.style.display = "none";
     }
 }
 
@@ -336,23 +336,23 @@ function highlightVideo(videoName) {
     video.visible = false;
     highlightedVideoData = { video, videoName };
 
-    let overlay = document.getElementById('video-image-overlay');
+    let overlay = document.getElementById("video-image-overlay");
     if (!overlay) {
-        overlay = document.createElement('img');
-        overlay.id = 'video-image-overlay';
-        overlay.style.position = 'fixed';
-        overlay.style.pointerEvents = 'none';
-        overlay.style.zIndex = '3';
-        overlay.style.transition = 'transform 0.1s ease-out';
+        overlay = document.createElement("img");
+        overlay.id = "video-image-overlay";
+        overlay.style.position = "fixed";
+        overlay.style.pointerEvents = "none";
+        overlay.style.zIndex = "3";
+        overlay.style.transition = "transform 0.1s ease-out";
         document.body.appendChild(overlay);
     }
 
     const imageMap = {
-        'a island Road Trip': '/images/island-road-trip.jpg'
+        "a island Road Trip": "/images/island-road-trip.jpg"
     };
 
     overlay.src = imageMap[videoName];
-    overlay.style.display = 'block';
+    overlay.style.display = "block";
 }
 
 function unhighlightVideo() {
@@ -361,14 +361,14 @@ function unhighlightVideo() {
         highlightedVideoData = null;
     }
 
-    const overlay = document.getElementById('video-image-overlay');
+    const overlay = document.getElementById("video-image-overlay");
     if (overlay) {
-        overlay.style.display = 'none';
+        overlay.style.display = "none";
     }
 }
 
 function setupScrollHandling() {
-    window.addEventListener('scroll', () => {
+    window.addEventListener("scroll", () => {
         updateCameraFromScroll();
     }, { passive: true });
 }
@@ -397,13 +397,13 @@ function updateCameraFromScroll() {
 function updateContentPosition(progress) {
     const translate = -(window.innerHeight - 200) * progress;
 
-    const logoLink = document.getElementById('logo-link');
+    const logoLink = document.getElementById("logo-link");
     if (logoLink) {
         logoLink.style.transform = `translateY(${translate}px)`;
     }
-    document.getElementById('bio-marquee').style.transform = `translateY(${translate}px)`;
+    document.getElementById("bio-marquee").style.transform = `translateY(${translate}px)`;
 
-    const projectsHeader = document.querySelector('.fixed.bottom-8.left-8');
+    const projectsHeader = document.querySelector(".fixed.bottom-8.left-8");
     if (projectsHeader) {
         const projectsTranslate = (window.innerHeight - 200) * (1 - progress);
         projectsHeader.style.transform = `translateY(${projectsTranslate}px)`;
@@ -444,7 +444,7 @@ function animate() {
     effect.render(scene, camera);
 
     if (highlightedPosterData) {
-        const overlay = document.getElementById('poster-image-overlay');
+        const overlay = document.getElementById("poster-image-overlay");
         if (overlay && camera) {
             const poster = highlightedPosterData.poster;
 
@@ -490,20 +490,20 @@ function animate() {
             const posterDistance = camera.position.distanceTo(worldPos);
             const rockDistance = camera.position.distanceTo(new window.THREE.Vector3(0, 0, 0));
 
-            const zIndex = posterDistance > rockDistance ? '0' : '3';
+            const zIndex = posterDistance > rockDistance ? "0" : "3";
 
             overlay.style.left = `${centerX}px`;
             overlay.style.top = `${centerY}px`;
             overlay.style.width = `${posterWidth}px`;
             overlay.style.height = `${posterHeight}px`;
             overlay.style.zIndex = zIndex;
-            overlay.style.opacity = '1';
+            overlay.style.opacity = "1";
             overlay.style.transform = `translate(-50%, -50%) scaleX(${isFacingAway ? -1 : 1})`;
         }
     }
 
     if (highlightedVideoData) {
-        const overlay = document.getElementById('video-image-overlay');
+        const overlay = document.getElementById("video-image-overlay");
         if (overlay && camera) {
             const video = highlightedVideoData.video;
 
@@ -550,8 +550,8 @@ function animate() {
             overlay.style.top = `${centerY}px`;
             overlay.style.width = `${videoWidth}px`;
             overlay.style.height = `${videoHeight}px`;
-            overlay.style.zIndex = '0';
-            overlay.style.opacity = '1';
+            overlay.style.zIndex = "0";
+            overlay.style.opacity = "1";
             overlay.style.transform = `translate(-50%, -50%) scaleX(${isFacingAway ? -1 : 1})`;
         }
     }
@@ -564,11 +564,11 @@ window.unhighlightPoster = unhighlightPoster;
 window.highlightVideo = highlightVideo;
 window.unhighlightVideo = unhighlightVideo;
 
-window.history.scrollRestoration = 'manual';
+window.history.scrollRestoration = "manual";
 window.scrollTo(0, 0);
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initAsciiBackground);
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initAsciiBackground);
 } else {
     initAsciiBackground();
 }

@@ -9,9 +9,6 @@ updates:
     open-pull-requests-limit: 10
     assignees:
       - "moinloin"
-    labels:
-      - "dependencies"
-      - "npm"
     commit-message:
       prefix: "chore"
       include: "scope"
@@ -36,9 +33,6 @@ updates:
     open-pull-requests-limit: 5
     assignees:
       - "moinloin"
-    labels:
-      - "dependencies"
-      - "docker"
     commit-message:
       prefix: "chore"
 
@@ -51,8 +45,5 @@ updates:
     open-pull-requests-limit: 5
     assignees:
       - "moinloin"
-    labels:
-      - "dependencies"
-      - "github-actions"
     commit-message:
       prefix: "chore"
