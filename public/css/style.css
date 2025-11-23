@@ -113,37 +113,24 @@ header,
   display: inline-block;
   margin-bottom: 1rem;
   padding: 0;
-  position: relative;
-  z-index: 50;
   cursor: pointer;
   line-height: 1;
   vertical-align: baseline;
-  min-width: 140px;
-  width: max-content;
 }
 
 #poster-list,
 #video-list,
 #code-list {
   position: relative;
-  z-index: 51;
+  z-index: 100;
 }
 
 #poster-list {
   width: 150px;
-  position: relative;
-  z-index: 100 !important;
 }
 
 #video-list {
   width: 200px;
-  position: relative;
-  z-index: 100 !important;
-}
-
-#code-list {
-  position: relative;
-  z-index: 100 !important;
 }
 
 #poster-list li,
@@ -157,7 +144,6 @@ header,
 #poster-list .top-project-link,
 #video-list .top-project-link,
 #code-list .top-project-link {
-  display: inline-block;
   position: relative;
   z-index: 102;
   pointer-events: auto;

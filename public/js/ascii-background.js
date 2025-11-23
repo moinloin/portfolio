@@ -546,16 +546,11 @@ function animate() {
             const dotProduct = videoNormal.dot(cameraDirection);
             const isFacingAway = dotProduct > 0;
 
-            const videoDistance = camera.position.distanceTo(worldPos);
-            const rockDistance = camera.position.distanceTo(new window.THREE.Vector3(0, 0, 0));
-
-            const zIndex = '0';
-
             overlay.style.left = `${centerX}px`;
             overlay.style.top = `${centerY}px`;
             overlay.style.width = `${videoWidth}px`;
             overlay.style.height = `${videoHeight}px`;
-            overlay.style.zIndex = zIndex;
+            overlay.style.zIndex = '0';
             overlay.style.opacity = '1';
             overlay.style.transform = `translate(-50%, -50%) scaleX(${isFacingAway ? -1 : 1})`;
         }
