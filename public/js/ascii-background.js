@@ -95,7 +95,10 @@ function init(THREE, AsciiEffect, TrackballControls) {
 function createRock(THREE) {
     const rockGroup = new THREE.Group();
 
-    const mainGeometry = new THREE.SphereGeometry(100, 8, 6);
+    const isMobile = window.innerWidth <= 1200;
+    const scale = isMobile ? 0.5 : 1;
+
+    const mainGeometry = new THREE.SphereGeometry(100 * scale, 8, 6);
     const vertices = mainGeometry.attributes.position.array;
 
     for (let i = 0; i < vertices.length; i += 3) {
@@ -115,7 +118,7 @@ function createRock(THREE) {
     rockGroup.add(mainRock);
 
     for (let i = 0; i < 5; i++) {
-        const smallGeometry = new THREE.SphereGeometry(20 + Math.random() * 30, 4, 3);
+        const smallGeometry = new THREE.SphereGeometry((20 + Math.random() * 30) * scale, 4, 3);
         const smallVertices = smallGeometry.attributes.position.array;
 
         for (let j = 0; j < smallVertices.length; j += 3) {
@@ -128,9 +131,9 @@ function createRock(THREE) {
 
         const smallRock = new THREE.Mesh(smallGeometry, rockMaterial);
         smallRock.position.set(
-            (Math.random() - 0.5) * 150,
-            (Math.random() - 0.5) * 100,
-            (Math.random() - 0.5) * 150
+            (Math.random() - 0.5) * 150 * scale,
+            (Math.random() - 0.5) * 100 * scale,
+            (Math.random() - 0.5) * 150 * scale
         );
         rockGroup.add(smallRock);
     }
@@ -150,7 +153,10 @@ function createRock(THREE) {
 function createPosterGallery(THREE) {
     posterGroup = new THREE.Group();
 
-    const radius = 150;
+    const isMobile = window.innerWidth <= 1200;
+    const scale = isMobile ? 0.5 : 1;
+
+    const radius = 150 * scale;
     const posterCount = 4;
     const posterNames = ["lookbook", "rock", "fontainebleau", "bloom"];
 
@@ -159,7 +165,7 @@ function createPosterGallery(THREE) {
         const x = Math.cos(angle) * radius;
         const z = Math.sin(angle) * radius;
 
-        const geometry = new THREE.PlaneGeometry(70, 105);
+        const geometry = new THREE.PlaneGeometry(70 * scale, 105 * scale);
         const material = new THREE.MeshBasicMaterial({
             color: 0xffffff,
             side: THREE.DoubleSide,
@@ -218,7 +224,10 @@ async function loadPosterTextures() {
 function createVideoGallery(THREE) {
     videoGroup = new THREE.Group();
 
-    const radius = 130;
+    const isMobile = window.innerWidth <= 1200;
+    const scale = isMobile ? 0.5 : 1;
+
+    const radius = 130 * scale;
     const videoCount = 1;
     const videoNames = ["a island Road Trip"];
 
@@ -227,7 +236,7 @@ function createVideoGallery(THREE) {
         const y = Math.cos(angle) * radius;
         const z = Math.sin(angle) * radius;
 
-        const geometry = new THREE.PlaneGeometry(80, 45);
+        const geometry = new THREE.PlaneGeometry(80 * scale, 45 * scale);
         const material = new THREE.MeshBasicMaterial({
             color: 0xffffff,
             side: THREE.DoubleSide,
@@ -395,7 +404,9 @@ function updateCameraFromScroll() {
 }
 
 function updateContentPosition(progress) {
-    const translate = -(window.innerHeight - 200) * progress;
+    const isMobileLandscape = window.innerWidth > window.innerHeight && window.innerWidth <= 1366;
+    const offset = isMobileLandscape ? 150 : 200;
+    const translate = -(window.innerHeight - offset) * progress;
 
     const logoLink = document.getElementById("logo-link");
     if (logoLink) {
@@ -405,7 +416,7 @@ function updateContentPosition(progress) {
 
     const projectsHeader = document.querySelector(".fixed.bottom-8.left-8");
     if (projectsHeader) {
-        const projectsTranslate = (window.innerHeight - 200) * (1 - progress);
+        const projectsTranslate = (window.innerHeight - offset) * (1 - progress);
         projectsHeader.style.transform = `translateY(${projectsTranslate}px)`;
         projectsHeader.style.opacity = progress;
     }

@@ -610,3 +610,278 @@ h1, h2, h3, h4, h5, h6, header a {
 .back-btn:hover .arrow.show {
   transform: translateX(30px);
 }
+
+@media (max-width: 1200px) and (orientation: portrait) {
+  .header-link {
+    font-size: 2rem;
+    letter-spacing: -0.03em;
+  }
+
+  header {
+    padding: 1rem !important;
+    bottom: 5rem !important;
+  }
+
+  #info-link {
+    position: fixed !important;
+    top: 1.5rem;
+    right: 1.5rem;
+    bottom: auto !important;
+    left: auto !important;
+    font-size: 1.5rem;
+    margin-right: 0;
+    z-index: 150;
+  }
+
+  #bio-text {
+    font-size: 1.125rem !important;
+    padding-top: 2rem !important;
+    max-width: 90% !important;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  #bio-marquee {
+    left: 1rem !important;
+    bottom: 2rem !important;
+    right: 1rem;
+    max-width: calc(100% - 2rem);
+  }
+
+  #bio-marquee p {
+    font-size: 0.85rem !important;
+  }
+
+  #bio-marquee p br {
+    display: none;
+  }
+
+  .fixed.bottom-8.left-8 {
+    left: 1rem;
+    bottom: 2rem;
+    top: auto;
+    transform: none;
+    width: calc(100% - 2rem);
+    z-index: 100 !important;
+  }
+
+  .fixed.bottom-8.left-8 > .flex {
+    flex-direction: column-reverse !important;
+    align-items: flex-start !important;
+    gap: 1rem;
+  }
+
+  .fixed.bottom-8.left-8 > .flex > div {
+    margin-left: 0 !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    width: 100%;
+    gap: 1rem;
+  }
+
+  .fixed.bottom-8.left-8 h1 {
+    font-size: 1.2rem !important;
+    margin-bottom: 0;
+  }
+
+  .fixed.bottom-8.left-8 h2 {
+    font-size: 1rem !important;
+    min-width: 80px;
+    flex-shrink: 0;
+  }
+
+  .project-link {
+    font-size: 0.9rem;
+    padding: 0.1rem 0;
+    pointer-events: auto !important;
+    position: relative;
+    z-index: 102;
+  }
+
+  .top-project-link {
+    font-size: 0.85rem;
+    pointer-events: auto !important;
+    position: relative;
+    z-index: 102;
+  }
+
+  #poster-list,
+  #video-list,
+  #code-list {
+    margin-bottom: 0 !important;
+    pointer-events: auto !important;
+    z-index: 101;
+  }
+
+  #poster-list,
+  #video-list,
+  #code-list {
+    width: 100%;
+    max-width: none;
+  }
+
+  #project-list li {
+    margin-bottom: 0.5rem;
+  }
+
+  .w-1\/4 {
+    display: none;
+  }
+
+  .w-3\/4 {
+    width: 100%;
+  }
+
+  #close-modal-btn {
+    top: 1rem;
+    right: 1rem;
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .github-card {
+    padding: 1.5rem;
+    max-width: 90%;
+  }
+
+  #github-name {
+    font-size: 1.3rem;
+  }
+
+  .github-description {
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .github-link {
+    font-size: 1rem;
+  }
+
+  .github-language {
+    font-size: 0.6rem;
+    padding: 0.25rem 0.6rem;
+  }
+
+  .back-btn {
+    font-size: 1.5rem;
+    top: 1rem;
+    left: 1rem;
+  }
+
+  .project-container img {
+    max-height: 85vh;
+    height: auto;
+  }
+
+  #modal-image {
+    max-height: 70vh;
+  }
+
+  .video-container {
+    max-width: 95vw;
+  }
+
+  .grid-background {
+    background-size: 30px 30px;
+  }
+
+  .particle {
+    width: 1.5px;
+    height: 1.5px;
+  }
+}
+
+@media (max-width: 1366px) and (orientation: landscape) {
+  .header-link {
+    font-size: 2.5rem;
+    letter-spacing: -0.03em;
+  }
+
+  header {
+    padding: 1rem !important;
+    bottom: 3rem !important;
+    z-index: 50 !important;
+  }
+
+  #logo-link {
+    z-index: 50;
+  }
+
+  #info-link {
+    position: fixed !important;
+    top: 1.5rem;
+    right: 1.5rem;
+    bottom: auto !important;
+    left: auto !important;
+    font-size: 1.5rem;
+    margin-right: 0;
+    z-index: 100;
+  }
+
+  #bio-marquee {
+    left: 1rem !important;
+    bottom: 2rem !important;
+    right: 1rem;
+    max-width: 50%;
+  }
+
+  #bio-marquee p {
+    font-size: 0.85rem !important;
+  }
+
+  #bio-marquee p br {
+    display: none;
+  }
+
+  .fixed.bottom-8.left-8 {
+    left: 1rem;
+    bottom: 1rem;
+    z-index: 100 !important;
+  }
+
+  .fixed.bottom-8.left-8 > .flex > div {
+    margin-left: 3rem !important;
+  }
+
+  .fixed.bottom-8.left-8 > .flex > div:first-child {
+    margin-left: 0 !important;
+  }
+
+  .fixed.bottom-8.left-8 h1 {
+    font-size: 1.2rem !important;
+  }
+
+  .fixed.bottom-8.left-8 h2 {
+    font-size: 1rem !important;
+  }
+
+  .project-link {
+    font-size: 0.95rem;
+    pointer-events: auto !important;
+    position: relative;
+    z-index: 102;
+  }
+
+  .top-project-link {
+    font-size: 0.85rem;
+    pointer-events: auto !important;
+    position: relative;
+    z-index: 102;
+  }
+
+  #poster-list,
+  #video-list,
+  #code-list {
+    pointer-events: auto !important;
+    z-index: 101;
+  }
+
+  .w-1\/4 {
+    display: none;
+  }
+
+  .w-3\/4 {
+    width: 100%;
+  }
+}
