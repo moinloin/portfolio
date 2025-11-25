@@ -1,31 +1,38 @@
+const MOBILE_SCALE_FACTOR = 0.5;
+const DESKTOP_SCROLL_OFFSET = 200;
+const MOBILE_LANDSCAPE_SCROLL_OFFSET = 150;
+const POSTER_HALF_WIDTH = 35;
+const POSTER_HALF_HEIGHT = 52.5;
+const VIDEO_HALF_WIDTH = 40;
+const VIDEO_HALF_HEIGHT = 22.5;
+const MOBILE_PORTRAIT_MAX_WIDTH = 1200;
+const MOBILE_LANDSCAPE_MAX_WIDTH = 1365;
+
 let camera, controls, scene, renderer, effect;
 let rock;
 let posterGroup;
 let videoGroup;
 let highlightedPosterData = null;
 let highlightedVideoData = null;
+let currentScale = 1;
 const start = Date.now();
 
 async function initAsciiBackground() {
     try {
-        console.log("Loading Three.js modules...");
-        
         const THREE = await import("three");
         window.THREE = THREE;
-        
+
         const { AsciiEffect } = await import("three/addons/effects/AsciiEffect.js");
         const { TrackballControls } = await import("three/addons/controls/TrackballControls.js");
-        
-        console.log("Three.js modules loaded, initializing...");
+
         init(THREE, AsciiEffect, TrackballControls);
-        
+
     } catch (error) {
         console.error("Failed to load Three.js modules:", error);
     }
 }
 
 function init(THREE, AsciiEffect, TrackballControls) {
-    console.log("Initializing ASCII background...");
     
     camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 1000);
     camera.position.set(0, 300, 50);
@@ -76,7 +83,6 @@ function init(THREE, AsciiEffect, TrackballControls) {
     document.body.appendChild(bgLayer);
 
     document.body.appendChild(effect.domElement);
-    console.log("ASCII effect added to DOM");
 
     controls = new TrackballControls(camera, effect.domElement);
     controls.enabled = false;
@@ -88,15 +94,16 @@ function init(THREE, AsciiEffect, TrackballControls) {
     window.addEventListener("resize", onWindowResize);
 
     animate();
-    
-    console.log("ASCII background initialized successfully");
 }
 
 function createRock(THREE) {
     const rockGroup = new THREE.Group();
 
-    const isMobile = window.innerWidth <= 1200;
-    const scale = isMobile ? 0.5 : 1;
+    const isMobilePortrait = window.innerWidth <= MOBILE_PORTRAIT_MAX_WIDTH && window.innerHeight > window.innerWidth;
+    const isMobileLandscape = window.innerWidth <= MOBILE_LANDSCAPE_MAX_WIDTH && window.innerWidth > window.innerHeight;
+    const isMobile = isMobilePortrait || isMobileLandscape;
+    const scale = isMobile ? MOBILE_SCALE_FACTOR : 1;
+    currentScale = scale;
 
     const mainGeometry = new THREE.SphereGeometry(100 * scale, 8, 6);
     const vertices = mainGeometry.attributes.position.array;
@@ -153,8 +160,10 @@ function createRock(THREE) {
 function createPosterGallery(THREE) {
     posterGroup = new THREE.Group();
 
-    const isMobile = window.innerWidth <= 1200;
-    const scale = isMobile ? 0.5 : 1;
+    const isMobilePortrait = window.innerWidth <= MOBILE_PORTRAIT_MAX_WIDTH && window.innerHeight > window.innerWidth;
+    const isMobileLandscape = window.innerWidth <= MOBILE_LANDSCAPE_MAX_WIDTH && window.innerWidth > window.innerHeight;
+    const isMobile = isMobilePortrait || isMobileLandscape;
+    const scale = isMobile ? MOBILE_SCALE_FACTOR : 1;
 
     const radius = 150 * scale;
     const posterCount = 4;
@@ -224,8 +233,10 @@ async function loadPosterTextures() {
 function createVideoGallery(THREE) {
     videoGroup = new THREE.Group();
 
-    const isMobile = window.innerWidth <= 1200;
-    const scale = isMobile ? 0.5 : 1;
+    const isMobilePortrait = window.innerWidth <= MOBILE_PORTRAIT_MAX_WIDTH && window.innerHeight > window.innerWidth;
+    const isMobileLandscape = window.innerWidth <= MOBILE_LANDSCAPE_MAX_WIDTH && window.innerWidth > window.innerHeight;
+    const isMobile = isMobilePortrait || isMobileLandscape;
+    const scale = isMobile ? MOBILE_SCALE_FACTOR : 1;
 
     const radius = 130 * scale;
     const videoCount = 1;
@@ -404,15 +415,19 @@ function updateCameraFromScroll() {
 }
 
 function updateContentPosition(progress) {
-    const isMobileLandscape = window.innerWidth > window.innerHeight && window.innerWidth <= 1366;
-    const offset = isMobileLandscape ? 150 : 200;
+    const isMobileLandscape = window.innerWidth > window.innerHeight && window.innerWidth <= MOBILE_LANDSCAPE_MAX_WIDTH;
+    const offset = isMobileLandscape ? MOBILE_LANDSCAPE_SCROLL_OFFSET : DESKTOP_SCROLL_OFFSET;
     const translate = -(window.innerHeight - offset) * progress;
 
     const logoLink = document.getElementById("logo-link");
     if (logoLink) {
         logoLink.style.transform = `translateY(${translate}px)`;
     }
-    document.getElementById("bio-marquee").style.transform = `translateY(${translate}px)`;
+
+    const bioMarquee = document.getElementById("bio-marquee");
+    if (bioMarquee) {
+        bioMarquee.style.transform = `translateY(${translate}px)`;
+    }
 
     const projectsHeader = document.querySelector(".fixed.bottom-8.left-8");
     if (projectsHeader) {
@@ -430,6 +445,9 @@ function onWindowResize() {
 
     renderer.setSize(window.innerWidth, window.innerHeight);
     effect.setSize(window.innerWidth, window.innerHeight);
+
+    updateCameraFromScroll();
+    updateContentPosition(window.scrollY / (document.body.scrollHeight - window.innerHeight));
 }
 
 function animate() {
@@ -462,10 +480,10 @@ function animate() {
             const worldPos = new window.THREE.Vector3();
             poster.getWorldPosition(worldPos);
 
-            const topLeft = new window.THREE.Vector3(-35, 52.5, 0);
-            const topRight = new window.THREE.Vector3(35, 52.5, 0);
-            const bottomLeft = new window.THREE.Vector3(-35, -52.5, 0);
-            const bottomRight = new window.THREE.Vector3(35, -52.5, 0);
+            const topLeft = new window.THREE.Vector3(-POSTER_HALF_WIDTH * currentScale, POSTER_HALF_HEIGHT * currentScale, 0);
+            const topRight = new window.THREE.Vector3(POSTER_HALF_WIDTH * currentScale, POSTER_HALF_HEIGHT * currentScale, 0);
+            const bottomLeft = new window.THREE.Vector3(-POSTER_HALF_WIDTH * currentScale, -POSTER_HALF_HEIGHT * currentScale, 0);
+            const bottomRight = new window.THREE.Vector3(POSTER_HALF_WIDTH * currentScale, -POSTER_HALF_HEIGHT * currentScale, 0);
 
             topLeft.applyMatrix4(poster.matrixWorld);
             topRight.applyMatrix4(poster.matrixWorld);
@@ -521,10 +539,10 @@ function animate() {
             const worldPos = new window.THREE.Vector3();
             video.getWorldPosition(worldPos);
 
-            const topLeft = new window.THREE.Vector3(-40, 22.5, 0);
-            const topRight = new window.THREE.Vector3(40, 22.5, 0);
-            const bottomLeft = new window.THREE.Vector3(-40, -22.5, 0);
-            const bottomRight = new window.THREE.Vector3(40, -22.5, 0);
+            const topLeft = new window.THREE.Vector3(-VIDEO_HALF_WIDTH * currentScale, VIDEO_HALF_HEIGHT * currentScale, 0);
+            const topRight = new window.THREE.Vector3(VIDEO_HALF_WIDTH * currentScale, VIDEO_HALF_HEIGHT * currentScale, 0);
+            const bottomLeft = new window.THREE.Vector3(-VIDEO_HALF_WIDTH * currentScale, -VIDEO_HALF_HEIGHT * currentScale, 0);
+            const bottomRight = new window.THREE.Vector3(VIDEO_HALF_WIDTH * currentScale, -VIDEO_HALF_HEIGHT * currentScale, 0);
 
             topLeft.applyMatrix4(video.matrixWorld);
             topRight.applyMatrix4(video.matrixWorld);

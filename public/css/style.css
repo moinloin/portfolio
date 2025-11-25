@@ -308,7 +308,7 @@ header,
   width: 2.5rem;
   height: 2.5rem;
   background: transparent;
-  z-index: 9999;
+  z-index: 210;
   pointer-events: auto;
   display: flex;
   align-items: center;
@@ -630,7 +630,7 @@ h1, h2, h3, h4, h5, h6, header a {
     left: auto !important;
     font-size: 1.5rem;
     margin-right: 0;
-    z-index: 150;
+    z-index: 110;
   }
 
   #bio-text {
@@ -662,7 +662,7 @@ h1, h2, h3, h4, h5, h6, header a {
     top: auto;
     transform: none;
     width: calc(100% - 2rem);
-    z-index: 100 !important;
+    z-index: 60 !important;
   }
 
   .fixed.bottom-8.left-8 > .flex {
@@ -696,14 +696,14 @@ h1, h2, h3, h4, h5, h6, header a {
     padding: 0.1rem 0;
     pointer-events: auto !important;
     position: relative;
-    z-index: 102;
+    z-index: 62;
   }
 
   .top-project-link {
     font-size: 0.85rem;
     pointer-events: auto !important;
     position: relative;
-    z-index: 102;
+    z-index: 62;
   }
 
   #poster-list,
@@ -711,12 +711,7 @@ h1, h2, h3, h4, h5, h6, header a {
   #code-list {
     margin-bottom: 0 !important;
     pointer-events: auto !important;
-    z-index: 101;
-  }
-
-  #poster-list,
-  #video-list,
-  #code-list {
+    z-index: 61;
     width: 100%;
     max-width: none;
   }
@@ -792,7 +787,7 @@ h1, h2, h3, h4, h5, h6, header a {
   }
 }
 
-@media (max-width: 1366px) and (orientation: landscape) {
+@media (max-width: 1365px) and (orientation: landscape) {
   .header-link {
     font-size: 2.5rem;
     letter-spacing: -0.03em;
@@ -801,11 +796,11 @@ h1, h2, h3, h4, h5, h6, header a {
   header {
     padding: 1rem !important;
     bottom: 3rem !important;
-    z-index: 50 !important;
+    z-index: 40 !important;
   }
 
   #logo-link {
-    z-index: 50;
+    z-index: 40;
   }
 
   #info-link {
@@ -816,7 +811,7 @@ h1, h2, h3, h4, h5, h6, header a {
     left: auto !important;
     font-size: 1.5rem;
     margin-right: 0;
-    z-index: 100;
+    z-index: 110;
   }
 
   #bio-marquee {
@@ -837,7 +832,7 @@ h1, h2, h3, h4, h5, h6, header a {
   .fixed.bottom-8.left-8 {
     left: 1rem;
     bottom: 1rem;
-    z-index: 100 !important;
+    z-index: 60 !important;
   }
 
   .fixed.bottom-8.left-8 > .flex > div {
@@ -860,21 +855,21 @@ h1, h2, h3, h4, h5, h6, header a {
     font-size: 0.95rem;
     pointer-events: auto !important;
     position: relative;
-    z-index: 102;
+    z-index: 62;
   }
 
   .top-project-link {
     font-size: 0.85rem;
     pointer-events: auto !important;
     position: relative;
-    z-index: 102;
+    z-index: 62;
   }
 
   #poster-list,
   #video-list,
   #code-list {
     pointer-events: auto !important;
-    z-index: 101;
+    z-index: 61;
   }
 
   .w-1\/4 {
