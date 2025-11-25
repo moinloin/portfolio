@@ -285,7 +285,7 @@ function showProjectImage(project) {
 
         timeouts.imageTransition = setTimeout(() => {
             createAndShowProjectImage(container, project);
-        }, 100);
+        }, 50);
     } else {
         createAndShowProjectImage(container, project);
     }
@@ -330,25 +330,30 @@ function displayCachedImage(div, img, project) {
     clonedImg.alt = project.alt || project.name;
     clonedImg.className = "h-screen w-auto object-contain";
     clonedImg.style.opacity = "0";
-    clonedImg.style.transition = "opacity 0.15s ease";
+    clonedImg.style.transition = "opacity 0.05s ease";
 
     div.appendChild(clonedImg);
 
     requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-            clonedImg.style.opacity = "1";
-            div.style.opacity = "1";
-            div.style.transform = "translateY(0)";
-        });
+        clonedImg.style.opacity = "1";
+        div.style.opacity = "1";
+        div.style.transform = "translateY(0)";
     });
 }
 
 function loadAndDisplayImage(div, project) {
+    const usePreview = project.preview && project.preview !== project.image;
+    const imgSrc = usePreview ? project.preview : project.image;
+
     const img = document.createElement("img");
     img.alt = project.alt || project.name;
     img.className = "h-screen w-auto object-contain";
     img.style.opacity = "0";
-    img.style.transition = "opacity 0.2s ease";
+    img.style.transition = "opacity 0.05s ease";
+
+    if (usePreview) {
+        img.style.filter = "blur(0px)";
+    }
 
     const loadingDiv = document.createElement("div");
     loadingDiv.className = "flex items-center justify-center h-screen w-full";
@@ -358,7 +363,7 @@ function loadAndDisplayImage(div, project) {
     div.appendChild(loadingDiv);
 
     img.onload = function() {
-        cache.images.set(project.image, img);
+        cache.images.set(imgSrc, img);
         cache.preloaded.set(project.id, img);
 
         div.innerHTML = "";
@@ -369,13 +374,28 @@ function loadAndDisplayImage(div, project) {
             div.style.opacity = "1";
             div.style.transform = "translateY(0)";
         });
+
+        if (usePreview && project.image !== project.preview) {
+            preloadFullImage(project.image, project.id);
+        }
     };
 
     img.onerror = function() {
         div.style.display = "none";
     };
 
-    img.src = project.image;
+    img.src = imgSrc;
+}
+
+function preloadFullImage(imagePath, projectId) {
+    if (cache.images.has(imagePath)) return;
+
+    const img = new Image();
+    img.onload = function() {
+        cache.images.set(imagePath, img);
+        cache.preloaded.set(projectId, img);
+    };
+    img.src = imagePath;
 }
 
 function hideProjectImage() {
