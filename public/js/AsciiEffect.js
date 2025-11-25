@@ -7,290 +7,290 @@
  */
 class AsciiEffect {
 
-	/**
+    /**
 	 * Constructs a new ASCII effect.
 	 *
 	 * @param {WebGLRenderer} renderer - The renderer.
 	 * @param {string} [charSet=' .:-=+*#%@'] - The char set.
 	 * @param {AsciiEffect~Options} [options] - The configuration parameter.
 	 */
-	constructor( renderer, charSet = ' .:-=+*#%@', options = {} ) {
+    constructor( renderer, charSet = " .:-=+*#%@", options = {} ) {
 
-		// ' .,:;=|iI+hHOE#`$';
-		// darker bolder character set from https://github.com/saw/Canvas-ASCII-Art/
-		// ' .\'`^",:;Il!i~+_-?][}{1)(|/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$'
+        // ' .,:;=|iI+hHOE#`$';
+        // darker bolder character set from https://github.com/saw/Canvas-ASCII-Art/
+        // ' .\'`^",:;Il!i~+_-?][}{1)(|/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$'
 
-		// Some ASCII settings
+        // Some ASCII settings
 
-		const fResolution = options[ 'resolution' ] || 0.15;
-		const iScale = options[ 'scale' ] || 1;
-		const bColor = options[ 'color' ] || false;
-		const bAlpha = options[ 'alpha' ] || false;
-		const bBlock = options[ 'block' ] || false;
-		const bInvert = options[ 'invert' ] || false;
-		const strResolution = options[ 'strResolution' ] || 'low';
+        const fResolution = options[ "resolution" ] || 0.15;
+        const iScale = options[ "scale" ] || 1;
+        const bColor = options[ "color" ] || false;
+        const bAlpha = options[ "alpha" ] || false;
+        const bBlock = options[ "block" ] || false;
+        const bInvert = options[ "invert" ] || false;
+        const strResolution = options[ "strResolution" ] || "low";
 
-		let width, height;
+        let width, height;
 
-		const domElement = document.createElement( 'div' );
-		domElement.style.cursor = 'default';
+        const domElement = document.createElement( "div" );
+        domElement.style.cursor = "default";
 
-		const oAscii = document.createElement( 'table' );
-		domElement.appendChild( oAscii );
+        const oAscii = document.createElement( "table" );
+        domElement.appendChild( oAscii );
 
-		let iWidth, iHeight;
-		let oImg;
+        let iWidth, iHeight;
+        let oImg;
 
-		/**
+        /**
 		 * Resizes the effect.
 		 *
 		 * @param {number} w - The width of the effect in logical pixels.
 		 * @param {number} h - The height of the effect in logical pixels.
 		 */
-		this.setSize = function ( w, h ) {
+        this.setSize = function ( w, h ) {
 
-			width = w;
-			height = h;
+            width = w;
+            height = h;
 
-			renderer.setSize( w, h );
+            renderer.setSize( w, h );
 
-			initAsciiSize();
+            initAsciiSize();
 
-		};
+        };
 
-		/**
+        /**
 		 * When using this effect, this method should be called instead of the
 		 * default {@link WebGLRenderer#render}.
 		 *
 		 * @param {Object3D} scene - The scene to render.
 		 * @param {Camera} camera - The camera.
 		 */
-		this.render = function ( scene, camera ) {
+        this.render = function ( scene, camera ) {
 
-			renderer.render( scene, camera );
-			asciifyImage( oAscii );
+            renderer.render( scene, camera );
+            asciifyImage( oAscii );
 
-		};
+        };
 
-		/**
+        /**
 		 * The DOM element of the effect. This element must be used instead of the
 		 * default {@link WebGLRenderer#domElement}.
 		 *
 		 * @type {HTMLDivElement}
 		 */
-		this.domElement = domElement;
+        this.domElement = domElement;
 
 
-		// Throw in ascii library from https://github.com/hassadee/jsascii/blob/master/jsascii.js (MIT License)
+        // Throw in ascii library from https://github.com/hassadee/jsascii/blob/master/jsascii.js (MIT License)
 
-		function initAsciiSize() {
+        function initAsciiSize() {
 
-			iWidth = Math.floor( width * fResolution );
-			iHeight = Math.floor( height * fResolution );
+            iWidth = Math.floor( width * fResolution );
+            iHeight = Math.floor( height * fResolution );
 
-			oCanvas.width = iWidth;
-			oCanvas.height = iHeight;
-			// oCanvas.style.display = "none";
-			// oCanvas.style.width = iWidth;
-			// oCanvas.style.height = iHeight;
+            oCanvas.width = iWidth;
+            oCanvas.height = iHeight;
+            // oCanvas.style.display = "none";
+            // oCanvas.style.width = iWidth;
+            // oCanvas.style.height = iHeight;
 
-			oImg = renderer.domElement;
+            oImg = renderer.domElement;
 
-			if ( oImg.style.backgroundColor ) {
+            if ( oImg.style.backgroundColor ) {
 
-				oAscii.rows[ 0 ].cells[ 0 ].style.backgroundColor = oImg.style.backgroundColor;
-				oAscii.rows[ 0 ].cells[ 0 ].style.color = oImg.style.color;
+                oAscii.rows[ 0 ].cells[ 0 ].style.backgroundColor = oImg.style.backgroundColor;
+                oAscii.rows[ 0 ].cells[ 0 ].style.color = oImg.style.color;
 
-			}
+            }
 
-			oAscii.cellSpacing = '0';
-			oAscii.cellPadding = '0';
+            oAscii.cellSpacing = "0";
+            oAscii.cellPadding = "0";
 
-			const oStyle = oAscii.style;
-			oStyle.whiteSpace = 'pre';
-			oStyle.margin = '0px';
-			oStyle.padding = '0px';
-			oStyle.letterSpacing = fLetterSpacing + 'px';
-			oStyle.fontFamily = strFont;
-			oStyle.fontSize = fFontSize + 'px';
-			oStyle.lineHeight = fLineHeight + 'px';
-			oStyle.textAlign = 'left';
-			oStyle.textDecoration = 'none';
+            const oStyle = oAscii.style;
+            oStyle.whiteSpace = "pre";
+            oStyle.margin = "0px";
+            oStyle.padding = "0px";
+            oStyle.letterSpacing = fLetterSpacing + "px";
+            oStyle.fontFamily = strFont;
+            oStyle.fontSize = fFontSize + "px";
+            oStyle.lineHeight = fLineHeight + "px";
+            oStyle.textAlign = "left";
+            oStyle.textDecoration = "none";
 
-		}
+        }
 
 
-		const strFont = 'courier new, monospace';
+        const strFont = "courier new, monospace";
 
-		const oCanvasImg = renderer.domElement;
+        const oCanvasImg = renderer.domElement;
 
-		const oCanvas = document.createElement( 'canvas' );
-		if ( ! oCanvas.getContext ) {
+        const oCanvas = document.createElement( "canvas" );
+        if ( ! oCanvas.getContext ) {
 
-			return;
+            return;
 
-		}
+        }
 
-		const oCtx = oCanvas.getContext( '2d', { willReadFrequently: true } );
-		if ( ! oCtx.getImageData ) {
+        const oCtx = oCanvas.getContext( "2d", { willReadFrequently: true } );
+        if ( ! oCtx.getImageData ) {
 
-			return;
+            return;
 
-		}
+        }
 
-		let aCharList;
-		if ( charSet ) {
+        let aCharList;
+        if ( charSet ) {
 
-			aCharList = ( charSet ).split( '' );
+            aCharList = ( charSet ).split( "" );
 
-		} else {
+        } else {
 
-			const aDefaultCharList = ( ' .,:;i1tfLCG08@' ).split( '' );
-			const aDefaultColorCharList = ( ' CGO08@' ).split( '' );
-			aCharList = ( bColor ? aDefaultColorCharList : aDefaultCharList );
+            const aDefaultCharList = ( " .,:;i1tfLCG08@" ).split( "" );
+            const aDefaultColorCharList = ( " CGO08@" ).split( "" );
+            aCharList = ( bColor ? aDefaultColorCharList : aDefaultCharList );
 
-		}
+        }
 
 
-		// Setup dom
+        // Setup dom
 
-		const fFontSize = ( 2 / fResolution ) * iScale;
-		const fLineHeight = ( 2 / fResolution ) * iScale;
+        const fFontSize = ( 2 / fResolution ) * iScale;
+        const fLineHeight = ( 2 / fResolution ) * iScale;
 
-		// adjust letter-spacing for all combinations of scale and resolution to get it to fit the image width.
+        // adjust letter-spacing for all combinations of scale and resolution to get it to fit the image width.
 
-		let fLetterSpacing = 0;
+        let fLetterSpacing = 0;
 
-		if ( strResolution == 'low' ) {
+        if ( strResolution == "low" ) {
 
-			switch ( iScale ) {
+            switch ( iScale ) {
 
-				case 1 : fLetterSpacing = - 1; break;
-				case 2 :
-				case 3 : fLetterSpacing = - 2.1; break;
-				case 4 : fLetterSpacing = - 3.1; break;
-				case 5 : fLetterSpacing = - 4.15; break;
+            case 1 : fLetterSpacing = - 1; break;
+            case 2 :
+            case 3 : fLetterSpacing = - 2.1; break;
+            case 4 : fLetterSpacing = - 3.1; break;
+            case 5 : fLetterSpacing = - 4.15; break;
 
-			}
+            }
 
-		}
+        }
 
-		if ( strResolution == 'medium' ) {
+        if ( strResolution == "medium" ) {
 
-			switch ( iScale ) {
+            switch ( iScale ) {
 
-				case 1 : fLetterSpacing = 0; break;
-				case 2 : fLetterSpacing = - 1; break;
-				case 3 : fLetterSpacing = - 1.04; break;
-				case 4 :
-				case 5 : fLetterSpacing = - 2.1; break;
+            case 1 : fLetterSpacing = 0; break;
+            case 2 : fLetterSpacing = - 1; break;
+            case 3 : fLetterSpacing = - 1.04; break;
+            case 4 :
+            case 5 : fLetterSpacing = - 2.1; break;
 
-			}
+            }
 
-		}
+        }
 
-		if ( strResolution == 'high' ) {
+        if ( strResolution == "high" ) {
 
-			switch ( iScale ) {
+            switch ( iScale ) {
 
-				case 1 :
-				case 2 : fLetterSpacing = 0; break;
-				case 3 :
-				case 4 :
-				case 5 : fLetterSpacing = - 1; break;
+            case 1 :
+            case 2 : fLetterSpacing = 0; break;
+            case 3 :
+            case 4 :
+            case 5 : fLetterSpacing = - 1; break;
 
-			}
+            }
 
-		}
+        }
 
 
-		// can't get a span or div to flow like an img element, but a table works?
+        // can't get a span or div to flow like an img element, but a table works?
 
 
-		// convert img element to ascii
+        // convert img element to ascii
 
-		function asciifyImage( oAscii ) {
+        function asciifyImage( oAscii ) {
 
-			oCtx.clearRect( 0, 0, iWidth, iHeight );
-			oCtx.drawImage( oCanvasImg, 0, 0, iWidth, iHeight );
-			const oImgData = oCtx.getImageData( 0, 0, iWidth, iHeight ).data;
+            oCtx.clearRect( 0, 0, iWidth, iHeight );
+            oCtx.drawImage( oCanvasImg, 0, 0, iWidth, iHeight );
+            const oImgData = oCtx.getImageData( 0, 0, iWidth, iHeight ).data;
 
-			// Coloring loop starts now
-			let strChars = '';
+            // Coloring loop starts now
+            let strChars = "";
 
-			const maxIdx = aCharList.length - 1;
+            const maxIdx = aCharList.length - 1;
 
-			// console.time('rendering');
+            // console.time('rendering');
 
-			for ( let y = 0; y < iHeight; y += 2 ) {
+            for ( let y = 0; y < iHeight; y += 2 ) {
 
-				for ( let x = 0; x < iWidth; x ++ ) {
+                for ( let x = 0; x < iWidth; x ++ ) {
 
-					const iOffset = ( y * iWidth + x ) * 4;
+                    const iOffset = ( y * iWidth + x ) * 4;
 
-					const iRed = oImgData[ iOffset ];
-					const iGreen = oImgData[ iOffset + 1 ];
-					const iBlue = oImgData[ iOffset + 2 ];
-					const iAlpha = oImgData[ iOffset + 3 ];
+                    const iRed = oImgData[ iOffset ];
+                    const iGreen = oImgData[ iOffset + 1 ];
+                    const iBlue = oImgData[ iOffset + 2 ];
+                    const iAlpha = oImgData[ iOffset + 3 ];
 
-					let fBrightness = ( 0.3 * iRed + 0.59 * iGreen + 0.11 * iBlue ) / 255;
-					// fBrightness = (0.3*iRed + 0.5*iGreen + 0.3*iBlue) / 255;
+                    let fBrightness = ( 0.3 * iRed + 0.59 * iGreen + 0.11 * iBlue ) / 255;
+                    // fBrightness = (0.3*iRed + 0.5*iGreen + 0.3*iBlue) / 255;
 
 
-					if ( iAlpha == 0 ) {
+                    if ( iAlpha == 0 ) {
 
-						// should calculate alpha instead, but quick hack :)
-						//fBrightness *= (iAlpha / 255);
-						fBrightness = 1;
+                        // should calculate alpha instead, but quick hack :)
+                        //fBrightness *= (iAlpha / 255);
+                        fBrightness = 1;
 
-					}
+                    }
 
-					let iCharIdx = Math.round( ( 1 - fBrightness ) * maxIdx );
+                    let iCharIdx = Math.round( ( 1 - fBrightness ) * maxIdx );
 
-					if ( bInvert ) {
+                    if ( bInvert ) {
 
-						iCharIdx = maxIdx - iCharIdx;
+                        iCharIdx = maxIdx - iCharIdx;
 
-					}
+                    }
 
-					// good for debugging
-					//fBrightness = Math.floor(fBrightness * 10);
-					//strThisChar = fBrightness;
+                    // good for debugging
+                    //fBrightness = Math.floor(fBrightness * 10);
+                    //strThisChar = fBrightness;
 
-					let strThisChar = aCharList[ iCharIdx ];
+                    let strThisChar = aCharList[ iCharIdx ];
 
-					if ( strThisChar === undefined || strThisChar == ' ' )
-						strThisChar = '&nbsp;';
+                    if ( strThisChar === undefined || strThisChar == " " )
+                        strThisChar = "&nbsp;";
 
-					if ( bColor ) {
+                    if ( bColor ) {
 
-						strChars += '<span style=\''
-							+ 'color:rgb(' + iRed + ',' + iGreen + ',' + iBlue + ');'
-							+ ( bBlock ? 'background-color:rgb(' + iRed + ',' + iGreen + ',' + iBlue + ');' : '' )
-							+ ( bAlpha ? 'opacity:' + ( iAlpha / 255 ) + ';' : '' )
-							+ '\'>' + strThisChar + '</span>';
+                        strChars += "<span style='"
+							+ "color:rgb(" + iRed + "," + iGreen + "," + iBlue + ");"
+							+ ( bBlock ? "background-color:rgb(" + iRed + "," + iGreen + "," + iBlue + ");" : "" )
+							+ ( bAlpha ? "opacity:" + ( iAlpha / 255 ) + ";" : "" )
+							+ "'>" + strThisChar + "</span>";
 
-					} else {
+                    } else {
 
-						strChars += strThisChar;
+                        strChars += strThisChar;
 
-					}
+                    }
 
-				}
+                }
 
-				strChars += '<br/>';
+                strChars += "<br/>";
 
-			}
+            }
 
-			oAscii.innerHTML = `<tr><td style="display:block;width:${width}px;height:${height}px;overflow:hidden">${strChars}</td></tr>`;
+            oAscii.innerHTML = `<tr><td style="display:block;width:${width}px;height:${height}px;overflow:hidden">${strChars}</td></tr>`;
 
-			// console.timeEnd('rendering');
+            // console.timeEnd('rendering');
 
-			// return oAscii;
+            // return oAscii;
 
-		}
+        }
 
-	}
+    }
 
 }
 
