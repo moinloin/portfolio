@@ -22,7 +22,8 @@ async function initAsciiBackground() {
         const THREE = await import("three");
         window.THREE = THREE;
 
-        const { AsciiEffect } = await import("three/addons/effects/AsciiEffect.js");
+        const AsciiEffectModule = await import("/js/AsciiEffect.js");
+        const AsciiEffect = AsciiEffectModule.default || AsciiEffectModule.AsciiEffect;
         const { TrackballControls } = await import("three/addons/controls/TrackballControls.js");
 
         init(THREE, AsciiEffect, TrackballControls);
