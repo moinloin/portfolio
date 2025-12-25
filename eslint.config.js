@@ -34,6 +34,12 @@ module.exports = [
         }
     },
     {
+        files: ["public/js/lib/image-to-ascii.js"],
+        rules: {
+            "no-unused-vars": "off"
+        }
+    },
+    {
         files: ["server.js", "tests/**/*.js"],
         languageOptions: {
             sourceType: "script"

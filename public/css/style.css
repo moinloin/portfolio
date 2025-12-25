@@ -1,3 +1,44 @@
+:root {
+  --color-black: #000;
+  --color-white: white;
+  --color-grid: rgba(0, 0, 0, 0.03);
+  --color-particle: rgba(0, 0, 0, 0.1);
+  --color-border-light: rgba(0, 0, 0, 0.1);
+  --color-shadow-light: rgba(0, 0, 0, 0.05);
+  --color-shadow-medium: rgba(0, 0, 0, 0.08);
+  --color-shadow-strong: rgba(0, 0, 0, 0.15);
+  --color-text-medium: rgba(0, 0, 0, 0.7);
+  --color-glass-bg-light: rgba(255, 255, 255, 0.08);
+  --color-glass-bg-medium: rgba(255, 255, 255, 0.12);
+  --color-glass-bg-strong: rgba(255, 255, 255, 0.15);
+  --color-glass-border-light: rgba(255, 255, 255, 0.18);
+  --color-glass-border-medium: rgba(255, 255, 255, 0.2);
+  --color-glass-border-strong: rgba(255, 255, 255, 0.25);
+  --color-glass-highlight: rgba(255, 255, 255, 0.3);
+  --transition-fast: 0.1s;
+  --transition-quick: 0.15s;
+  --transition-medium: 0.3s;
+  --transition-smooth: 0.4s;
+  --transition-modal: 0.5s;
+  --transition-reveal: 0.6s;
+  --transition-slow: 0.8s;
+  --transition-animation: 1s;
+  --transition-slow-animation: 1.2s;
+  --ease-custom: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: ease-out;
+  --ease-in-out: ease-in-out;
+  --ease: ease;
+  --radius-small: 8px;
+  --radius-medium: 16px;
+  --radius-large: 25px;
+  --radius-full: 50%;
+  --font-wide: "loos-wide", sans-serif;
+  --font-extrawide: "loos-extrawide", sans-serif;
+  --grid-size-mobile: 30px;
+  --grid-size-desktop: 50px;
+  --opacity-shader-canvas: 0.6;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -5,15 +46,39 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: "loos-wide", sans-serif;
+  font-family: var(--font-wide);
   min-height: 100vh;
   overflow-x: hidden;
   overflow-y: auto;
-  background-color: white;
+  background-color: var(--color-white);
 }
 
 #ascii-effect {
   pointer-events: none;
+}
+
+canvas {
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  transition: opacity var(--transition-smooth) var(--ease-in-out);
+}
+
+#shader-canvas {
+  opacity: var(--opacity-shader-canvas) !important;
+}
+
+#ascii-effect {
+  transition: opacity var(--transition-smooth) var(--ease-in-out);
 }
 
 .fixed,
@@ -31,9 +96,9 @@ header,
 
 .grid-background {
   background-image:
-    linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
-  background-size: 50px 50px;
+    linear-gradient(to right, var(--color-grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-grid) 1px, transparent 1px);
+  background-size: var(--grid-size-desktop) var(--grid-size-desktop);
   position: fixed;
   top: 0;
   left: 0;
@@ -41,7 +106,7 @@ header,
   height: 100vh;
   z-index: 0;
   opacity: 1;
-  transition: transform 0.1s ease-out;
+  transition: transform var(--transition-fast) var(--ease-out);
 }
 
 .particles {
@@ -52,7 +117,7 @@ header,
   height: 100vh;
   pointer-events: none;
   z-index: 1;
-  transition: transform 0.15s ease-out;
+  transition: transform var(--transition-quick) var(--ease-out);
   opacity: 1;
 }
 
@@ -60,8 +125,8 @@ header,
   position: absolute;
   width: 2px;
   height: 2px;
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 50%;
+  background: var(--color-particle);
+  border-radius: var(--radius-full);
   animation: float 20s infinite ease-in-out;
 }
 
@@ -77,7 +142,7 @@ header,
 #project-list {
   list-style: none;
   opacity: 0;
-  animation: fadeIn 1s ease forwards 0.6s;
+  animation: fadeIn var(--transition-animation) var(--ease) forwards var(--transition-reveal);
 }
 
 #project-list li {
@@ -92,11 +157,11 @@ header,
   position: relative;
   display: inline-block;
   letter-spacing: 0.01em;
-  color: #000;
+  color: var(--color-black);
   opacity: 0.5;
   font-weight: 300;
-  font-family: "loos-wide", sans-serif;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: var(--font-wide);
+  transition: all var(--transition-medium) var(--ease-custom);
   cursor: pointer;
   font-size: 1.3rem;
   padding: 0.2rem 0;
@@ -171,7 +236,7 @@ header,
 }
 
 .typewriter-text {
-  border-right: 2px solid #000;
+  border-right: 2px solid var(--color-black);
   white-space: nowrap;
   opacity: 0;
 }
@@ -187,7 +252,7 @@ header,
 
 @keyframes blink {
   0%, 50% { border-color: transparent; }
-  51%, 100% { border-color: #000; }
+  51%, 100% { border-color: var(--color-black); }
 }
 
 .typewriter-char {
@@ -205,7 +270,7 @@ header,
   justify-content: flex-end;
   align-items: center;
   opacity: 0;
-  animation: imageReveal 0.6s ease forwards;
+  animation: imageReveal var(--transition-reveal) var(--ease) forwards;
   cursor: pointer;
   pointer-events: auto;
 }
@@ -214,7 +279,7 @@ header,
   height: 100vh;
   width: auto;
   object-fit: contain;
-  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity var(--transition-medium) var(--ease-custom);
 }
 
 @keyframes imageReveal {
@@ -237,12 +302,12 @@ header,
   transform: none;
   transform-origin: left center;
   pointer-events: auto;
-  transition: opacity 0.3s ease;
+  transition: opacity var(--transition-medium) var(--ease);
 }
 
 .magnetic-letter {
   display: inline-block;
-  transition: transform 0.1s ease-out;
+  transition: transform var(--transition-fast) var(--ease-out);
   will-change: transform;
   transform: translate3d(0, 0, 0);
 }
@@ -272,7 +337,7 @@ header,
 
 #modal.visible {
   visibility: visible;
-  animation: modalIn 0.5s ease forwards;
+  animation: modalIn var(--transition-modal) var(--ease) forwards;
 }
 
 @keyframes modalIn {
@@ -294,7 +359,7 @@ header,
   flex-direction: column;
   align-items: center;
   transform: scale(0.9);
-  transition: transform 0.5s ease;
+  transition: transform var(--transition-modal) var(--ease);
 }
 
 #modal.visible #modal-content {
@@ -313,14 +378,14 @@ header,
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--transition-medium) var(--ease-custom);
   border: none;
   cursor: pointer;
 }
 
 #close-modal-btn:hover {
   opacity: 0.7;
-  animation: closeButtonSpin 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: closeButtonSpin var(--transition-slow-animation) var(--ease-custom);
 }
 
 @keyframes closeButtonSpin {
@@ -336,10 +401,10 @@ header,
   transform: translate(-50%, -50%);
   width: 40px;
   height: 40px;
-  border: 2px solid rgba(0, 0, 0, 0.1);
-  border-top-color: #000;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+  border: 2px solid var(--color-border-light);
+  border-top-color: var(--color-black);
+  border-radius: var(--radius-full);
+  animation: spin var(--transition-animation) linear infinite;
 }
 
 @keyframes spin {
@@ -352,8 +417,8 @@ header,
   max-width: 100%;
   max-height: 80vh;
   object-fit: contain;
-  border-radius: 8px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  border-radius: var(--radius-small);
+  box-shadow: 0 12px 40px var(--color-shadow-strong);
   display: none;
 }
 
@@ -362,8 +427,8 @@ header,
   width: 100%;
   max-width: 80vw;
   aspect-ratio: 16/9;
-  background: #000;
-  border-radius: 8px;
+  background: var(--color-black);
+  border-radius: var(--radius-small);
   overflow: hidden;
   display: none;
 }
@@ -374,19 +439,19 @@ header,
 }
 
 .github-card {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.08));
+  background: linear-gradient(145deg, var(--color-glass-bg-medium), var(--color-glass-bg-light));
   backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 16px;
+  border: 1px solid var(--color-glass-border-light);
+  border-radius: var(--radius-medium);
   padding: 3rem;
   max-width: 480px;
   width: 100%;
-  font-family: "loos-wide", sans-serif;
-  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: var(--font-wide);
+  transition: all var(--transition-slow) var(--ease-custom);
   box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.15),
-    0 4px 6px rgba(0, 0, 0, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    0 12px 40px var(--color-shadow-strong),
+    0 4px 6px var(--color-shadow-light),
+    inset 0 1px 0 var(--color-glass-border-medium);
   position: relative;
   overflow: hidden;
   display: none;
@@ -394,13 +459,13 @@ header,
 }
 
 .github-card:hover {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.1));
-  border-color: rgba(255, 255, 255, 0.25);
+  background: linear-gradient(145deg, var(--color-glass-bg-strong), var(--color-glass-bg-light));
+  border-color: var(--color-glass-border-strong);
   transform: translateY(-3px);
   box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.15),
-    0 6px 20px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    0 12px 40px var(--color-shadow-strong),
+    0 6px 20px var(--color-shadow-medium),
+    inset 0 1px 0 var(--color-glass-highlight);
 }
 
 .github-header {
@@ -411,22 +476,22 @@ header,
 }
 
 #github-name {
-  font-family: "loos-extrawide", sans-serif;
+  font-family: var(--font-extrawide);
   font-size: 1.7rem;
   font-weight: 600;
   margin: 0;
-  color: #000;
+  color: var(--color-black);
   letter-spacing: -0.02em;
 }
 
 .github-language {
   font-size: 0.7rem;
-  color: rgba(0, 0, 0, 0.7);
-  font-family: "loos-extrawide", sans-serif;
+  color: var(--color-text-medium);
+  font-family: var(--font-extrawide);
   padding: 0.3rem 0.8rem;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 25px;
+  background: linear-gradient(145deg, var(--color-glass-highlight), var(--color-glass-bg-light));
+  border: 1px solid var(--color-glass-border-medium);
+  border-radius: var(--radius-large);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   backdrop-filter: blur(10px);
@@ -435,7 +500,7 @@ header,
 .github-description {
   font-size: 1rem;
   line-height: 1.5;
-  color: rgba(0, 0, 0, 0.7);
+  color: var(--color-text-medium);
   margin-bottom: 2rem;
   font-weight: 400;
 }
@@ -453,25 +518,25 @@ header,
   position: relative;
   cursor: pointer;
   white-space: nowrap;
-  font-family: "loos-extrawide", sans-serif;
+  font-family: var(--font-extrawide);
   font-weight: bold;
   letter-spacing: -0.05em;
   text-transform: lowercase;
-  transition: transform 0.1s ease-out;
+  transition: transform var(--transition-fast) var(--ease-out);
   user-select: none;
   text-decoration: none;
-  color: #000;
+  color: var(--color-black);
 }
 
 .github-link .typewriter-char {
   display: inline-block;
   will-change: transform, opacity;
   transform: translate3d(0, 0, 0);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform var(--transition-medium) var(--ease-custom);
 }
 
 h1, h2, h3, h4, h5, h6, header a {
-  font-family: "loos-extrawide", sans-serif;
+  font-family: var(--font-extrawide);
 }
 
 .header-link {
@@ -479,7 +544,7 @@ h1, h2, h3, h4, h5, h6, header a {
   font-weight: bold;
   letter-spacing: -0.05em;
   text-transform: lowercase;
-  transition: transform 0.1s ease-out;
+  transition: transform var(--transition-fast) var(--ease-out);
   align-self: baseline;
   user-select: none;
   cursor: default;
@@ -490,7 +555,7 @@ h1, h2, h3, h4, h5, h6, header a {
   left: 100%;
   top: 0;
   opacity: 0;
-  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity var(--transition-medium) var(--ease-custom);
   margin-left: 0.5rem;
   white-space: nowrap;
 }
@@ -504,6 +569,7 @@ h1, h2, h3, h4, h5, h6, header a {
   white-space: nowrap;
   text-decoration: none;
   color: inherit;
+  display: none;
 }
 
 #info-link .typewriter-char {
@@ -518,14 +584,14 @@ h1, h2, h3, h4, h5, h6, header a {
   left: 100%;
   top: 0;
   opacity: 0;
-  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity var(--transition-medium) var(--ease-custom);
   margin-left: 0.5rem;
   white-space: nowrap;
 }
 
 .header-link .typewriter-char {
   display: inline-block;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform var(--transition-medium) var(--ease-custom);
 }
 
 .flicker-text {
@@ -572,20 +638,20 @@ h1, h2, h3, h4, h5, h6, header a {
   left: 20px;
   z-index: 100;
   cursor: pointer;
-  color: #000;
+  color: var(--color-black);
   text-decoration: none;
-  font-family: 'loos-extrawide', sans-serif;
+  font-family: var(--font-extrawide);
   display: inline-block;
   font-weight: bold;
   letter-spacing: -0.05em;
   text-transform: lowercase;
-  transition: transform 0.1s ease-out;
+  transition: transform var(--transition-fast) var(--ease-out);
   user-select: none;
 }
 
 .back-btn .typewriter-char {
   display: inline-block;
-  transition: transform 0.3s ease;
+  transition: transform var(--transition-medium) var(--ease);
 }
 
 .back-btn:hover .typewriter-char {
@@ -598,7 +664,7 @@ h1, h2, h3, h4, h5, h6, header a {
   top: 0;
   opacity: 0;
   transform: translateX(10px);
-  transition: all 0.3s ease;
+  transition: all var(--transition-medium) var(--ease);
   margin-right: 10px;
 }
 
@@ -611,14 +677,117 @@ h1, h2, h3, h4, h5, h6, header a {
   transform: translateX(30px);
 }
 
-@media (max-width: 1200px) and (orientation: portrait) {
+.experience-link {
+  color: var(--color-black);
+  text-decoration: none;
+  opacity: 0.7;
+  transition: opacity var(--transition-medium) var(--ease);
+  cursor: pointer;
+}
+
+.experience-link:hover {
+  opacity: 1;
+}
+
+@media (min-width: 1920px) {
+  #skills-section {
+    left: -10rem !important;
+    top: 15rem !important;
+    max-width: 450px !important;
+  }
+
+  #skills-section .skills-label {
+    font-size: 0.85rem !important;
+  }
+
+  #skills-section div div {
+    font-size: 1.05rem !important;
+  }
+
+  #experience-section {
+    right: -12rem !important;
+    top: 15rem !important;
+    max-width: 1000px !important;
+  }
+
+  #experience-section .experience-title {
+    font-size: 5rem !important;
+  }
+
+  #experience-section .experience-year {
+    font-size: 0.85rem !important;
+  }
+
+  #experience-section .experience-description {
+    max-width: 650px !important;
+    font-size: 1.15rem !important;
+    line-height: 1.7 !important;
+  }
+
+  #experience-section .experience-description + .experience-description {
+    margin-top: 10rem !important;
+  }
+
+  #experience-section > div > div:last-child {
+    margin-top: 10rem !important;
+    font-size: 1.15rem !important;
+  }
+}
+
+@media (min-width: 2560px) {
+  #skills-section {
+    left: -8rem !important;
+    top: 18rem !important;
+    max-width: 500px !important;
+  }
+
+  #skills-section .skills-label {
+    font-size: 1rem !important;
+  }
+
+  #skills-section div div {
+    font-size: 1.2rem !important;
+    line-height: 2.2 !important;
+  }
+
+  #experience-section {
+    right: -10rem !important;
+    top: 18rem !important;
+    max-width: 1200px !important;
+  }
+
+  #experience-section .experience-title {
+    font-size: 6rem !important;
+  }
+
+  #experience-section .experience-year {
+    font-size: 1rem !important;
+  }
+
+  #experience-section .experience-description {
+    max-width: 800px !important;
+    font-size: 1.35rem !important;
+    line-height: 1.8 !important;
+  }
+
+  #experience-section .experience-description + .experience-description {
+    margin-top: 12rem !important;
+  }
+
+  #experience-section > div > div:last-child {
+    margin-top: 12rem !important;
+    font-size: 1.35rem !important;
+  }
+}
+
+@media (max-width: 767px) and (orientation: portrait) {
   .header-link {
     font-size: 2rem;
     letter-spacing: -0.03em;
   }
 
   header {
-    padding: 1rem !important;
+    padding: 0 1rem 1rem 1rem !important;
     bottom: 5rem !important;
   }
 
@@ -658,7 +827,7 @@ h1, h2, h3, h4, h5, h6, header a {
 
   .fixed.bottom-8.left-8 {
     left: 1rem;
-    bottom: 2rem;
+    bottom: 1rem;
     top: auto;
     transform: none;
     width: calc(100% - 2rem);
@@ -778,23 +947,138 @@ h1, h2, h3, h4, h5, h6, header a {
   }
 
   .grid-background {
-    background-size: 30px 30px;
+    background-size: var(--grid-size-mobile) var(--grid-size-mobile);
   }
 
   .particle {
     width: 1.5px;
     height: 1.5px;
   }
+
+  #experience-section {
+    right: 1rem !important;
+    top: 6rem !important;
+    max-width: 90% !important;
+    padding-right: 1rem !important;
+    left: 1rem !important;
+    margin-left: 0 !important;
+  }
+
+  #experience-section .experience-title {
+    font-size: 1.8rem !important;
+  }
+
+  #experience-section .experience-year {
+    font-size: 0.65rem !important;
+  }
+
+  #experience-section .experience-description {
+    max-width: 100% !important;
+    font-size: 0.85rem !important;
+  }
+
+  #experience-section .experience-description:first-of-type {
+    margin-top: 0 !important;
+  }
+
+  #experience-section .experience-description + .experience-description {
+    margin-top: 2.5rem !important;
+  }
+
+  #experience-section > div > div:last-child {
+    margin-top: 2.5rem !important;
+  }
+
+  #skills-section {
+    left: 1rem !important;
+    top: auto !important;
+    bottom: 8rem !important;
+    max-width: 90% !important;
+    padding-left: 1rem !important;
+  }
+
+  #skills-section .skills-label {
+    font-size: 0.65rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  #skills-section div div {
+    font-size: 0.75rem !important;
+    line-height: 1.6 !important;
+  }
+
+  #skills-section svg {
+    display: none;
+  }
+
+  #content-grid {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto !important;
+    top: 5rem !important;
+    left: 1rem !important;
+    right: 1rem !important;
+    bottom: 1rem !important;
+    row-gap: 1.5rem !important;
+    overflow-y: auto !important;
+    padding: 0 !important;
+  }
+
+  #content-grid > div {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+  }
+
+  #content-grid > div:nth-child(1) {
+    display: none;
+  }
+
+  #content-grid > div:nth-child(2) {
+    order: 1;
+  }
+
+  #content-grid > div:nth-child(3) {
+    order: 3;
+  }
+
+  #content-grid > div:nth-child(4) {
+    order: 5;
+  }
+
+  #content-grid > div:nth-child(5) {
+    order: 2;
+  }
+
+  #content-grid > div:nth-child(6) {
+    order: 4;
+  }
+
+  .experience-title {
+    font-size: 1.8rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .experience-description {
+    font-size: 0.9rem !important;
+    line-height: 1.6 !important;
+  }
+
+  #ascii-image-container {
+    display: none !important;
+  }
+
+  #content-grid a {
+    font-size: 1rem !important;
+  }
 }
 
-@media (max-width: 1365px) and (orientation: landscape) {
+@media (max-width: 932px) and (orientation: landscape) {
   .header-link {
     font-size: 2.5rem;
     letter-spacing: -0.03em;
   }
 
   header {
-    padding: 1rem !important;
+    padding: 0 1rem 1rem 1rem !important;
     bottom: 3rem !important;
     z-index: 40 !important;
   }
@@ -878,5 +1162,127 @@ h1, h2, h3, h4, h5, h6, header a {
 
   .w-3\/4 {
     width: 100%;
+  }
+
+  #experience-section {
+    right: 1rem !important;
+    top: 8rem !important;
+    max-width: 55% !important;
+    padding-right: 1rem !important;
+  }
+
+  #experience-section .experience-title {
+    font-size: 2.5rem !important;
+  }
+
+  #experience-section .experience-description {
+    max-width: 100% !important;
+    font-size: 0.95rem !important;
+  }
+
+  #experience-section .experience-description:first-of-type {
+    margin-top: 0 !important;
+  }
+
+  #experience-section .experience-description + .experience-description {
+    margin-top: 4rem !important;
+  }
+
+  #experience-section > div > div:last-child {
+    margin-top: 4rem !important;
+  }
+
+  #skills-section {
+    left: 1rem !important;
+    top: auto !important;
+    bottom: 6rem !important;
+    max-width: 40% !important;
+    padding-left: 1rem !important;
+  }
+
+  #skills-section .skills-label {
+    font-size: 0.7rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  #skills-section div div {
+    font-size: 0.8rem !important;
+    line-height: 1.8 !important;
+  }
+
+  #skills-section svg {
+    width: 100px !important;
+    height: 100px !important;
+  }
+
+  #content-grid {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto !important;
+    top: 4rem !important;
+    left: 1rem !important;
+    right: 1rem !important;
+    bottom: 1rem !important;
+    row-gap: 1.5rem !important;
+    overflow-y: auto !important;
+    padding: 0 !important;
+  }
+
+  #content-grid > div {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+  }
+
+  #content-grid > div:nth-child(1) {
+    display: none;
+  }
+
+  #content-grid > div:nth-child(2) {
+    order: 1;
+  }
+
+  #content-grid > div:nth-child(3) {
+    order: 3;
+  }
+
+  #content-grid > div:nth-child(4) {
+    order: 5;
+  }
+
+  #content-grid > div:nth-child(5) {
+    order: 2;
+  }
+
+  #content-grid > div:nth-child(6) {
+    order: 4;
+  }
+
+  .experience-title {
+    font-size: 1.6rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .experience-description {
+    font-size: 0.85rem !important;
+    line-height: 1.6 !important;
+  }
+
+  #ascii-image-container {
+    display: none !important;
+  }
+
+  #content-grid a {
+    font-size: 0.95rem !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+  #content-grid {
+    grid-template-columns: 2fr 1fr !important;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1366px) and (orientation: landscape) {
+  #content-grid {
+    grid-template-columns: 2fr 1fr !important;
   }
 }

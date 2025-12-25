@@ -51,12 +51,38 @@
     </div>
 
     <div class="w-3/4 h-screen ml-1/4 bg-transparent relative">
-      <div class="fixed inset-y-0 right-0 w-3/4 flex items-center justify-center z-30" id="bio-text" style="padding-top: 8rem; pointer-events: none;">
-        <div class="text-center">
-          <p class="max-w-xl text-black text-2xl font-light leading-relaxed mb-4 typewriter-text" role="banner">
-            Become the center of gravity.
-          </p>
+      <div id="content-grid" style="position: fixed; top: 12rem; left: 2rem; right: 2rem; bottom: 2rem; pointer-events: none; opacity: 0; z-index: 100; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; column-gap: 2rem; row-gap: 1rem;">
+
+        <div style="grid-column: 1; grid-row: 1; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start; padding-bottom: 0.3rem;">
         </div>
+
+        <div style="grid-column: 1; grid-row: 2; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start; padding-bottom: 0.3rem;">
+          <h2 class="experience-title" style="font-family: 'loos-extrawide', sans-serif; font-size: 2.8rem; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em; opacity: 1; margin: 0; text-align: left;">loïs kauffungen</h2>
+        </div>
+
+        <div style="grid-column: 1; grid-row: 3; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start;">
+          <p class="experience-description" style="font-family: 'loos-wide', sans-serif; font-size: 1rem; line-height: 1.7; opacity: 1; margin: 0; width: 100%; font-weight: 500;">The process of finding the best solution is what inspires me. The dynamic landscape of software keeps work engaging, requiring problem-solving and adaptability, while design is a more open field with infinite possibilities. I enjoy the creative process of transforming ideas into actual products—this applies to every field from interior design to web design. As much as I enjoy creating, I also appreciate existing art. Listening to music is the most enjoyable art form for me.</p>
+        </div>
+
+        <div style="grid-column: 1; grid-row: 3; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start;">
+          <div style="font-family: 'loos-wide', sans-serif; font-size: 0.9rem; opacity: 0.5; user-select: none;">
+            © 2025
+          </div>
+        </div>
+
+        <div style="grid-column: 2; grid-row: 1 / 3; overflow: hidden; display: flex; align-items: flex-end; justify-content: flex-start; padding-bottom: 0.5rem;">
+          <div id="ascii-image-container" style="background-color: white; display: inline-block;"></div>
+        </div>
+
+        <div style="grid-column: 2; grid-row: 3; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start;">
+          <p class="experience-description" style="font-family: 'loos-wide', sans-serif; font-size: 1rem; line-height: 1.7; opacity: 1; margin: 0; font-weight: 500; text-align: left;">Thinking and solving difficult challenges is something I enjoy very much. The combination of design and software is my absolute passion.</p>
+          <div style="font-family: 'loos-wide', sans-serif; font-size: 1rem; line-height: 1.8; pointer-events: auto; text-align: left;">
+            <a href="https://github.com/moinloin" target="_blank" rel="noopener noreferrer" class="experience-link">github</a><br>
+            <a href="https://rateyourmusic.com/~zeppoloin" target="_blank" rel="noopener noreferrer" class="experience-link">rym</a><br>
+            <a href="mailto:lois@kauffungen.ch" class="experience-link">email</a>
+          </div>
+        </div>
+
       </div>
 
       <div id="project-image-container" class="fixed inset-y-0 right-0 w-3/4 z-40" style="pointer-events: none;"></div>
@@ -98,7 +124,7 @@
     <div class="header-link" id="logo-link">
       <span class="magnetic-letter">l</span><span class="magnetic-letter">o</span><span class="magnetic-letter">ï</span><span class="magnetic-letter">s</span><span class="magnetic-letter"> </span><span class="magnetic-letter">k</span><span class="magnetic-letter">a</span><span class="magnetic-letter">u</span><span class="magnetic-letter">f</span><span class="magnetic-letter">f</span><span class="magnetic-letter">u</span><span class="magnetic-letter">n</span><span class="magnetic-letter">g</span><span class="magnetic-letter">e</span><span class="magnetic-letter">n</span>
     </div>
-    <a href="/cv" class="header-link" id="info-link">
+    <a href="#about" class="header-link" id="info-link">
       <span class="typewriter-char">a</span><span class="typewriter-char">b</span><span class="typewriter-char">o</span><span class="typewriter-char">u</span><span class="typewriter-char">t</span><span class="about-arrow"> →</span>
     </a>
   </header>
@@ -109,9 +135,18 @@
     </p>
   </div>
 
-  <div id="scroll-spacer" style="height: 100vh;"></div>
+  <div id="scroll-spacer" style="height: 200vh;"></div>
 
-  <script type="module" src="/js/ascii-background.js"></script>
-  <script src="/js/index.js"></script>
+  <script type="module" src="/js/ascii/ascii-main.js"></script>
+  <script type="module" src="/js/main.js"></script>
+  <script src="/js/lib/image-to-ascii.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      imageToAscii('/images/lois.jpeg', 'ascii-image-container', {
+        width: 600,
+        fontSize: 2.2
+      });
+    });
+  </script>
 </body>
 </html>
