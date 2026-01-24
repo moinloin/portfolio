@@ -4,7 +4,9 @@ WORKDIR /app
 
 RUN apk update && apk upgrade busybox busybox-binsh ssl_client
 
-RUN npm install -g npm@11.7.0
+RUN npm install -g npm@11.8.0 && \
+    cd /usr/local/lib/node_modules/npm && \
+    npm install diff@8.0.3 --save
 
 COPY package*.json ./
 
