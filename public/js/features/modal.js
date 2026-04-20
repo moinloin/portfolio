@@ -103,8 +103,13 @@ export function displayModalContent(project) {
                 if (githubName) githubName.textContent = project.title || project.name;
                 if (githubDesc) githubDesc.textContent = project.description || "";
                 if (githubLang) githubLang.textContent = project.language || "-";
-                if (githubLink && project.github) {
-                    githubLink.href = `https://github.com/${project.github}`;
+                if (githubLink) {
+                    if (project.github) {
+                        githubLink.href = `https://github.com/${project.github}`;
+                        githubLink.style.display = "inline-block";
+                    } else {
+                        githubLink.style.display = "none";
+                    }
                 }
 
                 const websiteLink = document.getElementById("website-link");

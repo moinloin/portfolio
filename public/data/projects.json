@@ -69,6 +69,18 @@
     "alt": "A cinematic island road trip video"
   },
   {
+    "id": 10,
+    "name": "sigma",
+    "category": "code",
+    "type": "github",
+    "website": "https://sigma.ac/",
+    "title": "sigma",
+    "description": "Real-time crypto accounting and treasury management software for enterprises.",
+    "stars": "—",
+    "forks": "—",
+    "language": "Rust / TypeScript"
+  },
+  {
     "id": 9,
     "name": "davlo.io",
     "category": "code",
