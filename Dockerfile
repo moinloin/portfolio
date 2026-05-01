@@ -8,12 +8,16 @@ COPY package*.json ./
 RUN npm ci --only=production
 
 
-FROM gcr.io/distroless/nodejs22-debian12:nonroot
+FROM alpine:3.21
+
+RUN apk update && apk upgrade \
+    && apk add --no-cache nodejs ca-certificates \
+    && addgroup -S node && adduser -S node -G node
 
 WORKDIR /app
 
-COPY --from=deps --chown=nonroot:nonroot /app/node_modules ./node_modules
-COPY --chown=nonroot:nonroot . .
+COPY --from=deps --chown=node:node /app/node_modules ./node_modules
+COPY --chown=node:node . .
 
 ARG VERSION=unknown
 ARG NODE_ENV=production
@@ -23,4 +27,6 @@ ENV NODE_ENV=$NODE_ENV
 
 EXPOSE 8080
 
-CMD ["/app/server.js"]
+USER node
+
+CMD ["node", "/app/server.js"]
