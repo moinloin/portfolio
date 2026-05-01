@@ -1,18 +1,19 @@
-FROM node:25-alpine
+FROM node:22-alpine AS deps
 
 WORKDIR /app
 
 RUN apk update && apk upgrade busybox busybox-binsh ssl_client
 
-RUN npm install -g npm@11.12.1 && \
-    cd $(npm root -g)/npm && \
-    npm install tar@^7.5.13 picomatch@^4.0.4 minimatch@^10.2.3 brace-expansion@^5.0.5 --no-save
-
 COPY package*.json ./
-
 RUN npm ci --only=production
 
-COPY . .
+
+FROM gcr.io/distroless/nodejs22-debian12:nonroot
+
+WORKDIR /app
+
+COPY --from=deps --chown=nonroot:nonroot /app/node_modules ./node_modules
+COPY --chown=nonroot:nonroot . .
 
 ARG VERSION=unknown
 ARG NODE_ENV=production
@@ -22,4 +23,4 @@ ENV NODE_ENV=$NODE_ENV
 
 EXPOSE 8080
 
-CMD ["node", "server.js"]
+CMD ["/app/server.js"]
