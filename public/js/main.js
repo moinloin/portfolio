@@ -33,6 +33,20 @@ function setupEventListeners() {
         });
     }
 
+    const modal = document.getElementById("modal");
+    if (modal) {
+        modal.addEventListener("click", function() {
+            toggleModal(false);
+        });
+    }
+
+    const modalContent = document.getElementById("modal-content");
+    if (modalContent) {
+        modalContent.addEventListener("click", function(e) {
+            e.stopPropagation();
+        });
+    }
+
     const projectList = document.getElementById("project-list");
     if (projectList) {
         projectList.addEventListener("mouseleave", function() {

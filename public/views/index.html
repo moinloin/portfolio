@@ -4,18 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>loïs</title>
-  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://use.typekit.net/bou8qre.css">
   <link rel="icon" type="image/x-icon" href="/images/favicon-16x16.png">
   <link rel="stylesheet" href="/css/style.css">
+  <!-- Tailwind last so its utilities win ties against style.css, matching the old Play CDN cascade -->
+  <link rel="stylesheet" href="/css/tailwind.min.css">
   <link rel="preconnect" href="/images">
   <script defer src="https://umami.loiskauffungen.com/script.js" data-website-id="eef02b1a-d5e1-4dbf-bb3a-9124e0a0db0a"></script>
 
   <script type="importmap">
     {
       "imports": {
-        "three": "https://unpkg.com/three@latest/build/three.module.js",
-        "three/addons/": "https://unpkg.com/three@latest/examples/jsm/"
+        "three": "https://unpkg.com/three@0.184.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.184.0/examples/jsm/"
       }
     }
   </script>
@@ -89,12 +90,12 @@
     </div>
   </div>
 
-  <div id="modal" onclick="toggleModal(false)" role="dialog" aria-hidden="true" aria-labelledby="modal-title">
-    <button id="close-modal-btn" class="fixed top-8 right-8 w-10 h-10 bg-transparent border-none" onclick="toggleModal(false)" aria-label="Close modal">
+  <div id="modal" role="dialog" aria-hidden="true" aria-labelledby="modal-title">
+    <button id="close-modal-btn" class="fixed top-8 right-8 w-10 h-10 bg-transparent border-none" aria-label="Close modal">
       <div class="absolute w-full h-0.5 bg-black top-1/2 left-0 transform rotate-45"></div>
       <div class="absolute w-full h-0.5 bg-black top-1/2 left-0 transform -rotate-45"></div>
     </button>
-    <div id="modal-content" class="max-w-[90%] max-h-[90vh] relative flex flex-col items-center" onclick="event.stopPropagation()">
+    <div id="modal-content" class="max-w-[90%] max-h-[90vh] relative flex flex-col items-center">
       <div class="loading-spinner" id="loading-spinner" aria-label="Loading content"></div>
       <img id="modal-image" class="max-w-full max-h-[80vh] object-contain rounded shadow-2xl" style="display: none;" alt="" />
       <div id="modal-video" class="video-container" style="display: none;">
@@ -140,13 +141,6 @@
   <script type="module" src="/js/ascii/ascii-main.js"></script>
   <script type="module" src="/js/main.js"></script>
   <script src="/js/lib/image-to-ascii.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      imageToAscii('/images/lois.jpeg', 'ascii-image-container', {
-        width: 600,
-        fontSize: 2.2
-      });
-    });
-  </script>
+  <script src="/js/ascii-init.js"></script>
 </body>
 </html>

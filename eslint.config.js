@@ -40,7 +40,7 @@ module.exports = [
         }
     },
     {
-        files: ["server.js", "tests/**/*.js"],
+        files: ["server.js", "__tests__/**/*.js", "jest/**/*.js", "*.config.js"],
         languageOptions: {
             sourceType: "script"
         }
